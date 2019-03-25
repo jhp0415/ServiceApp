@@ -89,7 +89,7 @@ public class SearchToolbar extends Fragment implements TextWatcher {
             case android.R.id.home:
                 fragmentManager.popBackStack();
                 MapHelper.mGoogleMap.clear();
-//                editText.setText(null);
+                editText.setText(null);
                 break;
         }
         return super.onOptionsItemSelected(item);
