@@ -15,10 +15,19 @@ import android.widget.TextView;
 
 import com.example.serviceapp.Adapter.AutocompleteRecyclerAdapter;
 import com.example.serviceapp.Adapter.RecyclerAdapter;
+import com.example.serviceapp.BottomSheet.CategoryBottomSheet;
+import com.example.serviceapp.Fragment.CategoryFragment;
 import com.example.serviceapp.R;
+import com.google.android.gms.maps.model.LatLng;
+import com.kt.place.sdk.listener.OnSuccessListener;
 import com.kt.place.sdk.model.Poi;
+import com.kt.place.sdk.net.NearbyPoiRequest;
+import com.kt.place.sdk.net.PoiResponse;
+import com.kt.place.sdk.util.Client;
 
 import java.util.List;
+
+import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
 
 
 public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
@@ -26,11 +35,11 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
     private Context mContext;
     private View view;
     private Activity mActivity;
-    public BottomSheetBehavior bottomSheetBehavior;
+    public static BottomSheetBehavior bottomSheetBehavior;
     public LinearLayout bottomSheet;
     private LinearLayout dynamicContent;
-
     private LinearLayout mainContent;
+    private Client placesClient;
 
     public BottomSheetHelper(Context context, Activity activity) {
         this.mContext = context;
@@ -39,6 +48,7 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
         bottomSheetBehavior = BottomSheetBehavior.from(view);
         bottomSheetBehavior.setBottomSheetCallback(this);
         dynamicContent = (LinearLayout) view.findViewById(R.id.dynamic_content);
+        placesClient = new Client();
     }
 
     public void addBottomSheetContent(int id) {
@@ -58,6 +68,10 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
                 mainContent = (LinearLayout) wizardView.findViewById(R.id.main_content_tap);
                 View mainView = LayoutInflater.from(mContext)
                         .inflate(R.layout.content_main_nearby, mainContent, false);
+                // 카테고리 검색 리스너 달기
+                CategoryBottomSheet categoryBottomSheet = new CategoryBottomSheet(mContext, mainView);
+                mainView = categoryBottomSheet.getView();
+
                 mainContent.addView(mainView);
 
                 break;
@@ -122,23 +136,23 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
     public void onStateChanged(@NonNull View bottomSheet, int newState) {
         switch (newState) {
             case BottomSheetBehavior.STATE_DRAGGING: {
-                Log.d("ddd", "DRAGGING");
+//                Log.d("ddd", "DRAGGING");
                 break;
             }
             case BottomSheetBehavior.STATE_SETTLING: {
-                Log.d("ddd", "SETTLING");
+//                Log.d("ddd", "SETTLING");
                 break;
             }
             case BottomSheetBehavior.STATE_EXPANDED: {
-                Log.d("ddd", "EXPANDED");
+//                Log.d("ddd", "EXPANDED");
                 break;
             }
             case BottomSheetBehavior.STATE_COLLAPSED: {
-                Log.d("ddd", "COLLAPSED");
+//                Log.d("ddd", "COLLAPSED");
                 break;
             }
             case BottomSheetBehavior.STATE_HIDDEN: {
-                Log.d("ddd", "HIDDEN");
+//                Log.d("ddd", "HIDDEN");
                 break;
             }
         }
@@ -146,7 +160,7 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
     @Override
     public void onSlide(@NonNull View bottomSheet, float slideOffset) {
         // 1이면 완전 펼쳐진 상태, 0이면 peekHeight인 상태, -1이면 숨김 상태
-        Log.i("TAG", "slideOffset " + (slideOffset));;
+//        Log.i("TAG", "slideOffset " + (slideOffset));;
     }
 
     @Override
@@ -167,4 +181,5 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
                 break;
         }
     }
+
 }

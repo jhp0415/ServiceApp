@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity
     private GpsHelper gpsHelper;
     private MapHelper mapHelper;
     private Client placesClient;
-
+    private SupportMapFragment googleMapFragment;
     private BottomSheetHelper bottomSheetHelper;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
@@ -49,14 +49,14 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         mapHelper = new MapHelper();
+        googleMapFragment = mapHelper.googleMapFragment;
         Manager.initialize(getApplicationContext(), "Bearer eb142d9027f84d51a4a20df8490e44bcf6fc7ef4dea64cae96a7fca282ebd8cc02764651");
         placesClient = new Client();
 
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container1, FragmentToolbar.newInstance(), "visible");
-        fragmentTransaction.replace(R.id.fragment_container2, mapHelper.googleMapFragment, "visible");
-//        fragmentTransaction.addToBackStack("googleMapFragment");
+        fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
         fragmentTransaction.commit();
 
         // Bottom Sheet 초기화
@@ -93,10 +93,18 @@ public class MainActivity extends AppCompatActivity
         mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
                 data.getPoint().getLng()), data.getName(), data.getBranch(), data.getAddress().getFullAddressParcel());
 
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container2, mapHelper.googleMapFragment, "visible");
-        fragmentTransaction.addToBackStack("googleMapFragment");
-        fragmentTransaction.commit();
+        Fragment currentFragment = fragmentManager.findFragmentByTag("visible");
+        if(currentFragment instanceof SupportMapFragment) {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
+//            fragmentTransaction.addToBackStack("googleMapFragment");
+            fragmentTransaction.commit();
+        } else {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
+            fragmentTransaction.addToBackStack("googleMapFragment");
+            fragmentTransaction.commit();
+        }
 
         // TODO : 바텀 시트 업데이트
         bottomSheetHelper.updatePoiInfo(data);
@@ -109,7 +117,7 @@ public class MainActivity extends AppCompatActivity
                 data.getPoint().getLng()), data.getTerms(), "", "");
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container2, mapHelper.googleMapFragment, "visible");
+        fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
         fragmentTransaction.addToBackStack("googleMapFragment");
         fragmentTransaction.commit();
 
@@ -163,16 +171,14 @@ public class MainActivity extends AppCompatActivity
             if(fragmentManager.getBackStackEntryCount() == 0) {
                 bottomSheetHelper.addBottomSheetContent(0);
             }
-        } else if(currentFragment instanceof CategoryFragment) {
-            Log.d("ddd", "currentFragment : CategoryFragment");
-            bottomSheetHelper.setVisibility(false);
         } else if(currentFragment instanceof SearchFragment) {
             Log.d("ddd", "currentFragment : SearchFragment");
             bottomSheetHelper.setVisibility(false);
         } else {
-            Log.d("ddd", "TAG : " + currentFragment.getTag());
+            Log.d("ddd", "TAG : else case");
             bottomSheetHelper.setVisibility(true);
             if(fragmentManager.getBackStackEntryCount() == 0) {
+                mapHelper.onMyLocationButtonClick();
                 bottomSheetHelper.addBottomSheetContent(0);
             }
         }

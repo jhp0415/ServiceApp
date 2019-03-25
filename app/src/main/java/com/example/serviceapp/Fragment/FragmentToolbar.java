@@ -43,8 +43,8 @@ public class FragmentToolbar extends Fragment {
                 fragmentManager = activity.getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.newInstance(),"visible");
-                fragmentTransaction.replace(R.id.fragment_container2, CategoryFragment.newInstance(),"visible");
-                fragmentTransaction.addToBackStack("CategoryFragment");
+                fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
+                fragmentTransaction.addToBackStack("SearchFragment");
                 fragmentTransaction.commit();
             }
         });

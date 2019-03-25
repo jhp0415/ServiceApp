@@ -64,15 +64,6 @@ public class SearchToolbar extends Fragment implements TextWatcher {
 
         editText = (EditText)toolbar.findViewById(R.id.toolbar_search);
         editText.addTextChangedListener(this);
-//        editText.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Fragment fragment = fragmentManager.findFragmentByTag("visible");
-////                if(fragment instanceof SupportMapFragment) {
-////                    fragmentManager.popBackStack();
-////                }
-//            }
-//        });
         setHasOptionsMenu(true);
         activity = (MainActivity)getActivity();
         activity.setSupportActionBar(toolbar);
@@ -143,21 +134,17 @@ public class SearchToolbar extends Fragment implements TextWatcher {
 //            requestPoiSearch(s.toString(), 0);
 //            requestAutocomplete(s.toString());
 //        }
-        activity.setEditTextQuery(s.toString());
-        Fragment fragment = fragmentManager.findFragmentByTag("visible");
-        if(fragment instanceof SearchFragment) {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(), "visible");
-            fragmentTransaction.commit();
-        }else {
-            fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(), "visible");
-            fragmentTransaction.addToBackStack("SearchFragment");
-            fragmentTransaction.commit();
-        }
+        if(s.length() == 0) {
 
-        requestPoiSearch(s.toString(), 0);
-        requestAutocomplete(s.toString());
+        } else {
+            activity.setEditTextQuery(s.toString());
+//        fragmentTransaction = fragmentManager.beginTransaction();
+//        fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(), "visible");
+//        fragmentTransaction.addToBackStack("SearchFragment");
+//        fragmentTransaction.commit();
+            requestPoiSearch(s.toString(), 0);
+            requestAutocomplete(s.toString());
+        }
     }
 
     @Override
