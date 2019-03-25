@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.R;
 import com.kt.place.sdk.model.Poi;
-import com.kt.place.sdk.model.Suggest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +49,12 @@ public class AutocompleteRecyclerAdapter extends RecyclerView.Adapter<Autocomple
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = items.get(position);
         holder.mTitleText.setText(items.get(position).getName() + " " + items.get(position).getBranch());
+        holder.mDistanceText.setText(String.valueOf((int) Math.round(items.get(position).getDistance())) + "km");
+        holder.mCategoryText.setText(items.get(position).getCategory().getMasterName());
+        holder.mAddressText.setText(items.get(position).getAddress().getFullAddressParcel());
+        if (items.get(position).getPhones().getRepresentation() != null)
+            if (items.get(position).getPhones().getRepresentation().size() > 0)
+                holder.mPhoneText.setText(items.get(position).getPhones().getRepresentation().get(0));
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,11 +68,19 @@ public class AutocompleteRecyclerAdapter extends RecyclerView.Adapter<Autocomple
         public Poi mItem;
         public final View mView;
         public final TextView mTitleText;
+        public final TextView mDistanceText;
+        public final TextView mCategoryText;
+        public final TextView mAddressText;
+        public final TextView mPhoneText;
 
         public ViewHolder(View view) {
             super(view);
             mView = view;       // View 초기화
             mTitleText = (TextView) view.findViewById(R.id.poi_name);
+            mDistanceText = (TextView) view.findViewById(R.id.poi_distance);
+            mCategoryText = (TextView) view.findViewById(R.id.poi_category);
+            mAddressText = (TextView) view.findViewById(R.id.poi_address);
+            mPhoneText = (TextView) view.findViewById(R.id.poi_phone);
         }
     }
 }

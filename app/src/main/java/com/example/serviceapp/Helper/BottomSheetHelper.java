@@ -6,7 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -14,24 +14,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.serviceapp.Adapter.AutocompleteRecyclerAdapter;
-import com.example.serviceapp.Adapter.RecyclerAdapter;
 import com.example.serviceapp.BottomSheet.CategoryBottomSheet;
-import com.example.serviceapp.Fragment.CategoryFragment;
 import com.example.serviceapp.R;
-import com.google.android.gms.maps.model.LatLng;
-import com.kt.place.sdk.listener.OnSuccessListener;
 import com.kt.place.sdk.model.Poi;
-import com.kt.place.sdk.net.NearbyPoiRequest;
-import com.kt.place.sdk.net.PoiResponse;
 import com.kt.place.sdk.util.Client;
 
 import java.util.List;
 
-import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
-
 
 public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
-        implements View.OnClickListener{
+        implements View.OnClickListener {
     private Context mContext;
     private View view;
     private Activity mActivity;
@@ -40,6 +32,8 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
     private LinearLayout dynamicContent;
     private LinearLayout mainContent;
     private Client placesClient;
+
+    private CategoryBottomSheet categoryBottomSheet;
 
     public BottomSheetHelper(Context context, Activity activity) {
         this.mContext = context;
@@ -52,11 +46,15 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
     }
 
     public void addBottomSheetContent(int id) {
-        View wizardView;
         switch (id) {
             case 0:
+                // TODO : bottom sheet 높이 조절
+                bottomSheetBehavior.setPeekHeight((int) TypedValue.applyDimension(
+                        TypedValue.COMPLEX_UNIT_DIP, 80.f, mContext.getResources().getDisplayMetrics()));
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
                 dynamicContent.removeAllViews();
-                wizardView = LayoutInflater.from(mContext)
+                View wizardView = LayoutInflater.from(mContext)
                         .inflate(R.layout.bottom_sheet_content_main, dynamicContent, false);
                 dynamicContent.addView(wizardView);
 
@@ -69,26 +67,26 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
                 View mainView = LayoutInflater.from(mContext)
                         .inflate(R.layout.content_main_nearby, mainContent, false);
                 // 카테고리 검색 리스너 달기
-                CategoryBottomSheet categoryBottomSheet = new CategoryBottomSheet(mContext, mainView);
+                categoryBottomSheet = new CategoryBottomSheet(mContext, mActivity, mainView);
                 mainView = categoryBottomSheet.getView();
-
                 mainContent.addView(mainView);
-
                 break;
             case 1:
 
                 break;
-            case 2:
-
-                break;
         }
-
     }
 
     public void updatePoiInfo(Poi poi) {
         dynamicContent.removeAllViews();
         View view = LayoutInflater.from(mContext)
                 .inflate(R.layout.bottom_sheet_content_poi_info, dynamicContent, false);
+
+        // TODO : bottom sheet 높이 조절
+        bottomSheetBehavior.setPeekHeight((int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 150.f, mContext.getResources().getDisplayMetrics()));
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
         TextView textView1 = (TextView) view.findViewById(R.id.poi_name);
         TextView textView2 = (TextView) view.findViewById(R.id.poi_distance);
         TextView textView3 = (TextView) view.findViewById(R.id.poi_category);
@@ -109,6 +107,11 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
         View view = LayoutInflater.from(mContext)
                 .inflate(R.layout.bottom_sheet_content_autocomplete_list, dynamicContent, false);
 
+        // TODO : bottom sheet 높이 조절
+        bottomSheetBehavior.setPeekHeight((int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP, 400.f, mContext.getResources().getDisplayMetrics()));
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+
         // 리사이클러뷰 초기화
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.autocomplete_search_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
@@ -128,31 +131,22 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
             view.setVisibility(View.GONE);
     }
 
-    public View getBottomSheetView() {
-        return view;
-    }
-
     @Override
     public void onStateChanged(@NonNull View bottomSheet, int newState) {
         switch (newState) {
             case BottomSheetBehavior.STATE_DRAGGING: {
-//                Log.d("ddd", "DRAGGING");
                 break;
             }
             case BottomSheetBehavior.STATE_SETTLING: {
-//                Log.d("ddd", "SETTLING");
                 break;
             }
             case BottomSheetBehavior.STATE_EXPANDED: {
-//                Log.d("ddd", "EXPANDED");
                 break;
             }
             case BottomSheetBehavior.STATE_COLLAPSED: {
-//                Log.d("ddd", "COLLAPSED");
                 break;
             }
             case BottomSheetBehavior.STATE_HIDDEN: {
-//                Log.d("ddd", "HIDDEN");
                 break;
             }
         }
@@ -160,7 +154,6 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
     @Override
     public void onSlide(@NonNull View bottomSheet, float slideOffset) {
         // 1이면 완전 펼쳐진 상태, 0이면 peekHeight인 상태, -1이면 숨김 상태
-//        Log.i("TAG", "slideOffset " + (slideOffset));;
     }
 
     @Override
@@ -168,10 +161,7 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
         View  mainView;
         switch (v.getId()) {
             case R.id.content_main_btn_nearby:
-                mainContent.removeAllViews();
-                mainView = LayoutInflater.from(mContext)
-                        .inflate(R.layout.content_main_nearby, mainContent, false);
-                mainContent.addView(mainView);
+                addBottomSheetContent(0);
                 break;
             case R.id.content_main_btn_tmp:
                 mainContent.removeAllViews();
@@ -181,5 +171,4 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
                 break;
         }
     }
-
 }

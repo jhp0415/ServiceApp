@@ -1,24 +1,19 @@
 package com.example.serviceapp;
 
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.util.Log;
 
-import com.example.serviceapp.Fragment.CategoryFragment;
 import com.example.serviceapp.Fragment.FragmentToolbar;
 import com.example.serviceapp.Fragment.SearchFragment;
 import com.example.serviceapp.Helper.BottomSheetHelper;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.Helper.MapHelper;
-import com.example.serviceapp.Helper.PlacesApiHelper;
-import com.example.serviceapp.Listener.OnGpsListener;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.kt.place.sdk.listener.OnSuccessListener;
@@ -48,8 +43,12 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mapHelper = new MapHelper();
-        googleMapFragment = mapHelper.googleMapFragment;
+        gpsHelper = new GpsHelper();
+//        gpsHelper = GpsHelper.getInstance();
+        mapHelper = new MapHelper(getApplicationContext(), this);
+        googleMapFragment = mapHelper.getMapInstance();
+
+
         Manager.initialize(getApplicationContext(), "Bearer eb142d9027f84d51a4a20df8490e44bcf6fc7ef4dea64cae96a7fca282ebd8cc02764651");
         placesClient = new Client();
 
@@ -64,8 +63,7 @@ public class MainActivity extends AppCompatActivity
                 new BottomSheetHelper(getApplicationContext(), this);
         bottomSheetHelper.addBottomSheetContent(0);
 
-        gpsHelper = new GpsHelper();
-//        gpsHelper.setGpsHelperInit(getApplicationContext(), this);
+
         fragmentManager.addOnBackStackChangedListener(this);
     }
 
@@ -78,8 +76,8 @@ public class MainActivity extends AppCompatActivity
         }
         if (gpsHelper.isAccessFineLocation) {
             gpsHelper.mLocationPermissionGranted = true;
-            gpsHelper.getDeviceLocation();
-//            listener.onSuccessMapReady();
+//            listener.onSuccessPermission();
+            gpsHelper.receivedPermission();
         }
     }
 
@@ -89,7 +87,7 @@ public class MainActivity extends AppCompatActivity
 
     public void onFragmentResult(Poi data) {
 //        hideKyeboard();
-        mapHelper.getGoogleMap().clear();
+        mapHelper.mGoogleMap.clear();
         mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
                 data.getPoint().getLng()), data.getName(), data.getBranch(), data.getAddress().getFullAddressParcel());
 
@@ -112,7 +110,7 @@ public class MainActivity extends AppCompatActivity
 
     public void onFragmentResultAutocomplete(Suggest data) {
 //        hideKyeboard();
-        mapHelper.getGoogleMap().clear();
+        mapHelper.mGoogleMap.clear();
         mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
                 data.getPoint().getLng()), data.getTerms(), "", "");
 

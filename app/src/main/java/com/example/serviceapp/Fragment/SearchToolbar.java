@@ -21,10 +21,9 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.example.serviceapp.Helper.GpsHelper;
-import com.example.serviceapp.Helper.PlacesApiHelper;
+import com.example.serviceapp.Helper.MapHelper;
 import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.R;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.kt.place.sdk.listener.OnSuccessListener;
 import com.kt.place.sdk.net.AutocompleteRequest;
@@ -89,6 +88,7 @@ public class SearchToolbar extends Fragment implements TextWatcher {
         switch (item.getItemId()){
             case android.R.id.home:
                 fragmentManager.popBackStack();
+                MapHelper.mGoogleMap.clear();
 //                editText.setText(null);
                 break;
         }
@@ -102,46 +102,10 @@ public class SearchToolbar extends Fragment implements TextWatcher {
 
     @Override
     public void onTextChanged(CharSequence s, int start, int before, int count) {
-//        if(s.length() == 0){
-//            Fragment fragment = fragmentManager.findFragmentByTag("visible");
-////            Log.d("ddd", fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName());
-//            if(fragment instanceof CategoryFragment) {
-//                fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.fragment_container2, CategoryFragment.newInstance(), "visible");
-//                fragmentTransaction.commit();
-//            } else {
-//                fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.fragment_container2, CategoryFragment.newInstance(), "visible");
-//                fragmentTransaction.addToBackStack("CategoryFragment");
-//                fragmentTransaction.commit();
-//            }
-//        }
-//
-//        if(s.length() > 0) {
-//            activity.setEditTextQuery(s.toString());
-//            Fragment fragment = fragmentManager.findFragmentByTag("visible");
-//            if(fragment instanceof SearchFragment) {
-//                fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(), "visible");
-//                fragmentTransaction.commit();
-//            }else {
-//                fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(), "visible");
-//                fragmentTransaction.addToBackStack("SearchFragment");
-//                fragmentTransaction.commit();
-//            }
-//
-//            requestPoiSearch(s.toString(), 0);
-//            requestAutocomplete(s.toString());
-//        }
         if(s.length() == 0) {
 
         } else {
             activity.setEditTextQuery(s.toString());
-//        fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(), "visible");
-//        fragmentTransaction.addToBackStack("SearchFragment");
-//        fragmentTransaction.commit();
             requestPoiSearch(s.toString(), 0);
             requestAutocomplete(s.toString());
         }
