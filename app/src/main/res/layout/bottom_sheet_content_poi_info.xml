@@ -1,75 +1,151 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+<!--스크롤뷰 추가하기-->
+
 <android.support.v7.widget.CardView
-    android:id="@+id/cardview"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="1dp"
     card_view:cardCornerRadius="5dp"
-    card_view:contentPadding="1dp"
+    card_view:contentPadding="2dp"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="150dp"
-        android:layout_margin="10dp"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/poi_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="POI Name"
-            android:textSize="25sp"
-            android:textStyle="bold" />
-
-        <LinearLayout
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:orientation="horizontal">
+            android:layout_height="150dp"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
 
             <TextView
-                android:id="@+id/poi_distance"
+                android:id="@+id/poi_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="POI Distance"
+                android:gravity="center_vertical"
+                android:text="POI Name"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/poi_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="POI Distance"
+                    android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/poi_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="10dp"
+                    android:text="POI Category"
+                    android:textSize="15sp" />
+                <TextView
+                    android:id="@+id/poi_review"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="POI Review"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/poi_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="POI Address"
                 android:textSize="15sp" />
 
             <TextView
-                android:id="@+id/poi_category"
-                android:layout_width="wrap_content"
+                android:id="@+id/poi_phone"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="10dp"
-                android:text="POI Category"
+                android:layout_margin="5dp"
+                android:text="POI Phone"
                 android:textSize="15sp" />
-
-            <TextView
-                android:id="@+id/poi_review"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="POI Review"
-                android:textSize="15sp" />
-
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/poi_address"
+        <!--overview-->
+        <LinearLayout
+            android:id="@+id/overviewLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="POI Address"
-            android:textSize="15sp" />
+            android:layout_margin="10dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/poi_phone"
+            <com.glide.slider.library.SliderLayout
+                android:id="@+id/poiImageSlider"
+                android:layout_width="match_parent"
+                android:layout_height="250dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/addPhoto"
+                        android:src="@android:drawable/ic_menu_camera"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:text="사진 추가"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:id="@+id/addMyList"
+                        android:src="@android:drawable/btn_star"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+                    <TextView
+                        android:text="즐겨찾기 추가"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!--리뷰-->
+        <LinearLayout
+            android:id="@+id/reviewLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text="POI Phone"
-            android:textSize="15sp" />
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+            <Button
+                android:text="리뷰 추가"
+                android:id="@+id/addReview"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/reviewList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
 
     </LinearLayout>
 </android.support.v7.widget.CardView>

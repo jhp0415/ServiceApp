@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.example.serviceapp.Adapter.AutocompleteRecyclerAdapter;
 import com.example.serviceapp.BottomSheet.CategoryBottomSheet;
+import com.example.serviceapp.Login.contract.OverviewContract;
 import com.example.serviceapp.R;
 import com.kt.place.sdk.model.Poi;
 import com.kt.place.sdk.util.Client;
@@ -23,7 +24,7 @@ import java.util.List;
 
 
 public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
-        implements View.OnClickListener {
+        implements View.OnClickListener, OverviewContract.View {
     private Context mContext;
     private View view;
     private Activity mActivity;
@@ -99,6 +100,14 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
         if (poi.getPhones().getRepresentation() != null)
             if (poi.getPhones().getRepresentation().size() > 0)
                 textView5.setText(poi.getPhones().getRepresentation().get(0));
+
+        // Image, Review 불러오기
+
+
+
+
+
+
         dynamicContent.addView(view);
     }
 
@@ -166,9 +175,23 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
             case R.id.content_main_btn_tmp:
                 mainContent.removeAllViews();
                 mainView = LayoutInflater.from(mContext)
-                        .inflate(R.layout.content_main_tmp, mainContent, false);
+                        .inflate(R.layout.content_main_wishlist, mainContent, false);
                 mainContent.addView(mainView);
                 break;
         }
+    }
+
+    /**
+     * 내 서버에 등록된 사진과 리뷰 정보 가져와서 셋팅하기
+     * @param poiImage
+     */
+    @Override
+    public void setOverviewImage(List<String> poiImage) {
+
+    }
+
+    @Override
+    public void setOverviewInfo(Poi place) {
+
     }
 }
