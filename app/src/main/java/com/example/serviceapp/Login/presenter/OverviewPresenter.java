@@ -1,11 +1,11 @@
 package com.example.serviceapp.Login.presenter;
 
+import android.util.Log;
+
 import com.example.serviceapp.Login.POJO.sPlaceWithComment;
 import com.example.serviceapp.Login.contract.OverviewContract;
 import com.example.serviceapp.Login.model.MyServerModel;
 import com.example.serviceapp.Login.model.MyServerServiceModel;
-import com.kt.place.sdk.model.Poi;
-import com.kt.place.sdk.net.PoiResponse;
 
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +16,6 @@ public class OverviewPresenter implements OverviewContract.Presenter {
     OverviewContract.View overviewView;
 
     public OverviewPresenter(OverviewContract.View overviewView) {
-
         this.overviewView = overviewView;
 
         myserverModel = new MyServerModel();
@@ -25,9 +24,11 @@ public class OverviewPresenter implements OverviewContract.Presenter {
 
     @Override
     public void getOverviewInfo(String poiId) {
+        Log.d("ddd", "이미지 함수 실행");
         myserverServiceModel.callCurrentPlace(poiId, new MyServerServiceModel.callCurrentPlaceListener() {
             @Override
             public void onGetCurrentPlaceFinished(sPlaceWithComment response) {
+                Log.d("ddd", "이미지 데이터 받아옴");
                 List<String> imageUrls = response.getPlacePicUrl();
                 overviewView.setOverviewImage(imageUrls);
             }
@@ -35,21 +36,22 @@ public class OverviewPresenter implements OverviewContract.Presenter {
             @Override
             public void onGetCurrentPlaceFailure(Throwable t) {
                 // TODO: onGetCurrentPlaceFailure
+                Log.d("ddd", "에러발생 : " + t.getMessage());
             }
         });
 
-        myserverModel.callpoiRetrieve(poiId, new MyServerModel.poiRetrieveListener() {
-            @Override
-            public void onPoiRetrieveFinished(PoiResponse response) {
-                Poi poi = response.getPois().get(0);
-                overviewView.setOverviewInfo(poi);
-            }
-
-            @Override
-            public void onPoiRetrieveFailure(Throwable t) {
-                // TODO: onPoiRetrieveFailure
-            }
-        });
+//        myserverModel.callpoiRetrieve(poiId, new MyServerModel.poiRetrieveListener() {
+//            @Override
+//            public void onPoiRetrieveFinished(PoiResponse response) {
+//                Poi poi = response.getPois().get(0);
+//                overviewView.setOverviewInfo(poi);
+//            }
+//
+//            @Override
+//            public void onPoiRetrieveFailure(Throwable t) {
+//                // TODO: onPoiRetrieveFailure
+//            }
+//        });
     }
 
     @Override

@@ -26,7 +26,7 @@ public class AutocompleteRecyclerAdapter extends RecyclerView.Adapter<Autocomple
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.bottom_sheet_content_poi_info, parent, false);
+                .inflate(R.layout.bottom_sheet_poi_list_item, parent, false);
         return new ViewHolder(view);
     }
 

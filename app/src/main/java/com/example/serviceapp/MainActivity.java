@@ -29,8 +29,10 @@ import com.example.serviceapp.Fragment.SearchToolbar;
 import com.example.serviceapp.Helper.BottomSheetHelper;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.Helper.MapHelper;
-import com.example.serviceapp.Login.contract.MyServerContract;
 import com.example.serviceapp.Login.POJO.sAccess;
+import com.example.serviceapp.Login.POJO.sPlaceOverview;
+import com.example.serviceapp.Login.POJO.sPlaceWithComment;
+import com.example.serviceapp.Login.contract.MyServerContract;
 import com.example.serviceapp.Login.presenter.MyServerPresenter;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -76,6 +78,8 @@ public class MainActivity extends AppCompatActivity
     private String fbId;
     private String fbToken;
     private String clickedPoiId;
+    public static final int REQUEST_ADD_PHOTO = 1;
+    public static final int REQUEST_ADD_REVIEW = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,8 +131,6 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 // 페이스북 로그인
                 facebookLoginOnClick();
-                // TODO: 의준오빠 서버 로그인하기
-
             }
         });
 
@@ -209,11 +211,6 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = menuItem.getItemId();
         if (id == R.id.nav_wishlist) {
-//            // 내 즐겨찾기 리스트 액비티비 실행
-//            Intent i = new Intent(MainActivity.this, MyListActivity.class);
-//            Log.d("fb_id", fbId);
-//            i.putExtra("fb_id", fbId);
-//            startActivity(i);
         }
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -243,6 +240,17 @@ public class MainActivity extends AppCompatActivity
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         callbackManager.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_ADD_PHOTO && resultCode == RESULT_OK) {
+            Log.d("ddd", "ActivityResult : Request_add_photo");
+            sPlaceOverview review = (sPlaceOverview) data.getSerializableExtra("place_overview");
+            bottomSheetHelper.setOverviewImage(review.getPlacePicUrl());
+        }
+        if (requestCode == REQUEST_ADD_REVIEW && resultCode == RESULT_OK) {
+            Log.d("ddd", "ActivityResult : Request_add_review");
+            sPlaceWithComment review = (sPlaceWithComment) data.getSerializableExtra("place_review");
+            bottomSheetHelper.setReviewList(review.getComments());
+        }
     }
 
     public String getFbId() {
