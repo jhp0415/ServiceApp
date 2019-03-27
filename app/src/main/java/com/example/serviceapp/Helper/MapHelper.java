@@ -3,8 +3,10 @@ package com.example.serviceapp.Helper;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.example.serviceapp.Fragment.InfoFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -12,6 +14,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.kt.place.sdk.listener.OnSuccessListener;
+import com.kt.place.sdk.model.Poi;
+import com.kt.place.sdk.net.PoiRequest;
+import com.kt.place.sdk.net.PoiResponse;
+import com.kt.place.sdk.util.Client;
 
 public class MapHelper
         implements GoogleMap.OnMarkerClickListener,
@@ -103,6 +110,29 @@ public class MapHelper
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+        String term = marker.getTitle();
+        LatLng currentPoint = GpsHelper.getInstance().getCurrentLocation();
+        PoiRequest request = new PoiRequest.PoiRequestBuilder(term)
+                .setLat(currentPoint.latitude)
+                .setLng(currentPoint.longitude)
+                .setNumberOfResults(1)
+                .build();
+
+        Client placesClient = new Client();
+        placesClient.getPoiSearch(request, new OnSuccessListener<PoiResponse>() {
+            @Override
+            public void onSuccess(@NonNull PoiResponse poiResponse) {
+                if(poiResponse.getPois().size() > 0) {
+                    // 마커 클릭해서 POI 정보 bottom sheet에 나타내기
+                    BottomSheetHelper.getInstance(mContext, mActivity).updatePoiInfo(poiResponse.getPois().get(0));
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable throwable) {
+                Log.d("ddd", throwable.getMessage());
+            }
+        });
         return false;
     }
 

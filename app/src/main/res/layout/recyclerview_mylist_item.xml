@@ -24,42 +24,38 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_weight="1">
+                android:gravity="center"
+                android:layout_weight="2">
                 <ImageView
-                    android:id="@+id/user_profile"
-                    android:layout_gravity="center"
+                    android:id="@+id/mylist_image"
+                    android:scaleType="centerCrop"
                     android:layout_width="60dp"
                     android:layout_height="60dp"/>
-                <TextView
-                    android:id="@+id/user_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_horizontal"
-                    android:text="name"/>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_weight="9">
+                android:layout_marginLeft="10dp"
+                android:layout_weight="8">
                 <TextView
-                    android:id="@+id/user_comment_title"
+                    android:id="@+id/mylist_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.2"
                     android:gravity="center_vertical"
                     android:textStyle="bold"
                     android:textSize="15sp"
-                    android:text="title"/>
+                    android:text="POI name"/>
 
                 <TextView
-                    android:id="@+id/user_comment_body"
+                    android:id="@+id/mylist_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.8"
                     android:gravity="center_vertical"
                     android:textSize="10sp"
-                    android:text="description"/>
+                    android:text="Address"/>
             </LinearLayout>
 
         </LinearLayout>

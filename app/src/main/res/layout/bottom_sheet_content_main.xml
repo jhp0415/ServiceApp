@@ -18,7 +18,7 @@
             android:layout_weight="1"
             android:text="주변"/>
         <Button
-            android:id="@+id/content_main_btn_tmp"
+            android:id="@+id/content_main_btn_mylist"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

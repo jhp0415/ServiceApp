@@ -32,7 +32,8 @@ public class ReviewPresenter implements ReviewContract.Presenter {
 
             @Override
             public void onGetCurrentPlaceFailure(Throwable t) {
-
+                Log.d("ddd", "onGetCurrentPlaceFinished : 리뷰 리스트 call 실패");
+                reviewView.clearReviewList();
             }
         });
     }

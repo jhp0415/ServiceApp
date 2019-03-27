@@ -12,11 +12,12 @@
         <ImageView
             android:id="@+id/selectPhoto"
             android:onClick="selectPhoto"
+            android:src="@drawable/selectimage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
         <Button
-            android:text="선택"
+            android:text="제출"
             android:id="@+id/submitPhoto"
             android:onClick="submitPhotoClick"
             android:layout_width="wrap_content"

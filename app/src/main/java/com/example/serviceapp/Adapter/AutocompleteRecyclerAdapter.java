@@ -1,6 +1,6 @@
 package com.example.serviceapp.Adapter;
 
-import android.content.Context;
+import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +17,10 @@ import java.util.List;
 public class AutocompleteRecyclerAdapter extends RecyclerView.Adapter<AutocompleteRecyclerAdapter.ViewHolder> {
 
     private List<Poi> items = new ArrayList<>();
-    private Context mContext;
+    private Activity mActivity;
 
-    public AutocompleteRecyclerAdapter(Context context) {
-        this.mContext = context;
+    public AutocompleteRecyclerAdapter(Activity activity) {
+        this.mActivity = activity;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class AutocompleteRecyclerAdapter extends RecyclerView.Adapter<Autocomple
             @Override
             public void onClick(View v) {
                 // 인텐트 호출
-                ((MainActivity) mContext).onFragmentResult(holder.mItem);
+                ((MainActivity) mActivity).onFragmentResult(holder.mItem);
             }
         });
     }

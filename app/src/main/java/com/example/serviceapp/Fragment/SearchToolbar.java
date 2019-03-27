@@ -32,7 +32,7 @@ import com.kt.place.sdk.net.PoiRequest;
 import com.kt.place.sdk.net.PoiResponse;
 import com.kt.place.sdk.util.Client;
 
-public class SearchToolbar extends Fragment implements TextWatcher {
+public class SearchToolbar extends Fragment implements TextWatcher, View.OnClickListener {
     private static SearchToolbar instance;
     MainActivity activity;
     Client placesClient;
@@ -62,6 +62,7 @@ public class SearchToolbar extends Fragment implements TextWatcher {
         fragmentManager = activity.getSupportFragmentManager();
 
         editText = (EditText)toolbar.findViewById(R.id.toolbar_search);
+        editText.setOnClickListener(this);
         editText.addTextChangedListener(this);
         setHasOptionsMenu(true);
         activity = (MainActivity)getActivity();
@@ -71,6 +72,21 @@ public class SearchToolbar extends Fragment implements TextWatcher {
         activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         return view;
+    }
+
+    @Override
+    public void onClick(View v) {
+        Fragment currentFragment = fragmentManager.findFragmentByTag("visible");
+        if(!(currentFragment instanceof SearchFragment)) {
+            fragmentManager = getActivity().getSupportFragmentManager();
+            fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.newInstance(),"visible");
+            fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
+            fragmentTransaction.addToBackStack("SearchFragment");
+            fragmentTransaction.commit();
+
+            editText.setText(null);
+        }
     }
 
     private void hideKyeboard(){
@@ -161,4 +177,5 @@ public class SearchToolbar extends Fragment implements TextWatcher {
             }
         });
     }
+
 }

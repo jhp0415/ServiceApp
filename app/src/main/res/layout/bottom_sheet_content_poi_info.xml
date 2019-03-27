@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<!--스크롤뷰 추가하기-->
-
 <android.support.v7.widget.CardView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -144,7 +142,7 @@
                 android:layout_height="wrap_content" />
 
             <android.support.v7.widget.RecyclerView
-                android:id="@+id/reviewList"
+                android:id="@+id/review_recyclerview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </LinearLayout>

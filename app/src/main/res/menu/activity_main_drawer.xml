@@ -5,17 +5,14 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/nav_home"
+            android:title="홈" />
+        <item
             android:id="@+id/nav_wishlist"
             android:title="즐겨찾기" />
-        <!--<item-->
-            <!--android:id="@+id/nav_gallery"-->
-            <!--android:title="Gallery" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_slideshow"-->
-            <!--android:title="Slideshow" />-->
-        <!--<item-->
-            <!--android:id="@+id/nav_manage"-->
-            <!--android:title="Tools" />-->
+        <item
+            android:id="@+id/nav_search"
+            android:title="검색" />
     </group>
 
     <!--<item android:title="Communicate">-->

@@ -71,6 +71,7 @@ public class MyServerServiceModel {
             public void onFailure(Call<ArrayList<sPlace>> call, Throwable t) {
                 Log.d("callMyPlaceList", "onFailure: ");
                 //TODO: onGetMyPlaceListFailure
+                onFinishedListener.onGetMyPlaceListFailure(t);
             }
         });
     }
@@ -95,6 +96,7 @@ public class MyServerServiceModel {
             public void onFailure(Call<ArrayList<sPlace>> call, Throwable t) {
                 Log.d("delMyPlace", "onFailure: ");
                 //TODO: onDelMyPlaceFailure
+                onFinishedListener.onDelMyPlaceFailure(t);
             }
         });
     }
@@ -105,17 +107,22 @@ public class MyServerServiceModel {
     }
 
     public void callCurrentPlace(String poiId, final callCurrentPlaceListener onFinishedListener) {
+        Log.d("ddd", "이미지 call 보내기");
         Call<sPlaceWithComment> call = retrofit.create(RetrofitInterface.class).getCurrentPlace(poiId);
 
         call.enqueue(new Callback<sPlaceWithComment>() {
             @Override
             public void onResponse(Call<sPlaceWithComment> call, Response<sPlaceWithComment> response) {
+                Log.d("ddd", "이미지 call 성공");
                 onFinishedListener.onGetCurrentPlaceFinished(response.body());
             }
 
             @Override
             public void onFailure(Call<sPlaceWithComment> call, Throwable t) {
                 //TODO: onGetCurrentPlaceFailure
+                Log.d("ddd", "이미지 call 실패 : " + t.getMessage());
+                // view 초기화하기
+                onFinishedListener.onGetCurrentPlaceFailure(t);
             }
         });
     }
@@ -183,7 +190,7 @@ public class MyServerServiceModel {
     public void addMyListList(String fbId, String poiId, final addMyListListener onFinishedListener) {
         Call<HashMap<String, Object>> call = retrofit.create(RetrofitInterface.class)
                 .addMyList(new RetrofitInterface.addMyListBody(fbId, poiId));
-
+        Log.d("ddd", "즐겨찾기에 추가 call 보내기");
         call.enqueue(new Callback<HashMap<String, Object>>() {
             @Override
             public void onResponse(Call<HashMap<String, Object>> call, Response<HashMap<String, Object>> response) {
@@ -192,7 +199,7 @@ public class MyServerServiceModel {
 
             @Override
             public void onFailure(Call<HashMap<String, Object>> call, Throwable t) {
-                Log.d("addMyListList", "onFailure: ");
+                Log.d("ddd", "onFailure: ");
                 //TODO: onGetMyPlaceListFailure
             }
         });

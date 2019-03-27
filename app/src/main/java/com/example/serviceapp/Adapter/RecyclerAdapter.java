@@ -1,6 +1,6 @@
 package com.example.serviceapp.Adapter;
 
-import android.content.Context;
+import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,26 +21,26 @@ public class RecyclerAdapter extends RecyclerView.Adapter
 
     private List<Poi> items = new ArrayList<>();
     private List<Suggest> itemsHearder = new ArrayList<>();
-    private Context mContext;
+    private Activity mActivity;
 
     private final int TYPE_HEADER = 0;
     private final int TYPE_ITEM = 1;
 
     private HeaderViewHolder headerViewHolder;
 
-    public RecyclerAdapter(Context context) {
-        this.mContext = context;
+    public RecyclerAdapter(Activity activity) {
+        this.mActivity = activity;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder holder;
         if(viewType == 0) {
-            View view =  LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_header_layout, parent, false);
+            View view =  LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_poi_header_layout, parent, false);
             holder = new HeaderViewHolder(view);
         }
         else {
-            View view =  LayoutInflater.from(parent.getContext()).inflate(R.layout.recycler_item, parent, false);
+            View view =  LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_poi_item, parent, false);
             holder = new ViewHolder(view);
         }
         return holder;
@@ -57,7 +57,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter
             itemViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((MainActivity) mContext).onFragmentResult(itemViewHolder.mItem);
+                    ((MainActivity) mActivity).onFragmentResult(itemViewHolder.mItem);
                 }
             });
         } else if (holder instanceof HeaderViewHolder) {
@@ -157,13 +157,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.suggest1:
-                    ((MainActivity) mContext).onFragmentResultAutocomplete(headerViewHolder.mItem[0]);
+                    ((MainActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[0]);
                     break;
                 case R.id.suggest2:
-                    ((MainActivity) mContext).onFragmentResultAutocomplete(headerViewHolder.mItem[1]);
+                    ((MainActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[1]);
                     break;
                 case R.id.suggest3:
-                    ((MainActivity) mContext).onFragmentResultAutocomplete(headerViewHolder.mItem[2]);
+                    ((MainActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[2]);
                     break;
             }
         }

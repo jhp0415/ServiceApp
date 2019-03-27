@@ -2,11 +2,14 @@ package com.example.serviceapp.Login.presenter;
 
 import android.util.Log;
 
+import com.example.serviceapp.Login.POJO.sPlace;
 import com.example.serviceapp.Login.POJO.sPlaceWithComment;
+import com.example.serviceapp.Login.contract.MyListContract;
 import com.example.serviceapp.Login.contract.OverviewContract;
 import com.example.serviceapp.Login.model.MyServerModel;
 import com.example.serviceapp.Login.model.MyServerServiceModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -14,6 +17,7 @@ public class OverviewPresenter implements OverviewContract.Presenter {
     MyServerModel myserverModel;
     MyServerServiceModel myserverServiceModel;
     OverviewContract.View overviewView;
+
 
     public OverviewPresenter(OverviewContract.View overviewView) {
         this.overviewView = overviewView;
@@ -24,11 +28,9 @@ public class OverviewPresenter implements OverviewContract.Presenter {
 
     @Override
     public void getOverviewInfo(String poiId) {
-        Log.d("ddd", "이미지 함수 실행");
         myserverServiceModel.callCurrentPlace(poiId, new MyServerServiceModel.callCurrentPlaceListener() {
             @Override
             public void onGetCurrentPlaceFinished(sPlaceWithComment response) {
-                Log.d("ddd", "이미지 데이터 받아옴");
                 List<String> imageUrls = response.getPlacePicUrl();
                 overviewView.setOverviewImage(imageUrls);
             }
@@ -36,7 +38,9 @@ public class OverviewPresenter implements OverviewContract.Presenter {
             @Override
             public void onGetCurrentPlaceFailure(Throwable t) {
                 // TODO: onGetCurrentPlaceFailure
-                Log.d("ddd", "에러발생 : " + t.getMessage());
+                Log.d("ddd", "이미지 없음 : " + t.getMessage());
+                // view 초기화
+                overviewView.clearOverviewImage();
             }
         });
 
@@ -55,17 +59,21 @@ public class OverviewPresenter implements OverviewContract.Presenter {
     }
 
     @Override
-    public void addMyListCurrentPlace(String fbId, String poiID) {
+    public void addMyList(final String fbId, final String poiID) {
         myserverServiceModel.addMyListList(fbId, poiID, new MyServerServiceModel.addMyListListener() {
             @Override
             public void onAddMyListFinished(HashMap<String, Object> response) {
                 // TODO: onAddMyListFinished
+                Log.d("ddd", fbId + " " + poiID + "즐겨찾기에 추가 성공");
             }
 
             @Override
             public void onAddMyListFailure(Throwable t) {
                 // TODO: onAddMyListFailure
+                Log.d("ddd", fbId + " " + poiID + "즐겨찾기에 추가 실패->" + t.getMessage());
             }
         });
     }
+
+
 }

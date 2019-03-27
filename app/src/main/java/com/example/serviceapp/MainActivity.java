@@ -71,6 +71,7 @@ public class MainActivity extends AppCompatActivity
 
     DrawerLayout mDrawerLayout;
     NavigationView navigationView;
+    MyServerContract.View myServerView = this;
 
     // 페이스북 로그인
     private CallbackManager callbackManager; // Facebook manager
@@ -154,24 +155,8 @@ public class MainActivity extends AppCompatActivity
         });
 
 
-        // 페이스북 로그인 여부 체크
-        callbackManager = CallbackManager.Factory.create();
-
-        SharedPreferences fbPref = getPreferences(MODE_PRIVATE);
-        String access_token = fbPref.getString("access_token", null);
-        long expires = fbPref.getLong("access_expires", 0);
-
-        if(access_token == null || expires == 0) {
-            // TODO: access token expire 처리
-            //setContentView(R.layout.activity_main);
-        }
-        else {
-            fbInfo = new sAccess();
-            Log.d("access_token", access_token);
-            // TODO: 의준오빠 서버 로그인하기
-            MyServerPresenter presenter = new MyServerPresenter(this);
-            presenter.getSignCheck(access_token);
-        }
+        // 의준 오빠 서버 로그인하기
+        myServerLogin();
     }
 
     /**
@@ -195,7 +180,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                if(fragmentManager.getBackStackEntryCount() == 0) {
+                    mDrawerLayout.openDrawer(GravityCompat.START);
+                }
                 break;
         }
         return super.onOptionsItemSelected(item);
@@ -210,9 +197,18 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
         // Handle navigation view item clicks here.
         int id = menuItem.getItemId();
-        if (id == R.id.nav_wishlist) {
+        switch (id) {
+            case R.id.nav_home:
+                // TODO: 홈 화면으로 이동하기
+                break;
+            case R.id.nav_wishlist:
+                bottomSheetHelper.addBottomSheetContent(1);
+                bottomSheetHelper.setBottomSheetState("EXPANDED");
+                break;
+            case R.id.nav_search:
+                // TODO: 검색 화면으로 이동하기
+                break;
         }
-
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -279,7 +275,9 @@ public class MainActivity extends AppCompatActivity
                             fbId = user.optString("id");
                             fbToken = result.getAccessToken().getToken();
                             setResult(RESULT_OK);
-
+                            MyServerPresenter presenter = new MyServerPresenter(myServerView);
+                            presenter.getSignCheck(fbToken);
+                            Log.d("ddd", "MainActivity : facebook login success : " + fbId);
                             // 로그인 버튼 상태 바꾸기 로그인->로그아웃
                             View nav_header_view = navigationView.getHeaderView(0);
                             Button loginButton = (Button)nav_header_view.findViewById(R.id.login_btn);
@@ -304,6 +302,27 @@ public class MainActivity extends AppCompatActivity
                 //finish();
             }
         });
+    }
+
+    public void myServerLogin() {
+        // 페이스북 로그인 여부 체크
+        callbackManager = CallbackManager.Factory.create();
+
+        SharedPreferences fbPref = getPreferences(MODE_PRIVATE);
+        String access_token = fbPref.getString("access_token", null);
+        long expires = fbPref.getLong("access_expires", 0);
+
+        if(access_token == null || expires == 0) {
+            // TODO: access token expire 처리
+            //setContentView(R.layout.activity_main);
+        }
+        else {
+            fbInfo = new sAccess();
+            Log.d("access_token", access_token);
+            // TODO: 의준오빠 서버 로그인하기
+            MyServerPresenter presenter = new MyServerPresenter(this);
+            presenter.getSignCheck(access_token);
+        }
     }
 
     /**

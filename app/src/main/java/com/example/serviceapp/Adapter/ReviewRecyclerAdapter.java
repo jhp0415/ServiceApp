@@ -1,5 +1,6 @@
 package com.example.serviceapp.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,19 +19,16 @@ import java.util.List;
 public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewRecyclerAdapter.ViewHolder> {
 
     private List<sComment> items = new ArrayList<>();
-    private Context mContext;
+    private Activity mActivity;
 
-    public ReviewRecyclerAdapter(Context context) {
-        this.mContext = context;
+    public ReviewRecyclerAdapter(Activity activity) {
+        this.mActivity = activity;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recyclerview_review_item, parent, false);
-        if(view == null) {
-            Log.d("ddd", "view is null");
-        }
         return new ViewHolder(view);
     }
 
@@ -49,15 +47,22 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewRecyclerAd
         }
     }
 
+    public void clear() {
+        items.clear();
+        notifyDataSetChanged();
+    }
+
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        Log.d("ddd", "title : " + items.get(position).getCaptionTitle());
-        Log.d("ddd", "title : " + items.get(position).getCaptionBody());
-        Log.d("ddd", "title : " + items.get(position).getUser().getName());
-        holder.mItem = items.get(position);
-        holder.mTitleText.setText(items.get(position).getCaptionTitle());
-        holder.mBodyText.setText(items.get(position).getCaptionBody());
-        holder.mNameText.setText(items.get(position).getUser().getName());
+        if(items.size() > 0) {
+            holder.mItem = items.get(position);
+
+            holder.mTitleText.setText(items.get(position).getCaptionTitle());
+            holder.mBodyText.setText(items.get(position).getCaptionBody());
+            holder.mNameText.setText(items.get(position).getUser().getName());
+        } else {
+            holder.mTitleText.setText("No Any Reivew");
+        }
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -71,10 +76,14 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter<ReviewRecyclerAd
         public ViewHolder(View view) {
             super(view);
             mView = view;       // View 초기화
-            mUserImage = (ImageView) mView.findViewById(R.id.user_profile);
-            mTitleText = (TextView) mView.findViewById(R.id.poi_name);
-            mBodyText = (TextView) mView.findViewById(R.id.poi_distance);
-            mNameText = (TextView) mView.findViewById(R.id.poi_category);
+            mUserImage = (ImageView) view.findViewById(R.id.user_profile);
+            mTitleText = (TextView) view.findViewById(R.id.user_comment_title);
+            mBodyText = (TextView) view.findViewById(R.id.user_comment_body);
+            mNameText = (TextView) view.findViewById(R.id.user_name);
+
+            if(mTitleText == null) {
+                Log.d("ddd", "mTitleText is null");
+            }
         }
     }
 }
