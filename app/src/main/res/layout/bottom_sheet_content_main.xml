@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
         android:orientation="horizontal"
-        android:weightSum="4">
+        android:weightSum="2">
         <Button
             android:id="@+id/content_main_btn_nearby"
             android:layout_width="wrap_content"

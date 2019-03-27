@@ -6,7 +6,7 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_home"
-            android:title="홈" />
+            android:title="홈"/>
         <item
             android:id="@+id/nav_wishlist"
             android:title="즐겨찾기" />

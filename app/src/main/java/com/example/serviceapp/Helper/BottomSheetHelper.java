@@ -216,10 +216,17 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
         addReviewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+//                Intent intent = new Intent(mActivity, AddReviewActivity.class);
+//                intent.putExtra("poi_id", poi.getId());
+//                intent.putExtra("fb_id", ((MainActivity) mActivity).getFbId());
+//                mActivity.startActivityForResult(intent, REQUEST_ADD_REVIEW);
+
+                //데이터 담아서 팝업(액티비티) 호출
                 Intent intent = new Intent(mActivity, AddReviewActivity.class);
                 intent.putExtra("poi_id", poi.getId());
                 intent.putExtra("fb_id", ((MainActivity) mActivity).getFbId());
                 mActivity.startActivityForResult(intent, REQUEST_ADD_REVIEW);
+
             }
         });
 

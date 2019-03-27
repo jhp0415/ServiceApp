@@ -434,6 +434,7 @@ public class MainActivity extends AppCompatActivity
             Log.d("ddd", "currentFragment : googleMapFragment");
             bottomSheetHelper.setVisibility(true);
             if(fragmentManager.getBackStackEntryCount() == 0) {
+                bottomSheetHelper.setBottomSheetHeight(80.f);
                 bottomSheetHelper.addBottomSheetContent(0);
             }
         } else if(currentFragment instanceof SearchFragment) {

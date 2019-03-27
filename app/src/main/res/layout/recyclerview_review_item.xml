@@ -27,6 +27,7 @@
                 android:layout_weight="1">
                 <ImageView
                     android:id="@+id/user_profile"
+                    android:src="@drawable/ic_account_circle_grey_500_48dp"
                     android:layout_gravity="center"
                     android:layout_width="60dp"
                     android:layout_height="60dp"/>
