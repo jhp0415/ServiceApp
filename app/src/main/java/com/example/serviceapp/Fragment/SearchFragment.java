@@ -1,6 +1,5 @@
 package com.example.serviceapp.Fragment;
 
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
@@ -15,7 +14,6 @@ import android.view.ViewGroup;
 import com.example.serviceapp.Adapter.AutocompleteRecyclerAdapter;
 import com.example.serviceapp.Adapter.RecyclerAdapter;
 import com.example.serviceapp.Helper.GpsHelper;
-import com.example.serviceapp.Helper.PlacesApiHelper;
 import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.R;
 import com.google.android.gms.maps.model.LatLng;
@@ -90,7 +88,6 @@ public class SearchFragment extends Fragment
                     mNextStartIndex = mLastKnowIndex + 1;
                     recyclerView.scrollToPosition(0);
 
-                    // TODO : 다음 리스트 받아오는 거 작동 안함. 고쳐야 함
                     requestPoiSearch(finalTerms, mNextStartIndex);
                 }
             }
@@ -117,6 +114,10 @@ public class SearchFragment extends Fragment
         mAdapter.setFilter(pois);
     }
 
+    public void setRecyclerViewPlus(List<Poi> pois){
+        mAdapter.setFilterPlus(pois);
+    }
+
     public void setAutocompleteView(List<Suggest> suggests){
 //        mAutocompleteAdapter.setFilter(suggests);
         mAdapter.setHeaderFilter(suggests);
@@ -135,7 +136,7 @@ public class SearchFragment extends Fragment
             @Override
             public void onSuccess(@NonNull PoiResponse poiResponse) {
                 if(poiResponse.getPois().size() > 0) {
-                    activity.setRecycleView(poiResponse.getPois());
+                    activity.setRecycleViewPlus(poiResponse.getPois());
                 }
             }
 

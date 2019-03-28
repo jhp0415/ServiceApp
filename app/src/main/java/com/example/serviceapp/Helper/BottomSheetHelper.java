@@ -2,7 +2,6 @@ package com.example.serviceapp.Helper;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,7 +11,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -29,12 +28,8 @@ import com.example.serviceapp.Login.contract.ReviewContract;
 import com.example.serviceapp.Login.presenter.MyListPresenter;
 import com.example.serviceapp.Login.presenter.OverviewPresenter;
 import com.example.serviceapp.Login.presenter.ReviewPresenter;
-import com.example.serviceapp.Login.view.AddPhotoActivity;
-import com.example.serviceapp.Login.view.AddReviewActivity;
 import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.R;
-import com.glide.slider.library.SliderLayout;
-import com.glide.slider.library.SliderTypes.TextSliderView;
 import com.kt.place.sdk.model.Poi;
 import com.kt.place.sdk.util.Client;
 
@@ -66,12 +61,18 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
     private View poiView;
     private View mylistView;
 
-    private OverviewPresenter presenter;
+    public OverviewPresenter presenter;
     private ReviewPresenter reviewPresenter;
     private MyListPresenter mylistPresenter;
     private String fbId;
     public static final int REQUEST_ADD_PHOTO = 1;
     public static final int REQUEST_ADD_REVIEW = 2;
+
+    ImageView button1;
+    ImageView button2;
+
+    private  RecyclerView poiReviewRecyclerView;
+    private ReviewRecyclerAdapter poiReviewRecyclerViewAdapter;
 
     public BottomSheetHelper(Context context, Activity activity) {
         this.mContext = context;
@@ -84,11 +85,12 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
 
         poiView = LayoutInflater.from(mContext)
                 .inflate(R.layout.bottom_sheet_content_poi_info, dynamicContent, false);
+
+
     }
 
     @Override
     public void onClick(View v) {
-        View  mainView;
         switch (v.getId()) {
             case R.id.content_main_btn_nearby:
                 // bottom sheet state 확인
@@ -132,12 +134,17 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
                 .inflate(R.layout.bottom_sheet_content_main, dynamicContent, false);
         dynamicContent.addView(wizardView);
 
-        Button button1 = (Button) mActivity.findViewById(R.id.content_main_btn_nearby);
-        Button button2 = (Button) mActivity.findViewById(R.id.content_main_btn_mylist);
+        // 메인 버튼
+        button1 = (ImageView) mActivity.findViewById(R.id.content_main_btn_nearby);
+        button2 = (ImageView) mActivity.findViewById(R.id.content_main_btn_mylist);
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
+
         switch (id) {
             case 0:
+                button1.setImageResource(R.drawable.icon_location_pins_mint);
+                button2.setImageResource(R.drawable.icon_wishlist_gray);
+
                 //TODO: 바텀시트 카테고리 검색하기
                 mainContent = (LinearLayout) wizardView.findViewById(R.id.main_content_tap);
                 View mainView = LayoutInflater.from(mContext)
@@ -148,6 +155,8 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
                 mainContent.addView(mainView);
                 break;
             case 1:
+                button1.setImageResource(R.drawable.icon_location_pins_gray);
+                button2.setImageResource(R.drawable.icon_wishlist_mint);
                 // TODO: 즐겨찾기 리스트 출력
                 mainContent = (LinearLayout) wizardView.findViewById(R.id.main_content_tap);
                 mylistView = LayoutInflater.from(mContext)
@@ -168,20 +177,32 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
         setBottomSheetHeight(150.f);
         setBottomSheetState("COLLAPSED");
 
-        TextView textView1 = (TextView) poiView.findViewById(R.id.poi_name);
-        TextView textView2 = (TextView) poiView.findViewById(R.id.poi_distance);
-        TextView textView3 = (TextView) poiView.findViewById(R.id.poi_category);
-        TextView textView4 = (TextView) poiView.findViewById(R.id.poi_address);
-        TextView textView5 = (TextView) poiView.findViewById(R.id.poi_phone);
-        textView1.setText(poi.getName() + poi.getBranch());
-        if(poi.getDistance() != null) {
-            textView2.setText(String.valueOf((int) Math.round(poi.getDistance())) + "km");
-        }
-        textView3.setText(poi.getCategory().getMasterName());
-        textView4.setText(poi.getAddress().getFullAddressParcel());
-        if (poi.getPhones().getRepresentation() != null)
-            if (poi.getPhones().getRepresentation().size() > 0)
-                textView5.setText(poi.getPhones().getRepresentation().get(0));
+        Log.d("ddd", "ReviewRecyclerView 초기화");
+        poiReviewRecyclerView = (RecyclerView) poiView.findViewById(R.id.review_recyclerview);
+        poiReviewRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        poiReviewRecyclerView.setHasFixedSize(true);
+        poiReviewRecyclerViewAdapter = new ReviewRecyclerAdapter(mActivity);
+        poiReviewRecyclerView.setAdapter(poiReviewRecyclerViewAdapter);
+
+        dynamicContent.addView(poiView);
+
+//        TextView textView1 = (TextView) poiView.findViewById(R.id.poi_name);
+//        TextView textView2 = (TextView) poiView.findViewById(R.id.poi_distance);
+//        TextView textView3 = (TextView) poiView.findViewById(R.id.poi_category);
+//        TextView textView4 = (TextView) poiView.findViewById(R.id.poi_address);
+//        TextView textView5 = (TextView) poiView.findViewById(R.id.poi_phone);
+//        textView1.setText(poi.getName() + poi.getBranch());
+//        if(poi.getDistance() != null) {
+//            textView2.setText(String.valueOf((int) Math.round(poi.getDistance())) + "km");
+//        }
+//        textView3.setText(poi.getCategory().getMasterName());
+//        textView4.setText(poi.getAddress().getFullAddressParcel());
+//        if (poi.getPhones().getRepresentation() != null)
+//            if (poi.getPhones().getRepresentation().size() > 0)
+//                textView5.setText(poi.getPhones().getRepresentation().get(0));
+
+        // poi
+        poiReviewRecyclerViewAdapter.setPoiInfo(poi);
 
         // Image, Review 불러오기
         presenter = new OverviewPresenter(this);
@@ -191,48 +212,44 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
         reviewPresenter = new ReviewPresenter(this);
         reviewPresenter.getReviewList(poi.getId());
 
-        // 사진, 리뷰 버튼 리스너
-        LinearLayout addPhotoBtn = (LinearLayout) poiView.findViewById(R.id.add_photo);
-        LinearLayout addListBtn = (LinearLayout) poiView.findViewById(R.id.add_mylist);
-        Button addReviewBtn = (Button) poiView.findViewById(R.id.add_review);
 
-        // 사진 추가 버튼
-        addPhotoBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(mActivity, AddPhotoActivity.class);
-                intent.putExtra("poi_id", poi.getId());
-                intent.putExtra("fb_id", ((MainActivity) mActivity).getFbId());
-                mActivity.startActivityForResult(intent, REQUEST_ADD_PHOTO);
-            }
-        });
-        // 즐겨찾기 추가 버튼
-        addListBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.d("ddd", "즐겨찾기에 추가 버튼 클릭");
-                presenter.addMyList(((MainActivity) mActivity).getFbId(), poi.getId());
-            }
-        });
-        // 리뷰 추가 버튼
-        addReviewBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+
+//        // 사진, 리뷰 버튼 리스너
+//        LinearLayout addPhotoBtn = (LinearLayout) poiView.findViewById(R.id.add_photo);
+//        LinearLayout addListBtn = (LinearLayout) poiView.findViewById(R.id.add_mylist);
+//        Button addReviewBtn = (Button) poiView.findViewById(R.id.add_review);
+//
+//        // 사진 추가 버튼
+//        addPhotoBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(mActivity, AddPhotoActivity.class);
+//                intent.putExtra("poi_id", poi.getId());
+//                intent.putExtra("fb_id", ((MainActivity) mActivity).getFbId());
+//                mActivity.startActivityForResult(intent, REQUEST_ADD_PHOTO);
+//            }
+//        });
+//        // 즐겨찾기 추가 버튼
+//        addListBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Log.d("ddd", "즐겨찾기에 추가 버튼 클릭");
+//                presenter.addMyList(((MainActivity) mActivity).getFbId(), poi.getId());
+//            }
+//        });
+//        // 리뷰 추가 버튼
+//        addReviewBtn.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //데이터 담아서 팝업(액티비티) 호출
 //                Intent intent = new Intent(mActivity, AddReviewActivity.class);
 //                intent.putExtra("poi_id", poi.getId());
 //                intent.putExtra("fb_id", ((MainActivity) mActivity).getFbId());
 //                mActivity.startActivityForResult(intent, REQUEST_ADD_REVIEW);
+//            }
+//        });
 
-                //데이터 담아서 팝업(액티비티) 호출
-                Intent intent = new Intent(mActivity, AddReviewActivity.class);
-                intent.putExtra("poi_id", poi.getId());
-                intent.putExtra("fb_id", ((MainActivity) mActivity).getFbId());
-                mActivity.startActivityForResult(intent, REQUEST_ADD_REVIEW);
-
-            }
-        });
-
-        dynamicContent.addView(poiView);
+//        dynamicContent.addView(poiView);
     }
 
     public void updateAutocompleteList(List<Poi> list) {
@@ -294,25 +311,27 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
      */
     @Override
     public void setOverviewImage(List<String> poiImages) {
-        SliderLayout mDemoSlider = poiView.findViewById(R.id.poiImageSlider);
-        mDemoSlider.removeAllSliders();
-
-        for(String poiImage : poiImages) {
-            TextSliderView sliderView = new TextSliderView(mContext);
-
-            sliderView.image(poiImage)
-                    .setProgressBarVisible(true);
-            mDemoSlider.addSlider(sliderView);
-        }
-        mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
-        mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+//        SliderLayout mDemoSlider = poiView.findViewById(R.id.poiImageSlider);
+//        mDemoSlider.removeAllSliders();
+//
+//        for(String poiImage : poiImages) {
+//            TextSliderView sliderView = new TextSliderView(mContext);
+//
+//            sliderView.image(poiImage)
+//                    .setProgressBarVisible(true);
+//            mDemoSlider.addSlider(sliderView);
+//        }
+//        mDemoSlider.setPresetTransformer(SliderLayout.Transformer.Accordion);
+//        mDemoSlider.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        poiReviewRecyclerViewAdapter.setImageResource(poiImages);
     }
 
     @Override
     public void clearOverviewImage() {
-        Log.d("ddd", "이미지 슬라이드 초기화");
-        SliderLayout mDemoSlider = poiView.findViewById(R.id.poiImageSlider);
-        mDemoSlider.removeAllSliders();
+//        Log.d("ddd", "이미지 슬라이드 초기화");
+//        SliderLayout mDemoSlider = poiView.findViewById(R.id.poiImageSlider);
+//        mDemoSlider.removeAllSliders();
+        poiReviewRecyclerViewAdapter.imageUrlClear();
     }
 
     @Override
@@ -325,24 +344,19 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
     @Override
     public void setReviewList(List<sComment> comments) {
         // 리사이클러뷰 초기화
-        RecyclerView recyclerView = (RecyclerView) poiView.findViewById(R.id.review_recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
-        recyclerView.setHasFixedSize(true);
-        ReviewRecyclerAdapter mAdapter = new ReviewRecyclerAdapter(mActivity);
-        recyclerView.setAdapter(mAdapter);
-        mAdapter.setFilter(comments);
+//        poiReviewRecyclerView = (RecyclerView) poiView.findViewById(R.id.review_recyclerview);
+//        poiReviewRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+//        poiReviewRecyclerView.setHasFixedSize(true);
+//        poiReviewRecyclerViewAdapter = new ReviewRecyclerAdapter(mActivity);
+//        poiReviewRecyclerView.setAdapter(poiReviewRecyclerViewAdapter);
+        poiReviewRecyclerViewAdapter.setFilter(comments);
     }
 
     @Override
     public void clearReviewList() {
         Log.d("ddd", "리뷰 리스트 초기화");
         // 리사이클러뷰 초기화
-        RecyclerView recyclerView = (RecyclerView) poiView.findViewById(R.id.review_recyclerview);
-        recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
-        recyclerView.setHasFixedSize(true);
-        ReviewRecyclerAdapter mAdapter = new ReviewRecyclerAdapter(mActivity);
-        recyclerView.setAdapter(mAdapter);
-        mAdapter.clear();
+        poiReviewRecyclerViewAdapter.clear();
     }
 
     /**

@@ -90,6 +90,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter
         notifyDataSetChanged();     // 데이터 업데이트
     }
 
+    // 다음 리스트 받아오기
+    public void setFilterPlus(List<Poi> items) {
+        this.items.addAll(items);
+        notifyDataSetChanged();     // 데이터 업데이트
+    }
+
     public void setHeaderFilter(List<Suggest> items) {
         this.itemsHearder.clear();
         if(items.size() > 0) {
@@ -108,7 +114,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter
 
     @Override
     public int getItemViewType(int position) {
-//        return super.getItemViewType(position);
         if (position == 0)
             return TYPE_HEADER;
         else

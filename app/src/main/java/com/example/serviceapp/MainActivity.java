@@ -2,7 +2,6 @@ package com.example.serviceapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -432,6 +431,12 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void setRecycleViewPlus(List<Poi> pois){
+        if(pois.size() > 0) {
+            SearchFragment.getInstance().setRecyclerViewPlus(pois);
+        }
+    }
+
     public void setAutocompleteView(List<Suggest> suggests){
         if(suggests.size() > 0) {
             SearchFragment.getInstance().setAutocompleteView(suggests);
@@ -446,7 +451,7 @@ public class MainActivity extends AppCompatActivity
             Log.d("ddd", "currentFragment : googleMapFragment");
             bottomSheetHelper.setVisibility(true);
             if(fragmentManager.getBackStackEntryCount() == 0) {
-                bottomSheetHelper.setBottomSheetHeight(80.f);
+                bottomSheetHelper.setBottomSheetHeight(75.f);
                 bottomSheetHelper.addBottomSheetContent(0);
             }
         } else if(currentFragment instanceof SearchFragment) {

@@ -42,51 +42,47 @@
 
                 <ImageView
                     android:id="@+id/nearby_img1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:background="#EF5350"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_restaurant_white_48dp" />
+                    android:src="@drawable/icon_store_1" />
 
                 <ImageView
                     android:id="@+id/nearby_img2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:background="#FF7043"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_restaurant_white_48dp" />
+                    android:src="@drawable/icon_hospital_2" />
 
                 <ImageView
                     android:id="@+id/nearby_img3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:background="#FFA726"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_restaurant_white_48dp" />
+                    android:src="@drawable/icon_pharmacy_2" />
 
                 <ImageView
                     android:id="@+id/nearby_img4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:background="#2F41A8"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/ic_restaurant_white_48dp" />
+                    android:src="@drawable/icon_tour_2" />
             </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -130,45 +126,41 @@
                 android:layout_margin="10dp">
                 <ImageView
                     android:id="@+id/nearby_img5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:adjustViewBounds="true"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_restaurant_white_48dp"
-                    android:background="#EC405A"
+                    android:src="@drawable/icon_gas_2"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:scaleType="fitCenter"/>
                 <ImageView
                     android:id="@+id/nearby_img6"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:adjustViewBounds="true"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_restaurant_white_48dp"
-                    android:background="#5C6BC0"
+                    android:src="@drawable/icon_parking_2"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:scaleType="fitCenter"/>
                 <ImageView
                     android:id="@+id/nearby_img7"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:adjustViewBounds="true"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_restaurant_white_48dp"
-                    android:background="#26A69A"
+                    android:src="@drawable/icon_bank_2"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:scaleType="fitCenter"/>
                 <ImageView
                     android:id="@+id/nearby_img8"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:adjustViewBounds="true"
                     android:layout_weight="1"
-                    android:src="@drawable/ic_restaurant_white_48dp"
-                    android:background="#EF5350"
+                    android:src="@drawable/icon_entertainment_2"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:scaleType="fitCenter"/>
@@ -204,7 +196,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_horizontal"
-                    android:text="은행"/>
+                    android:text="여가"/>
             </LinearLayout>
         </LinearLayout>
     </android.support.v7.widget.CardView>

@@ -11,18 +11,24 @@
         android:layout_margin="10dp"
         android:orientation="horizontal"
         android:weightSum="2">
-        <Button
+
+        <ImageView
             android:id="@+id/content_main_btn_nearby"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:adjustViewBounds="true"
             android:layout_weight="1"
-            android:text="주변"/>
-        <Button
+            android:src="@drawable/icon_location_pins_gray"
+            android:scaleType="fitCenter"/>
+
+        <ImageView
             android:id="@+id/content_main_btn_mylist"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:adjustViewBounds="true"
             android:layout_weight="1"
-            android:text="즐겨찾기"/>
+            android:src="@drawable/icon_wishlist_gray"
+            android:scaleType="fitCenter"/>
     </LinearLayout>
 
     <!--탭이 들어갈 자리-->
