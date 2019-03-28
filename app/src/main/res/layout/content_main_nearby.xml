@@ -31,13 +31,14 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:weightSum="3">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:orientation="horizontal"
-                android:weightSum="4"
-                android:layout_margin="10dp">
+                android:weightSum="4">
 
                 <ImageView
                     android:id="@+id/nearby_img1"
@@ -50,39 +51,42 @@
                     android:background="#EF5350"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_restaurant_white_48dp" />
+
                 <ImageView
                     android:id="@+id/nearby_img2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_restaurant_white_48dp"
-                    android:background="#FF7043"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    android:scaleType="fitCenter"/>
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="#FF7043"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_restaurant_white_48dp" />
+
                 <ImageView
                     android:id="@+id/nearby_img3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_restaurant_white_48dp"
-                    android:background="#FFA726"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    android:scaleType="fitCenter"/>
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="#FFA726"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_restaurant_white_48dp" />
+
                 <ImageView
                     android:id="@+id/nearby_img4"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:layout_weight="1"
-                    android:src="@drawable/ic_restaurant_white_48dp"
-                    android:background="#2F41A8"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
-                    android:scaleType="fitCenter"/>
+                    android:layout_weight="1"
+                    android:adjustViewBounds="true"
+                    android:background="#2F41A8"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_restaurant_white_48dp" />
             </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
