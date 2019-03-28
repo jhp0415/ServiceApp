@@ -12,12 +12,15 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.Login.POJO.sPlace;
 import com.example.serviceapp.Login.contract.MyListContract;
+import com.example.serviceapp.Login.contract.OverviewContract;
 import com.example.serviceapp.Login.model.RetrofitInterface;
 import com.example.serviceapp.Login.presenter.MyListPresenter;
 import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.R;
+import com.google.android.gms.maps.model.LatLng;
 import com.kt.place.sdk.model.Poi;
 
 import java.util.ArrayList;
@@ -64,17 +67,34 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
     @Override
     public void onBindViewHolder(final MyListRecyclerAdapter.ViewHolder holder, final int position) {
         holder.mItem = items.get(position);
+        String thumbnail = null;
+        int itemCnt = items.get(position).getPlacePicUrl().size();
 
-        Glide.with(mActivity.getApplicationContext()).load(holder.mItem.getPlacePicUrl().get(0))
+        if(itemCnt > 0) {
+            thumbnail = holder.mItem.getPlacePicUrl().get(0);
+        }
+
+        Glide.with(mActivity.getApplicationContext())
+                .applyDefaultRequestOptions(new RequestOptions()
+                        .placeholder(R.drawable.ic_broken_image_black_24dp)
+                        .error(R.drawable.ic_broken_image_black_24dp)
+                ).load(thumbnail)
                 .apply(RequestOptions.circleCropTransform().override(300,300))
                 .into(holder.mImageView);
         holder.mTitleText.setText(items.get(position).getpoiId());
-        holder.mAddressText.setText(items.get(position).getPlacePicUrl().get(0));
+
+        if(itemCnt > 0) {
+            holder.mAddressText.setText(items.get(position).getPlacePicUrl().get(0));
+        }
+
+
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 인텐트 호출
-//                ((MainActivity) mActivity).onFragmentResult(holder.mItem);
+                //LatLng point = GpsHelper.getInstance().getCurrentLocation();
+                presenter.getMyListPoi(items.get(position).getpoiId());
+                //((MainActivity) mActivity).onFragmentResult();
             }
         });
     }
@@ -103,7 +123,7 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
         notifyItemRemoved(position);
     }
 
-public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public sPlace mItem;
         public final View mView;
         public final ImageView mImageView;

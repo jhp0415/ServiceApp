@@ -174,7 +174,9 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
         TextView textView4 = (TextView) poiView.findViewById(R.id.poi_address);
         TextView textView5 = (TextView) poiView.findViewById(R.id.poi_phone);
         textView1.setText(poi.getName() + poi.getBranch());
-        textView2.setText(String.valueOf((int) Math.round(poi.getDistance())) + "km");
+        if(poi.getDistance() != null) {
+            textView2.setText(String.valueOf((int) Math.round(poi.getDistance())) + "km");
+        }
         textView3.setText(poi.getCategory().getMasterName());
         textView4.setText(poi.getAddress().getFullAddressParcel());
         if (poi.getPhones().getRepresentation() != null)
@@ -349,6 +351,9 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
      */
     @Override
     public void setMyList(ArrayList<sPlace> response) {
+        TextView pleaseLoginText = (TextView) mylistView.findViewById(R.id.please_login);
+        pleaseLoginText.setText("");
+
         // 리사이클러뷰 초기화
         RecyclerView recyclerView = (RecyclerView) mylistView.findViewById(R.id.mylist_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
@@ -365,6 +370,11 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
     @Override
     public void setMyList(int position, String poiName) {
 
+    }
+
+    @Override
+    public void setMyListPoi(Poi place) {
+        ((MainActivity) mActivity).onFragmentResult(place);
     }
 
     @Override

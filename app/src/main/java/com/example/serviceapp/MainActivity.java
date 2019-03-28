@@ -34,6 +34,7 @@ import com.example.serviceapp.Login.POJO.sPlaceOverview;
 import com.example.serviceapp.Login.POJO.sPlaceWithComment;
 import com.example.serviceapp.Login.contract.MyServerContract;
 import com.example.serviceapp.Login.presenter.MyServerPresenter;
+import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -255,7 +256,8 @@ public class MainActivity extends AppCompatActivity
 
 
     public void setFbInfo(sAccess info) {
-        this.fbInfo = info;
+        fbId = info.getFbId();
+        fbInfo = info;
     }
     /**
      * 페이스북 로그인하기
@@ -308,20 +310,30 @@ public class MainActivity extends AppCompatActivity
         // 페이스북 로그인 여부 체크
         callbackManager = CallbackManager.Factory.create();
 
-        SharedPreferences fbPref = getPreferences(MODE_PRIVATE);
-        String access_token = fbPref.getString("access_token", null);
-        long expires = fbPref.getLong("access_expires", 0);
+        //SharedPreferences fbPref = getPreferences(MODE_PRIVATE);
+        //String access_token = fbPref.getString("access_token", null);
+        //long expires = fbPref.getLong("access_expires", 0);
 
-        if(access_token == null || expires == 0) {
-            // TODO: access token expire 처리
+        //if(access_token == null || expires == 0) {
+        // TODO: access token expire 처리
+
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        fbToken = accessToken.getToken();
+        if(fbToken == null) {
             //setContentView(R.layout.activity_main);
         }
         else {
             fbInfo = new sAccess();
-            Log.d("access_token", access_token);
+            Log.d("access_token", fbToken);
             // TODO: 의준오빠 서버 로그인하기
             MyServerPresenter presenter = new MyServerPresenter(this);
-            presenter.getSignCheck(access_token);
+            presenter.getSignCheck(fbToken);
+
+            Log.d("ddd", "MainActivity : get facebook token : " + fbToken);
+            // 로그인 버튼 상태 바꾸기 로그인->로그아웃
+            View nav_header_view = navigationView.getHeaderView(0);
+            Button loginButton = (Button)nav_header_view.findViewById(R.id.login_btn);
+            loginButton.setText("로그아웃");
         }
     }
 

@@ -68,7 +68,7 @@ public class MyListPresenter implements MyListContract.Presenter {
         mapsModel.callpoiRetrieve(poiId, new MyServerModel.poiRetrieveListener() {
             @Override
             public void onPoiRetrieveFinished(PoiResponse response) {
-                //placeListView.setMyplaceListPoi(response);
+                myListView.setMyListPoi(response.getPois().get(0));
             }
 
             @Override
