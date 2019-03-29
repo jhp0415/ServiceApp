@@ -23,8 +23,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.serviceapp.Fragment.SearchFragment;
 import com.example.serviceapp.Fragment.SearchToolbar;
 import com.example.serviceapp.Helper.BottomSheetHelper;
@@ -35,6 +38,7 @@ import com.example.serviceapp.Login.POJO.sPlaceOverview;
 import com.example.serviceapp.Login.POJO.sPlaceWithComment;
 import com.example.serviceapp.Login.contract.MyServerContract;
 import com.example.serviceapp.Login.presenter.MyServerPresenter;
+import com.example.serviceapp.Util.Util;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -84,6 +88,8 @@ public class MainActivity extends AppCompatActivity
     public static final int REQUEST_ADD_PHOTO = 1;
     public static final int REQUEST_ADD_REVIEW = 2;
 
+    Util util;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,16 +99,16 @@ public class MainActivity extends AppCompatActivity
         mapHelper = new MapHelper(getApplicationContext(), this);
         googleMapFragment = mapHelper.getMapInstance();
 
-
         Manager.initialize(getApplicationContext(), "Bearer eb142d9027f84d51a4a20df8490e44bcf6fc7ef4dea64cae96a7fca282ebd8cc02764651");
         placesClient = new Client();
 
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.fragment_container1, FragmentToolbar.newInstance(), "visible");
         fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
         fragmentTransaction.commit();
         fragmentManager.addOnBackStackChangedListener(this);
+
+        util = new Util(getApplicationContext(), this);
 
         // Bottom Sheet 초기화
         bottomSheetHelper =
@@ -233,11 +239,10 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-        if(BottomSheetHelper.getInstance(getApplicationContext(), this).getBottomSheetState() == BottomSheetBehavior.STATE_EXPANDED) {
-            BottomSheetHelper.getInstance(getApplicationContext(), this).setBottomSheetState("COLLAPSED");
-        } else {
-            super.onBackPressed();
-        }
+//        if(BottomSheetHelper.getInstance(getApplicationContext(), this).getBottomSheetState() == BottomSheetBehavior.STATE_EXPANDED) {
+//            BottomSheetHelper.getInstance(getApplicationContext(), this).setBottomSheetState("COLLAPSED");
+//            Log.d("ddd", "바텀시트 내리기");
+//        }
     }
 
     /**
@@ -354,6 +359,15 @@ public class MainActivity extends AppCompatActivity
             View nav_header_view = navigationView.getHeaderView(0);
             Button loginButton = (Button)nav_header_view.findViewById(R.id.login_btn);
             loginButton.setText("로그아웃");
+
+            // 네비게이션 헤더 뷰
+            Log.d("ddd", "facebook id " + fbInfo.getFbId() + " 프로필 사진 보여주기");
+            ImageView profile = (ImageView)nav_header_view.findViewById(R.id.profile_image);
+            Glide.with(getApplicationContext())
+                    .applyDefaultRequestOptions(new RequestOptions())
+                    .load("https://graph.facebook.com/" + fbInfo.getFbId() + "/picture?type=large")
+                    .apply(RequestOptions.circleCropTransform().override(300,300))
+                    .into(profile);
         }
     }
 
@@ -385,7 +399,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onFragmentResult(Poi data) {
-//        hideKyeboard();
+        util.hideKyeboard();
         mapHelper.mGoogleMap.clear();
         mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
                 data.getPoint().getLng()), data.getName(), data.getBranch(), data.getAddress().getFullAddressParcel());
@@ -408,7 +422,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void onFragmentResultAutocomplete(Suggest data) {
-//        hideKyeboard();
+        util.hideKyeboard();
         mapHelper.mGoogleMap.clear();
         mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
                 data.getPoint().getLng()), data.getTerms(), "", "");

@@ -76,7 +76,8 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
     }
 
     public void setImageResource(List<String> poiImages) {
-        this.poiImages = poiImages;
+        this.poiImages.clear();
+        this.poiImages.addAll(poiImages);
         notifyItemChanged(0);
     }
 

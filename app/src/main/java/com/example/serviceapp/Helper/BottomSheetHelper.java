@@ -2,8 +2,12 @@ package com.example.serviceapp.Helper;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.Snackbar;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -18,6 +22,7 @@ import android.widget.TextView;
 import com.example.serviceapp.Adapter.AutocompleteRecyclerAdapter;
 import com.example.serviceapp.Adapter.ItemTouchHelperCallback;
 import com.example.serviceapp.Adapter.MyListRecyclerAdapter;
+import com.example.serviceapp.Adapter.RecyclerItemTouchHelper;
 import com.example.serviceapp.Adapter.ReviewRecyclerAdapter;
 import com.example.serviceapp.BottomSheet.CategoryBottomSheet;
 import com.example.serviceapp.Login.POJO.sComment;
@@ -298,13 +303,21 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
         RecyclerView recyclerView = (RecyclerView) mylistView.findViewById(R.id.mylist_recyclerview);
         recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         recyclerView.setHasFixedSize(true);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
         MyListRecyclerAdapter mAdapter = new MyListRecyclerAdapter(mActivity, mylistPresenter);
         recyclerView.setAdapter(mAdapter);
         mAdapter.setFilter(response);
 
         // 리사이클러뷰 swipe delete
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(mAdapter));
-        itemTouchHelper.attachToRecyclerView(recyclerView);
+//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(mAdapter));
+//        itemTouchHelper.attachToRecyclerView(recyclerView);
+
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
+                new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, mAdapter);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+
+
     }
 
     @Override

@@ -1,12 +1,18 @@
 package com.example.serviceapp.Adapter;
 
 import android.app.Activity;
+import android.graphics.Color;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -22,7 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAdapter.ViewHolder>
-        implements ItemTouchHelperListener {
+        implements
+        RecyclerItemTouchHelper.RecyclerItemTouchHelperListener{
+
 
     private List<sPlace> items = new ArrayList<>();
     private Activity mActivity;
@@ -87,10 +95,6 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
             }
         });
 
-//        holder.mTitleText.setText(items.get(position).getpoiId());
-//        holder.mAddressText.setText(items.get(position).getPlacePicUrl().get(0));
-
-
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -99,22 +103,44 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
         });
     }
 
-    @Override
-    public boolean onItemMove(int fromPosition, int toPosition) {
-        if(fromPosition < 0 || fromPosition >= items.size() || toPosition < 0 || toPosition >= items.size()){
-            return false;
-        }
-//        String fromItem = items.get(fromPosition);
-//        items.remove(fromPosition);
-//        items.add(toPosition, fromItem);
+//    @Override
+//    public boolean onItemMove(int fromPosition, int toPosition) {
+//        if(fromPosition < 0 || fromPosition >= items.size() || toPosition < 0 || toPosition >= items.size()){
+//            return false;
+//        }
+////        String fromItem = items.get(fromPosition);
+////        items.remove(fromPosition);
+////        items.add(toPosition, fromItem);
+////
+////        notifyItemMoved(fromPosition, toPosition);
+//        Log.d("ddd", "onMove...");
+//        return true;
+//    }
 //
-//        notifyItemMoved(fromPosition, toPosition);
-        Log.d("ddd", "onMove...");
-        return true;
-    }
+//    @Override
+//    public void onItemRemove(int position) {
+//        Log.d("ddd", "서버 즐겨찾기 목록에서 제거하기");
+//        // TODO:즐겨찾기에서 제거하기
+//        presenter.deleteMyList(((MainActivity) mActivity).getFbId(), items.get(position).getpoiId());
+//
+//        items.remove(position);
+//        notifyItemRemoved(position);
+//    }
 
     @Override
-    public void onItemRemove(int position) {
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
+        if (viewHolder instanceof MyListRecyclerAdapter.ViewHolder) {
+
+            // backup of removed item for undo purpose
+            final sPlace deletedItem = items.get(viewHolder.getAdapterPosition());
+            final int deletedIndex = viewHolder.getAdapterPosition();
+
+            // remove the item from recycler view
+            removeItem(viewHolder.getAdapterPosition());
+        }
+    }
+
+    public void removeItem(int position) {
         Log.d("ddd", "서버 즐겨찾기 목록에서 제거하기");
         // TODO:즐겨찾기에서 제거하기
         presenter.deleteMyList(((MainActivity) mActivity).getFbId(), items.get(position).getpoiId());
@@ -129,13 +155,17 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
         public final ImageView mImageView;
         public final TextView mTitleText;
         public final TextView mAddressText;
-
+        public RelativeLayout viewBackground;
+        public LinearLayout viewForeground;
         public ViewHolder(View view) {
             super(view);
             mView = view;       // View 초기화
             mImageView = (ImageView) view.findViewById(R.id.mylist_image);
             mTitleText = (TextView) view.findViewById(R.id.mylist_name);
             mAddressText = (TextView) view.findViewById(R.id.mylist_address);
+
+            viewBackground = view.findViewById(R.id.view_background);
+            viewForeground = view.findViewById(R.id.view_foreground);
         }
     }
 }
