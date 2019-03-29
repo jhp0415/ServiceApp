@@ -44,28 +44,20 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View view = LayoutInflater.from(parent.getContext())
-//                .inflate(R.layout.recyclerview_review_item, parent, false);
-//        return new ViewHolder(view);
-
         RecyclerView.ViewHolder holder;
         if(viewType == 0) {
             View view =  LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_review_header, parent, false);
             holder = new ReviewRecyclerAdapter.HeaderViewHolder(view);
-            Log.d("ddd", "HeaderViewHolder 생성");
         }
         else {
             View view =  LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_review_item, parent, false);
             holder = new ReviewRecyclerAdapter.ViewHolder(view);
-            Log.d("ddd", "ViewHolder 생성");
         }
-        Log.d("ddd", "onCreateViewHolder 생성");
         return holder;
     }
 
     @Override
     public int getItemCount() {
-        Log.d("ddd", "getItemCount 생성");
         return items.size() + 1;
     }
 
@@ -76,38 +68,32 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
             this.items.addAll(items);
         }
         notifyDataSetChanged();     // 데이터 업데이트
-        Log.d("ddd", "review adapter : review 붙이기");
     }
 
     public void setPoiInfo(Poi poi) {
         this.poi = poi;
         notifyDataSetChanged();
-        Log.d("ddd", "review adapter : poi 붙이기");
     }
 
     public void setImageResource(List<String> poiImages) {
         this.poiImages = poiImages;
         notifyItemChanged(0);
-        Log.d("ddd", "review adapter : image 붙이기");
     }
 
     public void clear() {
         // 리뷰 클리어
         items.clear();
         notifyDataSetChanged();
-        Log.d("ddd", "review adapter : review 없음. 초기화");
     }
 
     public void imageUrlClear() {
         // 이미지 url 클리어
         poiImages.clear();
         notifyDataSetChanged();
-        Log.d("ddd", "review adapter : image 없음. 초기화");
     }
 
     @Override
     public int getItemViewType(int position) {
-        Log.d("ddd", "getItemViewType 생성");
         if (position == 0)
             return TYPE_HEADER;
         else
@@ -116,17 +102,14 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        if(holder instanceof ViewHolder) {
+        if( holder instanceof ViewHolder) {
             final ViewHolder reviewHolder = (ViewHolder) holder;
-            if (items.size() > 0) {
-                reviewHolder.mItem = items.get(position);
-                reviewHolder.mTitleText.setText(items.get(position).getCaptionTitle());
-                reviewHolder.mBodyText.setText(items.get(position).getCaptionBody());
-                reviewHolder.mNameText.setText(items.get(position).getUser().getName());
-            } else {
-                reviewHolder.mTitleText.setText("No Any Reivew");
-            }
-        } else if (holder instanceof HeaderViewHolder) {
+            reviewHolder.mItem = items.get(position - 1);
+            reviewHolder.mTitleText.setText(items.get(position - 1).getCaptionTitle());
+            reviewHolder.mBodyText.setText(items.get(position - 1).getCaptionBody());
+            reviewHolder.mNameText.setText(items.get(position - 1).getUser().getName());
+
+        } else if (position == TYPE_HEADER && holder instanceof HeaderViewHolder) {
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             // 헤더에 poi 정보 출력하기
             if(poi != null) {
@@ -223,7 +206,10 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
                     mActivity.startActivityForResult(intent, REQUEST_ADD_PHOTO);
                     break;
                 case R.id.add_mylist:
-                    BottomSheetHelper.getInstance(mActivity.getApplicationContext(), mActivity).presenter.addMyList(((MainActivity) mActivity).getFbId(), poi.getId());
+                    Log.d("ddd", "즐겨찾기 추가 버튼 클릭");
+                    ImageView star = (ImageView) addListBtn.findViewById(R.id.addMyList);
+                    star.setImageResource(R.drawable.icon_star);
+                    (BottomSheetHelper.getInstance(mActivity.getApplicationContext(), mActivity).presenter).addMyList(((MainActivity) mActivity).getFbId(), poi.getId());
                     break;
                 case R.id.add_review:
                     //데이터 담아서 팝업(액티비티) 호출

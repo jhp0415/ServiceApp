@@ -8,27 +8,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.Login.POJO.sPlace;
-import com.example.serviceapp.Login.contract.MyListContract;
-import com.example.serviceapp.Login.contract.OverviewContract;
-import com.example.serviceapp.Login.model.RetrofitInterface;
+import com.example.serviceapp.Login.model.MyServerModel;
 import com.example.serviceapp.Login.presenter.MyListPresenter;
 import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.R;
-import com.google.android.gms.maps.model.LatLng;
-import com.kt.place.sdk.model.Poi;
+import com.kt.place.sdk.net.PoiResponse;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAdapter.ViewHolder>
         implements ItemTouchHelperListener {
@@ -81,20 +72,29 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
                 ).load(thumbnail)
                 .apply(RequestOptions.circleCropTransform().override(300,300))
                 .into(holder.mImageView);
-        holder.mTitleText.setText(items.get(position).getpoiId());
 
-        if(itemCnt > 0) {
-            holder.mAddressText.setText(items.get(position).getPlacePicUrl().get(0));
-        }
+        MyServerModel myserverModel = new MyServerModel();
+        myserverModel.callpoiRetrieve(items.get(position).getpoiId(), new MyServerModel.poiRetrieveListener() {
+            @Override
+            public void onPoiRetrieveFinished(PoiResponse response) {
+                holder.mTitleText.setText(response.getPois().get(0).getName());
+                holder.mAddressText.setText(response.getPois().get(0).getAddress().getFullAddressParcel());
+            }
+
+            @Override
+            public void onPoiRetrieveFailure(Throwable t) {
+
+            }
+        });
+
+//        holder.mTitleText.setText(items.get(position).getpoiId());
+//        holder.mAddressText.setText(items.get(position).getPlacePicUrl().get(0));
 
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // 인텐트 호출
-                //LatLng point = GpsHelper.getInstance().getCurrentLocation();
                 presenter.getMyListPoi(items.get(position).getpoiId());
-                //((MainActivity) mActivity).onFragmentResult();
             }
         });
     }

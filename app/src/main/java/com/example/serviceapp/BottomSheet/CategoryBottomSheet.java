@@ -116,7 +116,7 @@ public class CategoryBottomSheet
         BottomSheetHelper.bottomSheetBehavior.setState(STATE_COLLAPSED);
         FragmentManager fragmentManager = ((MainActivity) mActivity).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.newInstance(),"visible");
+        fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(),"visible");
         fragmentTransaction.replace(R.id.fragment_container2, MapHelper.getMapInstance(),"visible");
         fragmentTransaction.addToBackStack("Category");
         fragmentTransaction.commit();

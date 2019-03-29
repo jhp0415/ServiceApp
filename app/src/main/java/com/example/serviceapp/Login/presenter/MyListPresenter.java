@@ -14,21 +14,21 @@ import java.util.HashMap;
 
 public class MyListPresenter implements MyListContract.Presenter {
     MyListContract.View myListView;
-    MyServerServiceModel mapServiceModel;
-    MyServerModel mapsModel;
+    MyServerServiceModel myserverServiceModel;
+    MyServerModel myserverModel;
     ArrayList<String> poiNames;
     HashMap<sPlace, String> poiContent;
 
     public MyListPresenter(MyListContract.View myListView) {
         this.myListView = myListView;
 
-        mapServiceModel = new MyServerServiceModel();
-        mapsModel = new MyServerModel();
+        myserverServiceModel = new MyServerServiceModel();
+        myserverModel = new MyServerModel();
     }
 
     @Override
     public void getMyList(String fbId) {
-        mapServiceModel.callMyPlaceList(fbId, new MyServerServiceModel.callMyPlaceListListener() {
+        myserverServiceModel.callMyPlaceList(fbId, new MyServerServiceModel.callMyPlaceListListener() {
             @Override
             public void onGetMyPlaceListFinished(ArrayList<sPlace> sPlaceList) {
                 Log.d("ddd", "onGetMyPlaceListFinished: ");
@@ -47,12 +47,12 @@ public class MyListPresenter implements MyListContract.Presenter {
     }
 
     private void getPoiNameByRetrieve(final int position, sPlace place) {
-        mapsModel.callpoiRetrieve(place.getpoiId(), new MyServerModel.poiRetrieveListener() {
+        myserverModel.callpoiRetrieve(place.getpoiId(), new MyServerModel.poiRetrieveListener() {
             @Override
             public void onPoiRetrieveFinished(PoiResponse response) {
                 Poi poi = response.getPois().get(0);
                 String poiName = poi.getName() + " " + poi.getBranch();
-                //poiContent.put(place, poiName);
+//                poiContent.put(place, poiName);
                 myListView.setMyList(position, poiName);
             }
 
@@ -65,7 +65,7 @@ public class MyListPresenter implements MyListContract.Presenter {
 
     @Override
     public void getMyListPoi(String poiId) {
-        mapsModel.callpoiRetrieve(poiId, new MyServerModel.poiRetrieveListener() {
+        myserverModel.callpoiRetrieve(poiId, new MyServerModel.poiRetrieveListener() {
             @Override
             public void onPoiRetrieveFinished(PoiResponse response) {
                 myListView.setMyListPoi(response.getPois().get(0));
@@ -80,13 +80,13 @@ public class MyListPresenter implements MyListContract.Presenter {
 
     @Override
     public void deleteMyList(String fbId, String poiId) {
-        mapServiceModel.delMyPlace(fbId, poiId, new MyServerServiceModel.delMyPlaceListener() {
+        myserverServiceModel.delMyPlace(fbId, poiId, new MyServerServiceModel.delMyPlaceListener() {
             @Override
             public void onDelMyPlaceFinished(ArrayList<sPlace> response) {
                 Log.d("deleteMyplace", "ondeleteMyplaceFinished: ");
                 myListView.setMyList(response);
                 for(int i = 0; i < response.size(); i++) {
-//                    getPoiNameByRetrieve(i, response.get(i));
+                    getPoiNameByRetrieve(i, response.get(i));
                 }
             }
 

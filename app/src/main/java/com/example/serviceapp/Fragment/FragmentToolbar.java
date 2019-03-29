@@ -1,7 +1,5 @@
 package com.example.serviceapp.Fragment;
 
-import android.content.Context;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -66,7 +64,7 @@ public class FragmentToolbar extends Fragment
             public void onClick(View v) {
                 fragmentManager = activity.getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.newInstance(),"visible");
+                fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(),"visible");
                 fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
                 fragmentTransaction.addToBackStack("SearchFragment");
                 fragmentTransaction.commit();

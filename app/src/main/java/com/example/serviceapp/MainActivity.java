@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity
             public void onClick(View v) {
                 fragmentManager = getSupportFragmentManager();
                 fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.newInstance(),"visible");
+                fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(),"visible");
                 fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
                 fragmentTransaction.addToBackStack("SearchFragment");
                 fragmentTransaction.commit();
@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity
         if(currentFragment instanceof SupportMapFragment) {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
             fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
-//            fragmentTransaction.addToBackStack("googleMapFragment");
+            fragmentTransaction.addToBackStack("googleMapFragment");
             fragmentTransaction.commit();
         } else {
             FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();

@@ -42,7 +42,7 @@ public class SearchToolbar extends Fragment implements TextWatcher, View.OnClick
     EditText editText;
     InputMethodManager inputMethodManager;
 
-    public static SearchToolbar newInstance(){
+    public static SearchToolbar getInstance(){
         if(instance == null) {
             instance = new SearchToolbar();
         }
@@ -80,7 +80,7 @@ public class SearchToolbar extends Fragment implements TextWatcher, View.OnClick
         if(!(currentFragment instanceof SearchFragment)) {
             fragmentManager = getActivity().getSupportFragmentManager();
             fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.newInstance(),"visible");
+            fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(),"visible");
             fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
             fragmentTransaction.addToBackStack("SearchFragment");
             fragmentTransaction.commit();
