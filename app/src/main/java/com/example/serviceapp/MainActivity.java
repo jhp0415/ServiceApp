@@ -2,9 +2,11 @@ package com.example.serviceapp;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -200,6 +202,7 @@ public class MainActivity extends AppCompatActivity
         switch (id) {
             case R.id.nav_home:
                 // TODO: 홈 화면으로 이동하기
+                fragmentManager.popBackStack(0, fragmentManager.getBackStackEntryCount() - 1);
                 break;
             case R.id.nav_wishlist:
                 bottomSheetHelper.addBottomSheetContent(1);
@@ -207,6 +210,12 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_search:
                 // TODO: 검색 화면으로 이동하기
+                fragmentManager = getSupportFragmentManager();
+                fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(),"visible");
+                fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
+                fragmentTransaction.addToBackStack("SearchFragment");
+                fragmentTransaction.commit();
                 break;
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -221,6 +230,11 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
+        if(BottomSheetHelper.getInstance(getApplicationContext(), this).getBottomSheetState() == BottomSheetBehavior.STATE_EXPANDED) {
+            BottomSheetHelper.getInstance(getApplicationContext(), this).setBottomSheetState("COLLAPSED");
         } else {
             super.onBackPressed();
         }
@@ -317,7 +331,14 @@ public class MainActivity extends AppCompatActivity
         // TODO: access token expire 처리
 
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        fbToken = accessToken.getToken();
+        if(accessToken == null) {
+            SharedPreferences fbPref = getPreferences(MODE_PRIVATE);
+            fbToken = fbPref.getString("access_token", null);
+        }
+        else {
+            fbToken = accessToken.getToken();
+        }
+
         if(fbToken == null) {
             //setContentView(R.layout.activity_main);
         }

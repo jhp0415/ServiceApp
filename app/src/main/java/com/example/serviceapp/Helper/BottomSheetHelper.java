@@ -123,6 +123,10 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
         }
     }
 
+    public int getBottomSheetState() {
+        return bottomSheetBehavior.getState();
+    }
+
     public void addBottomSheetContent(int id) {
         dynamicContent.removeAllViews();
         View wizardView = LayoutInflater.from(mContext)
@@ -243,6 +247,7 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
     @Override
     public void onSlide(@NonNull View bottomSheet, float slideOffset) {
         // 1이면 완전 펼쳐진 상태, 0이면 peekHeight인 상태, -1이면 숨김 상태
+
     }
 
 
