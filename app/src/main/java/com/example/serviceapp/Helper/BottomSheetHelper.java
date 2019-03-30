@@ -91,17 +91,19 @@ public class BottomSheetHelper extends BottomSheetBehavior.BottomSheetCallback
                 // bottom sheet state 확인
                 if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                     setBottomSheetState("EXPANDED");
-                } else if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-                    setBottomSheetState("COLLAPSED");
                 }
+//                else if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+//                    setBottomSheetState("COLLAPSED");
+//                }
                 addBottomSheetContent(0);
                 break;
             case R.id.content_main_btn_mylist:
                 if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                     setBottomSheetState("EXPANDED");
-                } else if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-                    setBottomSheetState("COLLAPSED");
                 }
+//                else if(bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+//                    setBottomSheetState("COLLAPSED");
+//                }
                 addBottomSheetContent(1);
                 break;
         }

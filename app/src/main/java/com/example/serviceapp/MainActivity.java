@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction = fragmentManager.beginTransaction();
 //        fragmentTransaction.replace(R.id.fragment_container1, FragmentToolbar.newInstance(), "visible");
         fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
+        fragmentTransaction.addToBackStack("Main");
         fragmentTransaction.commit();
         fragmentManager.addOnBackStackChangedListener(this);
 
@@ -238,6 +239,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+        mapHelper.mGoogleMap.clear();
     }
 
     /**
