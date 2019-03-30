@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
+        fragmentTransaction.addToBackStack("Main");
         fragmentTransaction.commit();
         fragmentManager.addOnBackStackChangedListener(this);
 
@@ -239,10 +240,12 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-//        if(BottomSheetHelper.getInstance(getApplicationContext(), this).getBottomSheetState() == BottomSheetBehavior.STATE_EXPANDED) {
-//            BottomSheetHelper.getInstance(getApplicationContext(), this).setBottomSheetState("COLLAPSED");
-//            Log.d("ddd", "바텀시트 내리기");
-//        }
+        if(BottomSheetHelper.getInstance(getApplicationContext(), this).getBottomSheetState() == BottomSheetBehavior.STATE_EXPANDED) {
+            BottomSheetHelper.getInstance(getApplicationContext(), this).setBottomSheetState("COLLAPSED");
+        } else {
+            super.onBackPressed();
+        }
+        mapHelper.mGoogleMap.clear();
     }
 
     /**

@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -116,13 +117,24 @@ public class CategoryBottomSheet
                 // NO
                 break;
         }
-        BottomSheetHelper.bottomSheetBehavior.setState(STATE_COLLAPSED);
+
         FragmentManager fragmentManager = ((MainActivity) mActivity).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(),"visible");
-        fragmentTransaction.replace(R.id.fragment_container2, MapHelper.getMapInstance(),"visible");
-        fragmentTransaction.addToBackStack("Category");
-        fragmentTransaction.commit();
+        Fragment fragment = fragmentManager.findFragmentByTag("visible");
+        BottomSheetHelper.bottomSheetBehavior.setState(STATE_COLLAPSED);
+        if (fragmentManager.getBackStackEntryAt(fragmentManager.getBackStackEntryCount() - 1).getName() == "Category") {
+            Log.d("ddd", "category fragment is backstack");
+            fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(), "visible");
+            fragmentTransaction.replace(R.id.fragment_container2, MapHelper.getMapInstance(), "visible");
+//            fragmentTransaction.addToBackStack("Category");
+            fragmentTransaction.commit();
+        } else {
+            Log.d("ddd", "category fragment is not backstack");
+            fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(), "visible");
+            fragmentTransaction.replace(R.id.fragment_container2, MapHelper.getMapInstance(), "visible");
+            fragmentTransaction.addToBackStack("Category");
+            fragmentTransaction.commit();
+        }
     }
 
     public void requestCategoryData(String categoryName) {
