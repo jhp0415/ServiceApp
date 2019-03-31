@@ -1,6 +1,7 @@
 package com.example.serviceapp.Adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.serviceapp.R;
 import com.example.serviceapp.View.MainView.PoiActivity;
+import com.example.serviceapp.View.MainView.SearchActivity;
 import com.kt.place.sdk.model.Poi;
 import com.kt.place.sdk.model.Suggest;
 
@@ -49,7 +51,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter
     }
 
     @Override
-    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder holder, final int position) {
         if (holder instanceof ViewHolder) {
             final ViewHolder itemViewHolder = (ViewHolder) holder;
             itemViewHolder.mItem = items.get(position);
@@ -59,7 +61,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter
             itemViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((PoiActivity) mActivity).onFragmentResult(itemViewHolder.mItem);
+//                    ((PoiActivity) mActivity).onFragmentResult(itemViewHolder.mItem);
+                    Intent intent = new Intent(mActivity, PoiActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    intent.putExtra("fb_id", ((SearchActivity)mActivity).fbId);
+                    intent.putExtra("mode", "poi");
+                    intent.putExtra("poi_id", items.get(position).getId());
+                    mActivity.startActivity(intent);
                 }
             });
         } else if (holder instanceof HeaderViewHolder) {
@@ -162,17 +170,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter
 
         @Override
         public void onClick(View v) {
+            Intent intent = new Intent(mActivity, PoiActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            intent.putExtra("mode", "autocomplete");
             switch (v.getId()) {
                 case R.id.suggest1:
-                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[0]);
+//                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[0]);
+                    intent.putExtra("poi_id", headerViewHolder.mItem[0].getPoiId());
                     break;
                 case R.id.suggest2:
-                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[1]);
+//                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[1]);
+                    intent.putExtra("poi_id", headerViewHolder.mItem[0].getPoiId());
                     break;
                 case R.id.suggest3:
-                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[2]);
+//                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[2]);
+                    intent.putExtra("poi_id", headerViewHolder.mItem[0].getPoiId());
                     break;
             }
+            mActivity.startActivity(intent);
         }
     }
 }

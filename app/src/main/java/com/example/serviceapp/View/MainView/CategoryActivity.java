@@ -7,6 +7,7 @@ import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 
@@ -26,6 +27,7 @@ import com.kt.place.sdk.util.Client;
 public class CategoryActivity extends AppCompatActivity {
 
     public String seletedCategory;
+    public String fbId;
     public Client placesClient;
     public MapHelper mapHelper;
     public CategoryBottomSheet bottomSheet;
@@ -59,10 +61,10 @@ public class CategoryActivity extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container1, new CategoryToolbar(), "visible");
-        fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
+        fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "category");
         fragmentTransaction.commit();
 
-
+        Log.d("ddd", "map id : " + googleMapFragment.getTag() + googleMapFragment.getId());
     }
 
 
@@ -72,6 +74,7 @@ public class CategoryActivity extends AppCompatActivity {
 
     public void getIntentData() {
         Intent intent = getIntent();
+        fbId = intent.getStringExtra("fb_id");
         seletedCategory = intent.getStringExtra("seleted_category");
     }
 

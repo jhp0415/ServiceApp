@@ -9,8 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,17 +29,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.kt.place.sdk.listener.OnSuccessListener;
 import com.kt.place.sdk.model.Poi;
-import com.kt.place.sdk.model.Suggest;
-import com.kt.place.sdk.net.AutocompleteRequest;
-import com.kt.place.sdk.net.AutocompleteResponse;
 import com.kt.place.sdk.net.PoiRequest;
 import com.kt.place.sdk.net.PoiResponse;
+import com.kt.place.sdk.net.RetrievePoiRequest;
 import com.kt.place.sdk.util.Client;
 
-import java.util.List;
-
 public class PoiActivity extends AppCompatActivity
-        implements TextWatcher, View.OnClickListener{
+        implements View.OnClickListener{
 
     private MapHelper mapHelper;
     private Client placesClient;
@@ -61,6 +55,9 @@ public class PoiActivity extends AppCompatActivity
     // 툴바
     EditText editText;
 
+    String poiId;
+    String mode;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,21 +68,23 @@ public class PoiActivity extends AppCompatActivity
         getIntentData();
 
         // fragment 설정
+        mapHelper = new MapHelper(getApplicationContext(), this);
+        googleMapFragment = mapHelper.googleMapFragment;
+
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
+//        fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment,"visible");
+        fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment,"visible");
         fragmentTransaction.commit();
 
         util = new Util(getApplicationContext(), this);
         placesClient = new Client();
 
-        mapHelper = new MapHelper(getApplicationContext(), this);
-        googleMapFragment = mapHelper.googleMapFragment;
-
         // bottom Sheet 설정
         View bottomSheetView = (LinearLayout) findViewById(R.id.bottom_sheet);
         bottomSheet = new PoiInfoBottomSheet(getApplicationContext(), this, bottomSheetView);
         bottomSheet.bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
+        bottomSheet.setFbId(fbId);
         bottomSheet.setVisibility(false);
 
         // 툴바 설정
@@ -93,16 +92,30 @@ public class PoiActivity extends AppCompatActivity
         editText = (EditText)toolbar.findViewById(R.id.toolbar_search);
         editText.setText(null);
         editText.setOnClickListener(this);
-        editText.addTextChangedListener(this);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        setResult(mode);
     }
 
     public void getIntentData() {
         Intent intent = getIntent();
         fbId = intent.getStringExtra("fb_id");
+        poiId = intent.getStringExtra("poi_id");
+        mode = intent.getStringExtra("mode");
+    }
+
+    public void setResult(String mode) {
+        switch (mode) {
+            case "poi":
+                modePoi(poiId);
+                break;
+            case "autocomplete":
+                modeAutocomplete(poiId);
+                break;
+        }
     }
 
     /**
@@ -110,20 +123,13 @@ public class PoiActivity extends AppCompatActivity
      */
     @Override
     public void onBackPressed() {
-        Fragment fragment = fragmentManager.findFragmentByTag("visible");
-        if(fragment instanceof SearchFragment) {
-            finish();
-        } else {
-            Intent intent = new Intent(this, PoiActivity.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            startActivity(intent);
-        }
+        finish();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
+//        callbackManager.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_ADD_PHOTO && resultCode == RESULT_OK) {
             Log.d("ddd", "ActivityResult : Request_add_photo");
@@ -153,47 +159,42 @@ public class PoiActivity extends AppCompatActivity
 //        hideKyeboard();
         switch (item.getItemId()){
             case android.R.id.home:
-                Fragment fragment = fragmentManager.findFragmentByTag("visible");
-                if(fragment instanceof SearchFragment) {
-                    finish();
-                } else {
-                    Intent intent = new Intent(this, PoiActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
-                break;
+                finish();
         }
         return super.onOptionsItemSelected(item);
     }
-    @Override
-    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+    public void modePoi(String id) {
+        RetrievePoiRequest request = new RetrievePoiRequest.RetrievePoiRequestBuilder().setId(id).build();
+
+        placesClient.getRetrievePoi(request, new OnSuccessListener<PoiResponse>() {
+            @Override
+            public void onSuccess(@NonNull PoiResponse poiResponse) {
+                onFragmentResult(poiResponse.getPois().get(0));
+            }
+
+            @Override
+            public void onError(@NonNull Throwable throwable) {
+
+            }
+        });
     }
 
-    @Override
-    public void onTextChanged(CharSequence s, int start, int before, int count) {
-        if(s.length() == 0) {
+    public void modeAutocomplete(String id) {
+        RetrievePoiRequest request = new RetrievePoiRequest.RetrievePoiRequestBuilder().setId(id).build();
 
-        } else {
-            setEditTextQuery(s.toString());
-            requestPoiSearch2(s.toString(), 0);
-            requestAutocomplete(s.toString());
-        }
+        placesClient.getRetrievePoi(request, new OnSuccessListener<PoiResponse>() {
+            @Override
+            public void onSuccess(@NonNull PoiResponse poiResponse) {
+                onFragmentResultAutocomplete(poiResponse.getPois().get(0));
+            }
+
+            @Override
+            public void onError(@NonNull Throwable throwable) {
+
+            }
+        });
     }
-
-    @Override
-    public void afterTextChanged(Editable s) {
-        String str = s.toString();
-    }
-
-    /**
-     * 프레그먼트 간의 통신을 위해
-     * @param query
-     */
-    public void setEditTextQuery(String query) {
-        SearchFragment.getInstance().setEditTextQuery(query);
-    }
-
 
     public void requestPoiSearch(final String terms, int start) {
         LatLng point = GpsHelper.getInstance().getCurrentLocation();
@@ -219,74 +220,6 @@ public class PoiActivity extends AppCompatActivity
         });
     }
 
-    public void requestPoiSearch2(final String terms, int start) {
-        LatLng point = GpsHelper.getInstance().getCurrentLocation();
-        PoiRequest request = new PoiRequest.PoiRequestBuilder(terms)
-                .setLat(point.latitude)
-                .setLng(point.longitude)
-                .setStart(start)
-                .setNumberOfResults(10)
-                .build();
-
-        placesClient.getPoiSearch(request, new OnSuccessListener<PoiResponse>() {
-            @Override
-            public void onSuccess(@NonNull PoiResponse poiResponse) {
-                if(poiResponse.getPois().size() > 0) {
-                    setRecycleView(poiResponse.getPois());
-                }
-            }
-
-            @Override
-            public void onError(@NonNull Throwable throwable) {
-                Log.d("ddd", throwable.getMessage());
-            }
-        });
-    }
-
-    public void requestAutocomplete(final String terms) {
-        LatLng point = GpsHelper.getInstance().getCurrentLocation();
-        AutocompleteRequest request = new AutocompleteRequest.AutocompleteRequestBuilder(terms)
-                .setLat(point.latitude)
-                .setLng(point.longitude)
-                .build();
-
-        placesClient.getAutocomplete(request, new OnSuccessListener<AutocompleteResponse>() {
-            @Override
-            public void onSuccess(@NonNull AutocompleteResponse autocompleteResponse) {
-                if(autocompleteResponse.getSuggestList().size() > 0) {
-                    setAutocompleteView(autocompleteResponse.getSuggestList());
-                }
-            }
-
-            @Override
-            public void onError(@NonNull Throwable throwable) {
-                Log.d("ddd", throwable.getMessage());
-            }
-        });
-    }
-
-    /**
-     * 검색결과 리사이클러뷰 셋팅
-     * @param pois
-     */
-    public void setRecycleView(List<Poi> pois){
-        if(pois.size() > 0) {
-            SearchFragment.getInstance().setRecyclerView(pois);
-        }
-    }
-
-    public void setRecycleViewPlus(List<Poi> pois){
-        if(pois.size() > 0) {
-            SearchFragment.getInstance().setRecyclerViewPlus(pois);
-        }
-    }
-
-    public void setAutocompleteView(List<Suggest> suggests){
-        if(suggests.size() > 0) {
-            SearchFragment.getInstance().setAutocompleteView(suggests);
-        }
-    }
-
     /**
      * 리사이클러뷰 아이템 클릭 이벤트 시 실행되는 함수
      * @param data
@@ -294,40 +227,28 @@ public class PoiActivity extends AppCompatActivity
     public void onFragmentResult(Poi data) {
         util.hideKyeboard();
 
-        mapHelper = new MapHelper(getApplicationContext(), this);
-        googleMapFragment = mapHelper.googleMapFragment;
-
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
-        fragmentTransaction.commit();
-
         mapHelper.mGoogleMap.clear();
         mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
                 data.getPoint().getLng()), data.getName(), data.getBranch(), data.getAddress().getFullAddressParcel());
+
+
+        Log.d("ddd", "map id : " + googleMapFragment.getTag() + googleMapFragment.getId());
 
         // TODO : 바텀 시트 업데이트
         bottomSheet.setVisibility(true);
         bottomSheet.updatePoiInfo(data);
     }
 
-    public void onFragmentResultAutocomplete(Suggest data) {
+    public void onFragmentResultAutocomplete(Poi data) {
         util.hideKyeboard();
 
-        mapHelper = new MapHelper(getApplicationContext(), this);
-        googleMapFragment = mapHelper.googleMapFragment;
+//        mapHelper.mGoogleMap.clear();
+//        mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
+//                data.getPoint().getLng()), data.getTerms(), "", "");
 
-        mapHelper.mGoogleMap.clear();
-        mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
-                data.getPoint().getLng()), data.getTerms(), "", "");
-
-        fragmentManager = getSupportFragmentManager();
-        fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
-        fragmentTransaction.commit();
 
         // TODO : 바텀 시트 업데이트
-        requestPoiSearch(data.getTerms(), 0);
+        requestPoiSearch(data.getName(), 0);
     }
 
     @Override

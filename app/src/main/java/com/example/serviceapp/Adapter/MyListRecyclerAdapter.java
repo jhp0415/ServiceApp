@@ -1,6 +1,7 @@
 package com.example.serviceapp.Adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import com.example.serviceapp.MyServer.POJO.sPlace;
 import com.example.serviceapp.MyServer.model.MyServerModel;
 import com.example.serviceapp.MyServer.presenter.MyListPresenter;
 import com.example.serviceapp.R;
+import com.example.serviceapp.View.MainView.PoiInfoActivity;
 import com.kt.place.sdk.net.PoiResponse;
 
 import java.util.ArrayList;
@@ -81,7 +83,7 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
         myserverModel.callpoiRetrieve(items.get(position).getpoiId(), new MyServerModel.poiRetrieveListener() {
             @Override
             public void onPoiRetrieveFinished(PoiResponse response) {
-                holder.mTitleText.setText(response.getPois().get(0).getName());
+                holder.mTitleText.setText(response.getPois().get(0).getName() + response.getPois().get(0).getBranch());
                 holder.mAddressText.setText(response.getPois().get(0).getAddress().getFullAddressParcel());
             }
 
@@ -94,7 +96,12 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                presenter.getMyListPoi(items.get(position).getpoiId());
+//                presenter.getMyListPoi(items.get(position).getpoiId());
+                Intent intent = new Intent(mActivity, PoiInfoActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("fb_id", ((MainActivity)mActivity).getFbId());
+                intent.putExtra("poi_id", items.get(position).getpoiId());
+                mActivity.startActivity(intent);
             }
         });
     }

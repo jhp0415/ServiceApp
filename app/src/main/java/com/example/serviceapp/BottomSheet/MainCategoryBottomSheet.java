@@ -143,6 +143,7 @@ public class MainCategoryBottomSheet implements View.OnClickListener {
     public void onClick(View v) {
         Log.d("ddd", "CategoryBottomSheet Click Event");
         Intent intent = new Intent(mActivity, CategoryActivity.class);
+        intent.putExtra("fb_id", ((MainActivity)mActivity).getFbId());
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         switch (v.getId()) {
             case R.id.nearby_img1:

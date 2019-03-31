@@ -131,7 +131,7 @@ public class CategoryBottomSheet
         poiReviewRecyclerView.setHasFixedSize(true);
         poiReviewRecyclerViewAdapter = new ReviewRecyclerAdapter(mActivity);
         poiReviewRecyclerView.setAdapter(poiReviewRecyclerViewAdapter);
-
+        poiReviewRecyclerViewAdapter.setFbid(((CategoryActivity)mActivity).fbId);
         dynamicContent.addView(mainContent);
 
         // poi

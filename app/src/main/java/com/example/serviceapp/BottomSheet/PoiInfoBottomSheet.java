@@ -26,6 +26,13 @@ import java.util.List;
 public class PoiInfoBottomSheet
         implements OverviewContract.View,
         ReviewContract.View {
+    public static PoiInfoBottomSheet instance;
+//    public static PoiInfoBottomSheet getInstance(Context context, Activity activity, View view) {
+//        if(instance == null) {
+//            instance = new PoiInfoBottomSheet(context, activity, view);
+//        }
+//        return instance;
+//    }
     private Context mContext;
     private Activity mActivity;
     private View view;
@@ -41,15 +48,22 @@ public class PoiInfoBottomSheet
     private RecyclerView poiReviewRecyclerView;
     private ReviewRecyclerAdapter poiReviewRecyclerViewAdapter;
 
+    private String fbId;
+
     public PoiInfoBottomSheet(Context context, Activity activity, View view) {
         this.mContext = context;
         this.mActivity = activity;
         this.bottomSheetView = view;
+        instance = this;
 
         dynamicContent = (LinearLayout) bottomSheetView.findViewById(R.id.dynamic_content);
 
         poiView = LayoutInflater.from(mContext)
                 .inflate(R.layout.bottom_sheet_content_poi_info, dynamicContent, false);
+    }
+
+    public void setFbId(String id) {
+        fbId = id;
     }
 
     public void setBottomSheetHeight(float height) {
@@ -92,7 +106,7 @@ public class PoiInfoBottomSheet
         poiReviewRecyclerView.setHasFixedSize(true);
         poiReviewRecyclerViewAdapter = new ReviewRecyclerAdapter(mActivity);
         poiReviewRecyclerView.setAdapter(poiReviewRecyclerViewAdapter);
-
+        poiReviewRecyclerViewAdapter.setFbid(fbId);
         dynamicContent.addView(poiView);
 
         // poi

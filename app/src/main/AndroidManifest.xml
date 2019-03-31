@@ -14,6 +14,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".View.MainView.SearchActivity"></activity>
+        <activity android:name=".View.MainView.PoiInfoActivity" />
         <activity android:name=".View.MainView.PoiActivity" />
         <activity android:name=".View.MainView.CategoryActivity" />
         <activity

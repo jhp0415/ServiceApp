@@ -19,20 +19,29 @@ import android.widget.TextView;
 
 import com.example.serviceapp.Adapter.MyListRecyclerAdapter;
 import com.example.serviceapp.Adapter.RecyclerItemTouchHelper;
+import com.example.serviceapp.Adapter.ReviewRecyclerAdapter;
 import com.example.serviceapp.Helper.BottomSheetHelper;
 import com.example.serviceapp.MainActivity;
+import com.example.serviceapp.MyServer.POJO.sComment;
 import com.example.serviceapp.MyServer.POJO.sPlace;
 import com.example.serviceapp.MyServer.contract.MyListContract;
+import com.example.serviceapp.MyServer.contract.OverviewContract;
+import com.example.serviceapp.MyServer.contract.ReviewContract;
 import com.example.serviceapp.MyServer.presenter.MyListPresenter;
+import com.example.serviceapp.MyServer.presenter.OverviewPresenter;
+import com.example.serviceapp.MyServer.presenter.ReviewPresenter;
 import com.example.serviceapp.R;
 import com.kt.place.sdk.model.Poi;
 import com.kt.place.sdk.util.Client;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
         implements View.OnClickListener,
-        MyListContract.View {
+        MyListContract.View,
+        OverviewContract.View,
+        ReviewContract.View{
 
     // must need parameter
     private Context mContext;
@@ -47,7 +56,7 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
 
     // Main Bottom Sheet content
     private MainCategoryBottomSheet categoryBottomSheet;
-    private MyListBottomSheet myListBottomSheet;
+    public static MyListBottomSheet myListBottomSheet;
     public ArrayList<sPlace> myList = new ArrayList<>();
     private View mylistView;
 
@@ -58,6 +67,13 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
     ImageView button1;
     ImageView button2;
     private View wizardView;
+
+    // 즐겨 찾기 클릭해서 poi 정보 출력하기
+    private RecyclerView poiReviewRecyclerView;
+    private ReviewRecyclerAdapter poiReviewRecyclerViewAdapter;
+    private View poiView;
+    public OverviewPresenter presenter;
+    private ReviewPresenter reviewPresenter;
 
     private static BottomSheetHelper instance;
     public static BottomSheetHelper getInstance(Context context, Activity activity) {
@@ -82,11 +98,15 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
         wizardView = LayoutInflater.from(mContext)
                 .inflate(R.layout.bottom_sheet_content_main, dynamicContent, false);
         dynamicContent.addView(wizardView);
+
         // 메인 버튼
         button1 = (ImageView) mActivity.findViewById(R.id.content_main_btn_nearby);
         button2 = (ImageView) mActivity.findViewById(R.id.content_main_btn_mylist);
         button1.setOnClickListener(this);
         button2.setOnClickListener(this);
+
+        poiView = LayoutInflater.from(mContext)
+                .inflate(R.layout.bottom_sheet_content_poi_info, dynamicContent, false);
     }
 
     public void setBottomSheetHeight(float height) {
@@ -117,6 +137,17 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
     }
 
     public void addBottomSheetContent(int id) {
+        // 메인 바텀시트 셋팅
+        dynamicContent.removeAllViews();
+        wizardView = LayoutInflater.from(mContext)
+                .inflate(R.layout.bottom_sheet_content_main, dynamicContent, false);
+        dynamicContent.addView(wizardView);
+        // 메인 버튼
+        button1 = (ImageView) mActivity.findViewById(R.id.content_main_btn_nearby);
+        button2 = (ImageView) mActivity.findViewById(R.id.content_main_btn_mylist);
+        button1.setOnClickListener(this);
+        button2.setOnClickListener(this);
+
         switch (id) {
             case 0:
                 button1.setImageResource(R.drawable.icon_location_pins_mint);
@@ -138,6 +169,7 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
                 mainContent = (LinearLayout) wizardView.findViewById(R.id.main_content_tap);
                 mylistView = LayoutInflater.from(mContext)
                         .inflate(R.layout.content_main_wishlist, mainContent, false);
+
                 // 즐겨찾기 리스트 가져오기
                 mylistPresenter = new MyListPresenter(this);
                 mylistPresenter.getMyList(((MainActivity) mActivity).getFbId());
@@ -190,10 +222,6 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
         recyclerView.setAdapter(mAdapter);
         mAdapter.setFilter(response);
 
-        // 리사이클러뷰 swipe delete
-//        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(new ItemTouchHelperCallback(mAdapter));
-//        itemTouchHelper.attachToRecyclerView(recyclerView);
-
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
                 new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, mAdapter);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
@@ -206,7 +234,7 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
 
     @Override
     public void setMyListPoi(Poi place) {
-
+        ((MainActivity) mActivity).onFragmentResult(place);
     }
 
     @Override
@@ -230,6 +258,60 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
 
     }
 
+    public void updatePoiInfo(final Poi poi) {
+        dynamicContent.removeAllViews();
 
+        // TODO : bottom sheet 높이 조절
+        setBottomSheetHeight(150.f);
+        setBottomSheetState("COLLAPSED");
 
+        Log.d("ddd", "ReviewRecyclerView 초기화");
+        poiReviewRecyclerView = (RecyclerView) poiView.findViewById(R.id.review_recyclerview);
+        poiReviewRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+        poiReviewRecyclerView.setHasFixedSize(true);
+        poiReviewRecyclerViewAdapter = new ReviewRecyclerAdapter(mActivity);
+        poiReviewRecyclerView.setAdapter(poiReviewRecyclerViewAdapter);
+        poiReviewRecyclerViewAdapter.setFbid(((MainActivity)mActivity).getFbId());
+        dynamicContent.addView(poiView);
+
+        // poi
+        poiReviewRecyclerViewAdapter.setPoiInfo(poi);
+
+        // Image, Review 불러오기
+        presenter = new OverviewPresenter(this);
+        presenter.getOverviewInfo(poi.getId());
+
+        // 리뷰 리스트 셋팅
+        reviewPresenter = new ReviewPresenter(this);
+        reviewPresenter.getReviewList(poi.getId());
+    }
+
+    /**
+     * 내 서버에 등록된 사진과 리뷰 정보 가져와서 셋팅하기
+     * @param
+     */
+    @Override
+    public void setOverviewImage(List<String> poiImages) {
+        poiReviewRecyclerViewAdapter.setImageResource(poiImages);
+    }
+
+    @Override
+    public void setOverviewInfo(Poi place) {
+
+    }
+
+    @Override
+    public void clearOverviewImage() {
+        poiReviewRecyclerViewAdapter.imageUrlClear();
+    }
+
+    @Override
+    public void setReviewList(List<sComment> comments) {
+        poiReviewRecyclerViewAdapter.setFilter(comments);
+    }
+
+    @Override
+    public void clearReviewList() {
+        poiReviewRecyclerViewAdapter.clear();
+    }
 }

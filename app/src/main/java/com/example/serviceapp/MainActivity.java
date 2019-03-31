@@ -33,6 +33,7 @@ import com.example.serviceapp.MyServer.POJO.sAccess;
 import com.example.serviceapp.MyServer.contract.MyServerContract;
 import com.example.serviceapp.MyServer.presenter.MyServerPresenter;
 import com.example.serviceapp.View.MainView.PoiActivity;
+import com.example.serviceapp.View.MainView.SearchActivity;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -42,6 +43,8 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.kt.place.sdk.model.Poi;
 import com.kt.place.sdk.util.Client;
 import com.kt.place.sdk.util.Manager;
 
@@ -88,8 +91,10 @@ public class MainActivity extends AppCompatActivity
 
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
+        fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "main");
         fragmentTransaction.commit();
+
+        Log.d("ddd", "map id : " + googleMapFragment.getTag() + googleMapFragment.getId());
 
         // Bottom Sheet 초기화
         mainBottomSheet =
@@ -135,7 +140,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // PoiActivity 실행하기
-                Intent intent = new Intent(MainActivity.this, PoiActivity.class);
+                Intent intent = new Intent(MainActivity.this, SearchActivity.class);
                 intent.putExtra("fb_id", fbId);
                 startActivity(intent);
             }
@@ -187,23 +192,22 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = menuItem.getItemId();
         switch (id) {
-//            case R.id.nav_home:
-//                // TODO: 홈 화면으로 이동하기
-//                fragmentManager.popBackStack(0, fragmentManager.getBackStackEntryCount() - 1);
-//                break;
-//            case R.id.nav_wishlist:
-//                bottomSheetHelper.addBottomSheetContent(1);
-//                bottomSheetHelper.setBottomSheetState("EXPANDED");
-//                break;
-//            case R.id.nav_search:
-//                // TODO: 검색 화면으로 이동하기
-//                fragmentManager = getSupportFragmentManager();
-//                fragmentTransaction = fragmentManager.beginTransaction();
-//                fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(),"visible");
-//                fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
-//                fragmentTransaction.addToBackStack("SearchFragment");
-//                fragmentTransaction.commit();
-//                break;
+            case R.id.nav_home:
+                // TODO: 홈 화면으로 이동하기
+                Intent intent = new Intent(this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(intent);
+                break;
+            case R.id.nav_wishlist:
+                mainBottomSheet.addBottomSheetContent(1);
+                mainBottomSheet.setBottomSheetState("EXPANDED");
+                break;
+            case R.id.nav_search:
+                // TODO: 검색 화면으로 이동하기
+                Intent intent2 = new Intent(this, PoiActivity.class);
+                intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                startActivity(intent2);
+                break;
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -350,5 +354,15 @@ public class MainActivity extends AppCompatActivity
     public void setFbInfo(sAccess info) {
         fbId = info.getFbId();
         fbInfo = info;
+    }
+
+    public void onFragmentResult(Poi data) {
+//        util.hideKyeboard();
+        mapHelper.mGoogleMap.clear();
+        mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
+                data.getPoint().getLng()), data.getName(), data.getBranch(), data.getAddress().getFullAddressParcel());
+
+        // TODO : 바텀 시트 업데이트
+        mainBottomSheet.updatePoiInfo(data);
     }
 }

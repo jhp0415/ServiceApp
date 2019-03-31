@@ -14,7 +14,7 @@ import android.view.ViewGroup;
 import com.example.serviceapp.Adapter.RecyclerAdapter;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.R;
-import com.example.serviceapp.View.MainView.PoiActivity;
+import com.example.serviceapp.View.MainView.SearchActivity;
 import com.google.android.gms.maps.model.LatLng;
 import com.kt.place.sdk.listener.OnSuccessListener;
 import com.kt.place.sdk.model.Poi;
@@ -31,7 +31,7 @@ public class SearchFragment extends Fragment
 
     private static SearchFragment instance;
     private Client placesClient;
-    private PoiActivity activity;
+    private SearchActivity activity;
     private RecyclerAdapter mAdapter;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -53,7 +53,7 @@ public class SearchFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup parentViewGroup, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_searchlist, parentViewGroup, false);
 
-        activity = (PoiActivity)getActivity();
+        activity = (SearchActivity)getActivity();
         placesClient = new Client();
 
         // RecyclerView 초기화

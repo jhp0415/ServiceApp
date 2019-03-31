@@ -10,6 +10,7 @@ import com.example.serviceapp.View.MainView.CategoryActivity;
 import com.example.serviceapp.View.MainView.PoiActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMyLocationButtonClickListener;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -20,25 +21,24 @@ import com.kt.place.sdk.net.PoiRequest;
 import com.kt.place.sdk.net.PoiResponse;
 import com.kt.place.sdk.util.Client;
 
-public class MapHelper
+public class PoiMapHelper
         implements GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMapClickListener,
         OnMapReadyCallback,
-        GoogleMap.OnMyLocationButtonClickListener {
+        OnMyLocationButtonClickListener {
 
     public static MapHelper instance;
     public static GoogleMap mGoogleMap;
     private Context mContext;
     private Activity mActivity;
-    public static SupportMapFragment googleMapFragment;
+    public SupportMapFragment googleMapFragment;
 
     // GoogleMap
     public static int ZOOM_LEVEL = 17;
 
 
-    public MapHelper(Context context, Activity activity) {
-//        googleMapFragment = SupportMapFragment.newInstance();
-        googleMapFragment = new SupportMapFragment().newInstance();
+    public PoiMapHelper(Context context, Activity activity) {
+        googleMapFragment = SupportMapFragment.newInstance();
         googleMapFragment.getMapAsync(this);
 
         this.mContext = context;
@@ -66,7 +66,7 @@ public class MapHelper
         if (GpsHelper.getInstance().mLocationPermissionGranted) {
             MapHelper.mGoogleMap.setMyLocationEnabled(true);
             MapHelper.mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
-            MapHelper.mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {
+            MapHelper.mGoogleMap.setOnMyLocationButtonClickListener(new OnMyLocationButtonClickListener() {
                 @Override
                 public boolean onMyLocationButtonClick() {
                     mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
