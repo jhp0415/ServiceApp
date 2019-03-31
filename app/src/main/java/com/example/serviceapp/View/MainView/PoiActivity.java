@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +16,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.example.serviceapp.BottomSheet.PoiInfoBottomSheet;
-import com.example.serviceapp.Fragment.SearchFragment;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.Helper.MapHelper;
 import com.example.serviceapp.MyServer.POJO.sPlaceOverview;
@@ -255,12 +253,13 @@ public class PoiActivity extends AppCompatActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.toolbar_search:
-                Fragment currentFragment = fragmentManager.findFragmentByTag("visible");
-                if (!(currentFragment instanceof SearchFragment)) {
-                    Intent intent = new Intent(this, PoiActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                }
+//                Fragment currentFragment = fragmentManager.findFragmentByTag("visible");
+//                if (!(currentFragment instanceof SearchFragment)) {
+//                    Intent intent = new Intent(this, PoiActivity.class);
+//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    startActivity(intent);
+//                }
+                finish();
                 break;
         }
     }

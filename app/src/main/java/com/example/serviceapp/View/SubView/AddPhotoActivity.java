@@ -36,7 +36,6 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoContr
         poiId = intent.getStringExtra("poi_id");
 
         selectPhotoButton = (ImageView) findViewById(R.id.selectPhoto);
-//        selectPhotoButton.setImageResource(R.drawable.selectimage);
 
         presenter = new AddPhotoPresenter(this);
     }

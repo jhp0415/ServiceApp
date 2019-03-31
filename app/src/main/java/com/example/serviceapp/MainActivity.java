@@ -32,7 +32,6 @@ import com.example.serviceapp.Helper.MapHelper;
 import com.example.serviceapp.MyServer.POJO.sAccess;
 import com.example.serviceapp.MyServer.contract.MyServerContract;
 import com.example.serviceapp.MyServer.presenter.MyServerPresenter;
-import com.example.serviceapp.View.MainView.PoiActivity;
 import com.example.serviceapp.View.MainView.SearchActivity;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -204,8 +203,9 @@ public class MainActivity extends AppCompatActivity
                 break;
             case R.id.nav_search:
                 // TODO: 검색 화면으로 이동하기
-                Intent intent2 = new Intent(this, PoiActivity.class);
+                Intent intent2 = new Intent(this, SearchActivity.class);
                 intent2.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent2.putExtra("fb_id", fbId);
                 startActivity(intent2);
                 break;
         }

@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.serviceapp.BottomSheet.PoiInfoBottomSheet;
 import com.example.serviceapp.MyServer.POJO.sComment;
 import com.example.serviceapp.R;
@@ -110,6 +112,14 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
         if( holder instanceof ViewHolder) {
             final ViewHolder reviewHolder = (ViewHolder) holder;
             reviewHolder.mItem = items.get(position - 1);
+            
+            Glide.with(mActivity.getApplicationContext())
+                    .applyDefaultRequestOptions(
+                            new RequestOptions().error(R.drawable.ic_broken_image_black_24dp))
+                    .load(items.get(position - 1).getUser().getUserProfileUrl())
+                    .apply(RequestOptions.circleCropTransform().override(300,300))
+                    .into(reviewHolder.mUserImage);
+
             reviewHolder.mTitleText.setText(items.get(position - 1).getCaptionTitle());
             reviewHolder.mBodyText.setText(items.get(position - 1).getCaptionBody());
             reviewHolder.mNameText.setText(items.get(position - 1).getUser().getName());

@@ -83,7 +83,7 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
         myserverModel.callpoiRetrieve(items.get(position).getpoiId(), new MyServerModel.poiRetrieveListener() {
             @Override
             public void onPoiRetrieveFinished(PoiResponse response) {
-                holder.mTitleText.setText(response.getPois().get(0).getName() + response.getPois().get(0).getBranch());
+                holder.mTitleText.setText(response.getPois().get(0).getName() + " " + response.getPois().get(0).getBranch());
                 holder.mAddressText.setText(response.getPois().get(0).getAddress().getFullAddressParcel());
             }
 
