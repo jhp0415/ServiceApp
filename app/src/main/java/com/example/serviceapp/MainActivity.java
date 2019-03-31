@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -19,10 +20,10 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -69,10 +70,15 @@ public class MainActivity extends AppCompatActivity
     // 페이스북 로그인
     private MyServerContract.View myServerView = this;
     private CallbackManager callbackManager; // Facebook manager
-    private sAccess fbInfo; //Facebook Access info
+    public sAccess fbInfo; //Facebook Access info
     private String fbId;
     private String fbToken;
     private String clickedPoiId;
+
+    // 뒤로가기 + 앱 종료
+    private final long FINISH_INTERVAL_TIME = 2000;
+    private long   backPressedTime = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +98,6 @@ public class MainActivity extends AppCompatActivity
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "main");
         fragmentTransaction.commit();
-
-        Log.d("ddd", "map id : " + googleMapFragment.getTag() + googleMapFragment.getId());
 
         // Bottom Sheet 초기화
         mainBottomSheet =
@@ -119,8 +123,8 @@ public class MainActivity extends AppCompatActivity
 
         // 네비게이션 헤더 뷰
         View nav_header_view = navigationView.getHeaderView(0);
-        Button loginButton = (Button)nav_header_view.findViewById(R.id.login_btn);
-        loginButton.setOnClickListener(new View.OnClickListener() {
+        ImageView loginImage = (ImageView) nav_header_view.findViewById(R.id.profile_image);
+        loginImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // 페이스북 로그인
@@ -221,15 +225,22 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
         }
-//        if(BottomSheetHelper.getInstance(getApplicationContext(), this).getBottomSheetState() == BottomSheetBehavior.STATE_EXPANDED) {
-//            BottomSheetHelper.getInstance(getApplicationContext(), this).setBottomSheetState("COLLAPSED");
-//        } else {
-//            super.onBackPressed();
-//        }
+        if(mainBottomSheet.getBottomSheetState() == BottomSheetBehavior.STATE_EXPANDED) {
+            mainBottomSheet.setBottomSheetState("COLLAPSED");
+        }
         mapHelper.mGoogleMap.clear();
+
+        long tempTime = System.currentTimeMillis();
+        long intervalTime = tempTime - backPressedTime;
+        if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
+            super.onBackPressed();
+        } else {
+            backPressedTime = tempTime;
+            Toast.makeText(getApplicationContext(), "한번 더 누르면 앱이 종료 됩니다.", Toast.LENGTH_SHORT).show();
+        }
+
+//        super.onBackPressed();
     }
     /**
      * GPS 권한 받기
@@ -246,7 +257,7 @@ public class MainActivity extends AppCompatActivity
         }
         if (gpsHelper.isAccessFineLocation) {
             gpsHelper.mLocationPermissionGranted = true;
-            gpsHelper.receivedPermission();
+            gpsHelper.receivedPermission(getApplicationContext());
         }
     }
     /**
@@ -269,7 +280,7 @@ public class MainActivity extends AppCompatActivity
                     @Override
                     public void onCompleted(JSONObject user, GraphResponse response) {
                         if (response.getError() != null) {
-
+                            Log.d("ddd", "login error : " + response.getError().getErrorMessage());
                         } else {
                             fbId = user.optString("id");
                             fbToken = result.getAccessToken().getToken();
@@ -277,11 +288,11 @@ public class MainActivity extends AppCompatActivity
                             MyServerPresenter presenter = new MyServerPresenter(myServerView);
                             presenter.getSignCheck(fbToken);
                             Log.d("ddd", "MainActivity : facebook login success : " + fbId);
-                            // 로그인 버튼 상태 바꾸기 로그인->로그아웃
+
+                            // 로그인 아이디 출력
                             View nav_header_view = navigationView.getHeaderView(0);
-                            Button loginButton = (Button)nav_header_view.findViewById(R.id.login_btn);
-                            loginButton.setText("로그아웃");
-                            // TODO: 로그인 이미지 바꾸기
+                            TextView loginInfo = (TextView) nav_header_view.findViewById(R.id.login_info);
+                            loginInfo.setText(fbId);
                         }
                     }
                 });
@@ -293,7 +304,7 @@ public class MainActivity extends AppCompatActivity
 
             @Override
             public void onError(FacebookException error) {
-                Log.e("test", "Error: " + error);
+                Log.e("ddd", "Error: " + error);
                 //finish();
             }
             @Override
@@ -334,19 +345,6 @@ public class MainActivity extends AppCompatActivity
             presenter.getSignCheck(fbToken);
 
             Log.d("ddd", "MainActivity : get facebook token : " + fbToken);
-            // 로그인 버튼 상태 바꾸기 로그인->로그아웃
-            View nav_header_view = navigationView.getHeaderView(0);
-            Button loginButton = (Button)nav_header_view.findViewById(R.id.login_btn);
-            loginButton.setText("로그아웃");
-
-            // 네비게이션 헤더 뷰
-            Log.d("ddd", "facebook id " + fbInfo.getFbId() + " 프로필 사진 보여주기");
-            ImageView profile = (ImageView)nav_header_view.findViewById(R.id.profile_image);
-            Glide.with(getApplicationContext())
-                    .applyDefaultRequestOptions(new RequestOptions())
-                    .load("https://graph.facebook.com/" + fbInfo.getFbId() + "/picture?type=large")
-                    .apply(RequestOptions.circleCropTransform().override(300,300))
-                    .into(profile);
         }
     }
 
@@ -354,6 +352,19 @@ public class MainActivity extends AppCompatActivity
     public void setFbInfo(sAccess info) {
         fbId = info.getFbId();
         fbInfo = info;
+
+        // 네비게이션 헤더 뷰
+        View nav_header_view = navigationView.getHeaderView(0);
+        TextView loginInfo = (TextView) nav_header_view.findViewById(R.id.login_info);
+        loginInfo.setText(fbInfo.getName());
+
+        Log.d("ddd", "facebook name : " + fbInfo.getName());
+        ImageView profile = (ImageView)nav_header_view.findViewById(R.id.profile_image);
+        Glide.with(getApplicationContext())
+                .applyDefaultRequestOptions(new RequestOptions())
+                .load("https://graph.facebook.com/" + fbInfo.getFbId() + "/picture?type=large")
+                .apply(RequestOptions.circleCropTransform().override(70,70))
+                .into(profile);
     }
 
     public void onFragmentResult(Poi data) {

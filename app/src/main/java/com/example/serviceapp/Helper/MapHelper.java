@@ -63,7 +63,7 @@ public class MapHelper
 
     @SuppressLint("MissingPermission")
     public static void initializeMap() {
-        if (GpsHelper.getInstance().mLocationPermissionGranted) {
+        if ((GpsHelper.getInstance()).mLocationPermissionGranted) {
             MapHelper.mGoogleMap.setMyLocationEnabled(true);
             MapHelper.mGoogleMap.getUiSettings().setMyLocationButtonEnabled(true);
             MapHelper.mGoogleMap.setOnMyLocationButtonClickListener(new GoogleMap.OnMyLocationButtonClickListener() {

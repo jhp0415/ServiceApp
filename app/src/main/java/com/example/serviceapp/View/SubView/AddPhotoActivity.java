@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.serviceapp.MyServer.POJO.sPlaceOverview;
 import com.example.serviceapp.MyServer.contract.AddPhotoContract;
@@ -56,6 +57,10 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoContr
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         Log.d("selectImg", String.valueOf(requestCode));
+        if (resultCode != RESULT_OK) {
+            Toast.makeText(this, "취소 되었습니다.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (requestCode == PICK_IMAGE) {
             selectedImage = data.getData();
             // TODO: Image URI check

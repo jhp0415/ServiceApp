@@ -42,6 +42,15 @@ public class CategoryBottomSheet
         implements View.OnClickListener,
         OverviewContract.View,
         ReviewContract.View{
+
+    public static CategoryBottomSheet instance;
+    public static CategoryBottomSheet getInstance(Context context, Activity activity, View view) {
+        if(instance == null) {
+            instance = new CategoryBottomSheet(context, activity, view);
+        }
+        return instance;
+    }
+
     private Context mContext;
     private Activity mActivity;
     private View view;
@@ -71,6 +80,7 @@ public class CategoryBottomSheet
         this.mContext = context;
         this.mActivity = activity;
         this.view = view;
+        instance = this;
 
         dynamicContent = (LinearLayout) view.findViewById(R.id.dynamic_content);
 

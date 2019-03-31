@@ -23,8 +23,8 @@ public class GpsHelper extends Service
         implements LocationListener {
 
     public static GpsHelper instance;
-    private GoogleMap mGoogleMap;
-    private Activity activity;
+    private static GoogleMap mGoogleMap;
+    private static Activity mActivity;
 
     // GPS
     private Context mContext;
@@ -60,17 +60,22 @@ public class GpsHelper extends Service
     }
 
     public GpsHelper() {
+        instance = this;
     }
 
     public void setGpsHelperInit(Context context, GoogleMap googleMap, Activity activity) {
-        this.mContext = context;
-        this.mGoogleMap = googleMap;
-        this.activity = activity;
+        mContext = context;
+        mGoogleMap = googleMap;
+        mActivity = activity;
 
+        setLocationManager(mContext);
+    }
+
+    public void setLocationManager(Context context) {
         // GPS 초기화
-        this.locationManager = (LocationManager) mContext.getSystemService(LOCATION_SERVICE);
-        this.isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);     // GPS 정보 가져오기
-        this.isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);// 현재 네트워크 상태 값 알아오기
+        locationManager = (LocationManager) context.getSystemService(LOCATION_SERVICE);
+        isGPSEnabled = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);     // GPS 정보 가져오기
+        isNetworkEnabled = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);// 현재 네트워크 상태 값 알아오기
     }
 
     public void requestPermission() {
@@ -82,16 +87,17 @@ public class GpsHelper extends Service
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mLocationPermissionGranted = true;
-            receivedPermission();
+            receivedPermission(mContext);
         } else {
-            ActivityCompat.requestPermissions(activity,
+            ActivityCompat.requestPermissions(mActivity,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     PERMISSION_REQUEST_CODE);
         }
     }
 
-    public void receivedPermission() {
+    public void receivedPermission(Context context) {
         if(mLocationPermissionGranted) {
+            setLocationManager(context);
             getDeviceLocation();
             MapHelper.initializeMap();
             setCameraOnLocation();
@@ -101,7 +107,6 @@ public class GpsHelper extends Service
     @SuppressLint("MissingPermission")
     public void getDeviceLocation() {
         if (mLocationPermissionGranted) {     // 권한 있을 때,
-            Log.d("ddd", isNetworkEnabled + " ");
             if (isNetworkEnabled) {     // 네트워크 위치 정보 사용 가능 여부
                 locationManager.requestLocationUpdates(
                         LocationManager.NETWORK_PROVIDER,
@@ -112,7 +117,6 @@ public class GpsHelper extends Service
                             .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
                 }
             }
-            Log.d("ddd", isGPSEnabled + " ");
             if (isGPSEnabled) {     // GPS 위치 정보 사용 가능 여부
                 if (mLastKnownLocation == null) {
                     locationManager.requestLocationUpdates(

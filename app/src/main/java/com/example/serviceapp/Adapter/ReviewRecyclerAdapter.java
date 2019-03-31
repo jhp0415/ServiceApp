@@ -14,9 +14,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.serviceapp.BottomSheet.CategoryBottomSheet;
 import com.example.serviceapp.BottomSheet.PoiInfoBottomSheet;
 import com.example.serviceapp.MyServer.POJO.sComment;
 import com.example.serviceapp.R;
+import com.example.serviceapp.Util.Util;
+import com.example.serviceapp.View.MainView.CategoryActivity;
 import com.example.serviceapp.View.SubView.AddPhotoActivity;
 import com.example.serviceapp.View.SubView.AddReviewActivity;
 import com.glide.slider.library.SliderLayout;
@@ -112,7 +115,7 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
         if( holder instanceof ViewHolder) {
             final ViewHolder reviewHolder = (ViewHolder) holder;
             reviewHolder.mItem = items.get(position - 1);
-            
+
             Glide.with(mActivity.getApplicationContext())
                     .applyDefaultRequestOptions(
                             new RequestOptions().error(R.drawable.ic_broken_image_black_24dp))
@@ -124,13 +127,31 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
             reviewHolder.mBodyText.setText(items.get(position - 1).getCaptionBody());
             reviewHolder.mNameText.setText(items.get(position - 1).getUser().getName());
 
+            // 리뷰 수정 기능
+            reviewHolder.mView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+//                    // 내 리뷰일때만
+//                    if(reviewHolder.mItem.getUser().getName() == fbInfo.getName()) {
+//                        // 수정 창 열기
+//                        Intent intent = new Intent(mActivity, EditReviewActivity.class);
+//                        intent.putExtra("title", reviewHolder.mTitleText.getText());
+//                        intent.putExtra("body", reviewHolder.mBodyText.getText());
+//                        mActivity.startActivityForResult(intent, REQUST_EDIT_REVIEW);
+//                    }
+                    return false;
+                }
+            });
+
         } else if (position == TYPE_HEADER && holder instanceof HeaderViewHolder) {
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             // 헤더에 poi 정보 출력하기
             if(poi != null) {
                 headerViewHolder.textView1.setText(poi.getName() + poi.getBranch());
                 if (poi.getDistance() != null) {
-                    headerViewHolder.textView2.setText(String.valueOf((int) Math.round(poi.getDistance())) + "km");
+//                    headerViewHolder.textView2.setText(String.valueOf((int) Math.round(poi.getDistance())) + "km");
+                    Util util = new Util(mActivity.getApplicationContext(), mActivity);
+                    headerViewHolder.textView2.setText(util.changeMeterToKilometer((int) Math.round(poi.getDistance())));
                 }
                 headerViewHolder.textView3.setText(poi.getCategory().getMasterName());
                 headerViewHolder.textView4.setText(poi.getAddress().getFullAddressParcel());
@@ -224,7 +245,11 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
                     Log.d("ddd", "즐겨찾기 추가 버튼 클릭");
                     ImageView star = (ImageView) addListBtn.findViewById(R.id.addMyList);
                     star.setImageResource(R.drawable.icon_star);
-                    (PoiInfoBottomSheet.instance.presenter).addMyList(fbId, poi.getId());
+                    if (mActivity instanceof CategoryActivity) {
+                        ((CategoryBottomSheet.instance).presenter).addMyList(fbId, poi.getId());
+                    } else {
+                        ((PoiInfoBottomSheet.instance).presenter).addMyList(fbId, poi.getId());
+                    }
                     break;
                 case R.id.add_review:
                     //데이터 담아서 팝업(액티비티) 호출

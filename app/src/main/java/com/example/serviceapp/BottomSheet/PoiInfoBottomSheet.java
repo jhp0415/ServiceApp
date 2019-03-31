@@ -27,12 +27,12 @@ public class PoiInfoBottomSheet
         implements OverviewContract.View,
         ReviewContract.View {
     public static PoiInfoBottomSheet instance;
-//    public static PoiInfoBottomSheet getInstance(Context context, Activity activity, View view) {
-//        if(instance == null) {
-//            instance = new PoiInfoBottomSheet(context, activity, view);
-//        }
-//        return instance;
-//    }
+    public static PoiInfoBottomSheet getInstance(Context context, Activity activity, View view) {
+        if(instance == null) {
+            instance = new PoiInfoBottomSheet(context, activity, view);
+        }
+        return instance;
+    }
     private Context mContext;
     private Activity mActivity;
     private View view;

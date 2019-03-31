@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.serviceapp.R;
+import com.example.serviceapp.Util.Util;
 import com.example.serviceapp.View.MainView.PoiActivity;
 import com.example.serviceapp.View.MainView.SearchActivity;
 import com.kt.place.sdk.model.Poi;
@@ -57,7 +58,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter
             itemViewHolder.mItem = items.get(position);
             itemViewHolder.mTitleText.setText(items.get(position).getName() + " " + items.get(position).getBranch());
             itemViewHolder.mDescriptionText.setText(items.get(position).getAddress().getFullAddressParcel());
-            itemViewHolder.mDistance.setText(String.valueOf((int) Math.round(items.get(position).getDistance())));
+//            itemViewHolder.mDistance.setText(String.valueOf((int) Math.round(items.get(position).getDistance())));
+            Util util = new Util(mActivity.getApplicationContext(), mActivity);
+            itemViewHolder.mDistance.setText(util.changeMeterToKilometer((int) Math.round(items.get(position).getDistance())));
             itemViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
