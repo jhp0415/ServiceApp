@@ -1,14 +1,10 @@
 package com.example.serviceapp.Helper;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.kt.place.sdk.listener.OnSuccessListener;
-import com.kt.place.sdk.model.Geocode;
-import com.kt.place.sdk.model.Poi;
-import com.kt.place.sdk.model.RoadAddress;
 import com.kt.place.sdk.net.AutocompleteRequest;
 import com.kt.place.sdk.net.AutocompleteResponse;
 import com.kt.place.sdk.net.GeocodeRequest;
@@ -17,9 +13,6 @@ import com.kt.place.sdk.net.NearbyPoiRequest;
 import com.kt.place.sdk.net.PoiRequest;
 import com.kt.place.sdk.net.PoiResponse;
 import com.kt.place.sdk.util.Client;
-import com.kt.place.sdk.util.Manager;
-
-import java.util.List;
 
 public class PlacesApiHelper {
     private static PlacesApiHelper instance;

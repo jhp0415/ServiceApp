@@ -1,11 +1,7 @@
 package com.example.serviceapp.Adapter;
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +13,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.serviceapp.Login.POJO.sPlace;
-import com.example.serviceapp.Login.model.MyServerModel;
-import com.example.serviceapp.Login.presenter.MyListPresenter;
 import com.example.serviceapp.MainActivity;
+import com.example.serviceapp.MyServer.POJO.sPlace;
+import com.example.serviceapp.MyServer.model.MyServerModel;
+import com.example.serviceapp.MyServer.presenter.MyListPresenter;
 import com.example.serviceapp.R;
 import com.kt.place.sdk.net.PoiResponse;
 
@@ -102,30 +98,6 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
             }
         });
     }
-
-//    @Override
-//    public boolean onItemMove(int fromPosition, int toPosition) {
-//        if(fromPosition < 0 || fromPosition >= items.size() || toPosition < 0 || toPosition >= items.size()){
-//            return false;
-//        }
-////        String fromItem = items.get(fromPosition);
-////        items.remove(fromPosition);
-////        items.add(toPosition, fromItem);
-////
-////        notifyItemMoved(fromPosition, toPosition);
-//        Log.d("ddd", "onMove...");
-//        return true;
-//    }
-//
-//    @Override
-//    public void onItemRemove(int position) {
-//        Log.d("ddd", "서버 즐겨찾기 목록에서 제거하기");
-//        // TODO:즐겨찾기에서 제거하기
-//        presenter.deleteMyList(((MainActivity) mActivity).getFbId(), items.get(position).getpoiId());
-//
-//        items.remove(position);
-//        notifyItemRemoved(position);
-//    }
 
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {

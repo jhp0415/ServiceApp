@@ -6,7 +6,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.example.serviceapp.Fragment.InfoFragment;
+import com.example.serviceapp.View.MainView.CategoryActivity;
+import com.example.serviceapp.View.MainView.PoiActivity;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -15,7 +16,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kt.place.sdk.listener.OnSuccessListener;
-import com.kt.place.sdk.model.Poi;
 import com.kt.place.sdk.net.PoiRequest;
 import com.kt.place.sdk.net.PoiResponse;
 import com.kt.place.sdk.util.Client;
@@ -30,7 +30,7 @@ public class MapHelper
     public static GoogleMap mGoogleMap;
     private Context mContext;
     private Activity mActivity;
-    private static SupportMapFragment googleMapFragment;
+    public SupportMapFragment googleMapFragment;
 
     // GoogleMap
     public static int ZOOM_LEVEL = 17;
@@ -44,12 +44,6 @@ public class MapHelper
         this.mActivity = activity;
     }
 
-    public static SupportMapFragment getMapInstance() {
-        if (googleMapFragment == null) {
-            googleMapFragment = SupportMapFragment.newInstance();
-        }
-        return googleMapFragment;
-    }
 
     public static MapHelper getInstance(Context context, Activity activity) {
         if (instance == null) {
@@ -124,7 +118,14 @@ public class MapHelper
             public void onSuccess(@NonNull PoiResponse poiResponse) {
                 if(poiResponse.getPois().size() > 0) {
                     // 마커 클릭해서 POI 정보 bottom sheet에 나타내기
-                    BottomSheetHelper.getInstance(mContext, mActivity).updatePoiInfo(poiResponse.getPois().get(0));
+//                    BottomSheetHelper.getInstance(mContext, mActivity).updatePoiInfo(poiResponse.getPois().get(0));
+                    if(mActivity instanceof CategoryActivity) {
+                        ((CategoryActivity) mActivity).bottomSheet.updatePoiInfo(poiResponse.getPois().get(0));
+
+                    } else if(mActivity instanceof PoiActivity){
+
+                    }
+
                 }
             }
 

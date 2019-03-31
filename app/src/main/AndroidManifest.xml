@@ -14,8 +14,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Login.view.AddReviewActivity" android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"></activity>
-        <activity android:name=".Login.view.AddPhotoActivity" />
+        <activity android:name=".View.MainView.PoiActivity" />
+        <activity android:name=".View.MainView.CategoryActivity" />
+        <activity
+            android:name=".View.SubView.AddReviewActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog" />
+        <activity android:name=".View.SubView.AddPhotoActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

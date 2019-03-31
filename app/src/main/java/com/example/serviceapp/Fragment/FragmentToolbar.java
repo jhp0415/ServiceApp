@@ -62,12 +62,14 @@ public class FragmentToolbar extends Fragment
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentManager = activity.getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(),"visible");
-                fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
-                fragmentTransaction.addToBackStack("SearchFragment");
-                fragmentTransaction.commit();
+//                fragmentManager = activity.getSupportFragmentManager();
+//                fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(),"visible");
+//                fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
+//                fragmentTransaction.addToBackStack("SearchFragment");
+//                fragmentTransaction.commit();
+                //TODO: PoiActivity 실행하기
+
             }
         });
 

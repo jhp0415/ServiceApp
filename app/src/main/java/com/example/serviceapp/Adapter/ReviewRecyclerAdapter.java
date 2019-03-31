@@ -12,12 +12,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.serviceapp.Helper.BottomSheetHelper;
-import com.example.serviceapp.Login.POJO.sComment;
-import com.example.serviceapp.Login.view.AddPhotoActivity;
-import com.example.serviceapp.Login.view.AddReviewActivity;
-import com.example.serviceapp.MainActivity;
+import com.example.serviceapp.MyServer.POJO.sComment;
 import com.example.serviceapp.R;
+import com.example.serviceapp.View.MainView.PoiActivity;
+import com.example.serviceapp.View.SubView.AddPhotoActivity;
+import com.example.serviceapp.View.SubView.AddReviewActivity;
 import com.glide.slider.library.SliderLayout;
 import com.glide.slider.library.SliderTypes.TextSliderView;
 import com.kt.place.sdk.model.Poi;
@@ -203,20 +202,20 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
                 case R.id.add_photo:
                     Intent intent = new Intent(mActivity, AddPhotoActivity.class);
                     intent.putExtra("poi_id", poi.getId());
-                    intent.putExtra("fb_id", ((MainActivity) mActivity).getFbId());
+                    intent.putExtra("fb_id", ((PoiActivity) mActivity).getFbId());
                     mActivity.startActivityForResult(intent, REQUEST_ADD_PHOTO);
                     break;
                 case R.id.add_mylist:
                     Log.d("ddd", "즐겨찾기 추가 버튼 클릭");
                     ImageView star = (ImageView) addListBtn.findViewById(R.id.addMyList);
                     star.setImageResource(R.drawable.icon_star);
-                    (BottomSheetHelper.getInstance(mActivity.getApplicationContext(), mActivity).presenter).addMyList(((MainActivity) mActivity).getFbId(), poi.getId());
+//                    (PoiInfoBottomSheet.getInstance(mActivity.getApplicationContext(), mActivity).presenter).addMyList(((MainActivity) mActivity).getFbId(), poi.getId());
                     break;
                 case R.id.add_review:
                     //데이터 담아서 팝업(액티비티) 호출
                     Intent intent2 = new Intent(mActivity, AddReviewActivity.class);
                     intent2.putExtra("poi_id", poi.getId());
-                    intent2.putExtra("fb_id", ((MainActivity) mActivity).getFbId());
+                    intent2.putExtra("fb_id", ((PoiActivity) mActivity).getFbId());
                     mActivity.startActivityForResult(intent2, REQUEST_ADD_REVIEW);
                     break;
             }

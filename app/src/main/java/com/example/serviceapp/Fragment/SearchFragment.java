@@ -11,11 +11,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.serviceapp.Adapter.AutocompleteRecyclerAdapter;
 import com.example.serviceapp.Adapter.RecyclerAdapter;
 import com.example.serviceapp.Helper.GpsHelper;
-import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.R;
+import com.example.serviceapp.View.MainView.PoiActivity;
 import com.google.android.gms.maps.model.LatLng;
 import com.kt.place.sdk.listener.OnSuccessListener;
 import com.kt.place.sdk.model.Poi;
@@ -32,11 +31,9 @@ public class SearchFragment extends Fragment
 
     private static SearchFragment instance;
     private Client placesClient;
-    private MainActivity activity;
+    private PoiActivity activity;
     private RecyclerAdapter mAdapter;
-    private AutocompleteRecyclerAdapter mAutocompleteAdapter;
     private RecyclerView recyclerView;
-    private RecyclerView autocompleteRecyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
 
     private int mLastKnowIndex = -1; // 현재까지 보여준 poi 인덱스
@@ -56,14 +53,14 @@ public class SearchFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup parentViewGroup, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_searchlist, parentViewGroup, false);
 
-        activity = (MainActivity)getActivity();
+        activity = (PoiActivity)getActivity();
         placesClient = new Client();
 
         // RecyclerView 초기화
         recyclerView = (RecyclerView) view.findViewById(R.id.poi_search_recycler2);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setHasFixedSize(true);
-        mAdapter = new RecyclerAdapter(getActivity());
+        mAdapter = new RecyclerAdapter(activity);
         recyclerView.setAdapter(mAdapter);
 
         // SwipeRefreshLayout 초기화
@@ -119,7 +116,6 @@ public class SearchFragment extends Fragment
     }
 
     public void setAutocompleteView(List<Suggest> suggests){
-//        mAutocompleteAdapter.setFilter(suggests);
         mAdapter.setHeaderFilter(suggests);
     }
 

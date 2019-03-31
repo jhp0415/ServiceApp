@@ -6,9 +6,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -28,17 +26,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
-import com.example.serviceapp.Fragment.SearchFragment;
-import com.example.serviceapp.Fragment.SearchToolbar;
-import com.example.serviceapp.Helper.BottomSheetHelper;
+import com.example.serviceapp.BottomSheet.MainBottomSheet;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.Helper.MapHelper;
-import com.example.serviceapp.Login.POJO.sAccess;
-import com.example.serviceapp.Login.POJO.sPlaceOverview;
-import com.example.serviceapp.Login.POJO.sPlaceWithComment;
-import com.example.serviceapp.Login.contract.MyServerContract;
-import com.example.serviceapp.Login.presenter.MyServerPresenter;
-import com.example.serviceapp.Util.Util;
+import com.example.serviceapp.MyServer.POJO.sAccess;
+import com.example.serviceapp.MyServer.contract.MyServerContract;
+import com.example.serviceapp.MyServer.presenter.MyServerPresenter;
+import com.example.serviceapp.View.MainView.PoiActivity;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -48,75 +42,61 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.kt.place.sdk.listener.OnSuccessListener;
-import com.kt.place.sdk.model.Poi;
-import com.kt.place.sdk.model.Suggest;
-import com.kt.place.sdk.net.PoiRequest;
-import com.kt.place.sdk.net.PoiResponse;
 import com.kt.place.sdk.util.Client;
 import com.kt.place.sdk.util.Manager;
 
 import org.json.JSONObject;
 
 import java.util.Arrays;
-import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity
-                implements FragmentManager.OnBackStackChangedListener,
-        NavigationView.OnNavigationItemSelectedListener,
+        implements  NavigationView.OnNavigationItemSelectedListener,
         MyServerContract.View {
 
+    private Client placesClient;
     private GpsHelper gpsHelper;
     private MapHelper mapHelper;
-    private Client placesClient;
     private SupportMapFragment googleMapFragment;
-    private BottomSheetHelper bottomSheetHelper;
+    public MainBottomSheet mainBottomSheet;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
-
     DrawerLayout mDrawerLayout;
     NavigationView navigationView;
-    MyServerContract.View myServerView = this;
 
     // 페이스북 로그인
+    private MyServerContract.View myServerView = this;
     private CallbackManager callbackManager; // Facebook manager
     private sAccess fbInfo; //Facebook Access info
     private String fbId;
     private String fbToken;
     private String clickedPoiId;
-    public static final int REQUEST_ADD_PHOTO = 1;
-    public static final int REQUEST_ADD_REVIEW = 2;
-
-    Util util;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        gpsHelper = new GpsHelper();
-        mapHelper = new MapHelper(getApplicationContext(), this);
-        googleMapFragment = mapHelper.getMapInstance();
-
+        // SDK 인증
         Manager.initialize(getApplicationContext(), "Bearer eb142d9027f84d51a4a20df8490e44bcf6fc7ef4dea64cae96a7fca282ebd8cc02764651");
         placesClient = new Client();
+
+        // 구글 지도
+        gpsHelper = new GpsHelper();
+        mapHelper = new MapHelper(getApplicationContext(), this);
+        googleMapFragment = mapHelper.googleMapFragment;
 
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
-        fragmentTransaction.addToBackStack("Main");
         fragmentTransaction.commit();
-        fragmentManager.addOnBackStackChangedListener(this);
-
-        util = new Util(getApplicationContext(), this);
 
         // Bottom Sheet 초기화
-        bottomSheetHelper =
-                new BottomSheetHelper(getApplicationContext(), this);
-        bottomSheetHelper.addBottomSheetContent(0);
+        mainBottomSheet =
+                new MainBottomSheet(getApplicationContext(), this);
+        mainBottomSheet.addBottomSheetContent(0);
 
-        // 네비게이션 드로워
+        // 메인 툴바 및 네비게이션 드로워
         FrameLayout linearLayout = (FrameLayout) findViewById(R.id.fragment_container1);
         LayoutInflater layoutInflater =
                 (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -154,19 +134,23 @@ public class MainActivity extends AppCompatActivity
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(),"visible");
-                fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
-                fragmentTransaction.addToBackStack("SearchFragment");
-                fragmentTransaction.commit();
+                // PoiActivity 실행하기
+                Intent intent = new Intent(MainActivity.this, PoiActivity.class);
+                intent.putExtra("fb_id", fbId);
+                startActivity(intent);
             }
         });
-
 
         // 의준 오빠 서버 로그인하기
         myServerLogin();
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        mapHelper.mGoogleMap.clear();
+    }
+
 
     /**
      * 툴바 왼쪽 홈버튼
@@ -179,7 +163,6 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.menu, menu);
         return true;
     }
-
     /**
      * 툴바 오른쪽 옵션 메뉴. 현재는 사용안할 예정
      * @param item
@@ -189,14 +172,11 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:
-                if(fragmentManager.getBackStackEntryCount() == 0) {
-                    mDrawerLayout.openDrawer(GravityCompat.START);
-                }
+                mDrawerLayout.openDrawer(GravityCompat.START);
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
-
     /**
      * @param menuItem
      * @return
@@ -207,23 +187,23 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = menuItem.getItemId();
         switch (id) {
-            case R.id.nav_home:
-                // TODO: 홈 화면으로 이동하기
-                fragmentManager.popBackStack(0, fragmentManager.getBackStackEntryCount() - 1);
-                break;
-            case R.id.nav_wishlist:
-                bottomSheetHelper.addBottomSheetContent(1);
-                bottomSheetHelper.setBottomSheetState("EXPANDED");
-                break;
-            case R.id.nav_search:
-                // TODO: 검색 화면으로 이동하기
-                fragmentManager = getSupportFragmentManager();
-                fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(),"visible");
-                fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
-                fragmentTransaction.addToBackStack("SearchFragment");
-                fragmentTransaction.commit();
-                break;
+//            case R.id.nav_home:
+//                // TODO: 홈 화면으로 이동하기
+//                fragmentManager.popBackStack(0, fragmentManager.getBackStackEntryCount() - 1);
+//                break;
+//            case R.id.nav_wishlist:
+//                bottomSheetHelper.addBottomSheetContent(1);
+//                bottomSheetHelper.setBottomSheetState("EXPANDED");
+//                break;
+//            case R.id.nav_search:
+//                // TODO: 검색 화면으로 이동하기
+//                fragmentManager = getSupportFragmentManager();
+//                fragmentTransaction = fragmentManager.beginTransaction();
+//                fragmentTransaction.replace(R.id.fragment_container1, SearchToolbar.getInstance(),"visible");
+//                fragmentTransaction.replace(R.id.fragment_container2, SearchFragment.getInstance(),"visible");
+//                fragmentTransaction.addToBackStack("SearchFragment");
+//                fragmentTransaction.commit();
+//                break;
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -240,45 +220,37 @@ public class MainActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
-        if(BottomSheetHelper.getInstance(getApplicationContext(), this).getBottomSheetState() == BottomSheetBehavior.STATE_EXPANDED) {
-            BottomSheetHelper.getInstance(getApplicationContext(), this).setBottomSheetState("COLLAPSED");
-        } else {
-            super.onBackPressed();
-        }
+//        if(BottomSheetHelper.getInstance(getApplicationContext(), this).getBottomSheetState() == BottomSheetBehavior.STATE_EXPANDED) {
+//            BottomSheetHelper.getInstance(getApplicationContext(), this).setBottomSheetState("COLLAPSED");
+//        } else {
+//            super.onBackPressed();
+//        }
         mapHelper.mGoogleMap.clear();
     }
-
     /**
-     * 페이스북 로그인 실행 결과 받기
+     * GPS 권한 받기
      * @param requestCode
-     * @param resultCode
-     * @param data
+     * @param permissions
+     * @param grantResults
      */
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        callbackManager.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_ADD_PHOTO && resultCode == RESULT_OK) {
-            Log.d("ddd", "ActivityResult : Request_add_photo");
-            sPlaceOverview review = (sPlaceOverview) data.getSerializableExtra("place_overview");
-            bottomSheetHelper.setOverviewImage(review.getPlacePicUrl());
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == gpsHelper.PERMISSION_REQUEST_CODE
+                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            gpsHelper.isAccessFineLocation = true;
         }
-        if (requestCode == REQUEST_ADD_REVIEW && resultCode == RESULT_OK) {
-            Log.d("ddd", "ActivityResult : Request_add_review");
-            sPlaceWithComment review = (sPlaceWithComment) data.getSerializableExtra("place_review");
-            bottomSheetHelper.setReviewList(review.getComments());
+        if (gpsHelper.isAccessFineLocation) {
+            gpsHelper.mLocationPermissionGranted = true;
+            gpsHelper.receivedPermission();
         }
     }
-
+    /**
+     * 페이스북 아이디 가져오기
+     * @return
+     */
     public String getFbId() {
         return fbId;
-    }
-
-
-    public void setFbInfo(sAccess info) {
-        fbId = info.getFbId();
-        fbInfo = info;
     }
     /**
      * 페이스북 로그인하기
@@ -374,139 +346,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    /**
-     * GPS 권한 받기
-     * @param requestCode
-     * @param permissions
-     * @param grantResults
-     */
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-        if (requestCode == gpsHelper.PERMISSION_REQUEST_CODE
-                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            gpsHelper.isAccessFineLocation = true;
-        }
-        if (gpsHelper.isAccessFineLocation) {
-            gpsHelper.mLocationPermissionGranted = true;
-            gpsHelper.receivedPermission();
-        }
-    }
-
-    /**
-     * 프레그먼트 간의 통신을 위해
-     * @param query
-     */
-    public void setEditTextQuery(String query) {
-        SearchFragment.getInstance().setEditTextQuery(query);
-    }
-
-    public void onFragmentResult(Poi data) {
-        util.hideKyeboard();
-        mapHelper.mGoogleMap.clear();
-        mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
-                data.getPoint().getLng()), data.getName(), data.getBranch(), data.getAddress().getFullAddressParcel());
-
-        Fragment currentFragment = fragmentManager.findFragmentByTag("visible");
-        if(currentFragment instanceof SupportMapFragment) {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
-            fragmentTransaction.addToBackStack("googleMapFragment");
-            fragmentTransaction.commit();
-        } else {
-            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
-            fragmentTransaction.addToBackStack("googleMapFragment");
-            fragmentTransaction.commit();
-        }
-
-        // TODO : 바텀 시트 업데이트
-        bottomSheetHelper.updatePoiInfo(data);
-    }
-
-    public void onFragmentResultAutocomplete(Suggest data) {
-        util.hideKyeboard();
-        mapHelper.mGoogleMap.clear();
-        mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
-                data.getPoint().getLng()), data.getTerms(), "", "");
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment, "visible");
-        fragmentTransaction.addToBackStack("googleMapFragment");
-        fragmentTransaction.commit();
-
-        // TODO : 바텀 시트 업데이트
-        requestPoiSearch(data.getTerms(), 0);
-    }
-
-    public void requestPoiSearch(final String terms, int start) {
-        LatLng point = GpsHelper.getInstance().getCurrentLocation();
-        PoiRequest request = new PoiRequest.PoiRequestBuilder(terms)
-                .setLat(point.latitude)
-                .setLng(point.longitude)
-                .setStart(start)
-                .setNumberOfResults(10)
-                .build();
-
-        placesClient.getPoiSearch(request, new OnSuccessListener<PoiResponse>() {
-            @Override
-            public void onSuccess(@NonNull PoiResponse poiResponse) {
-                if(poiResponse.getPois().size() > 0) {
-                    bottomSheetHelper.updateAutocompleteList(poiResponse.getPois());
-                }
-            }
-
-            @Override
-            public void onError(@NonNull Throwable throwable) {
-                Log.d("ddd", throwable.getMessage());
-            }
-        });
-    }
-
-    public void setRecycleView(List<Poi> pois){
-        if(pois.size() > 0) {
-            SearchFragment.getInstance().setRecyclerView(pois);
-        }
-    }
-
-    public void setRecycleViewPlus(List<Poi> pois){
-        if(pois.size() > 0) {
-            SearchFragment.getInstance().setRecyclerViewPlus(pois);
-        }
-    }
-
-    public void setAutocompleteView(List<Suggest> suggests){
-        if(suggests.size() > 0) {
-            SearchFragment.getInstance().setAutocompleteView(suggests);
-        }
-    }
-
-    @Override
-    public void onBackStackChanged() {
-        Log.d("ddd", "BackStackCount : " + fragmentManager.getBackStackEntryCount());
-        Fragment currentFragment = fragmentManager.findFragmentByTag("visible");
-        if(currentFragment instanceof SupportMapFragment) {
-            Log.d("ddd", "currentFragment : googleMapFragment");
-            bottomSheetHelper.setVisibility(true);
-            if(fragmentManager.getBackStackEntryCount() == 0) {
-                bottomSheetHelper.setBottomSheetHeight(75.f);
-                bottomSheetHelper.addBottomSheetContent(0);
-            }
-        } else if(currentFragment instanceof SearchFragment) {
-            Log.d("ddd", "currentFragment : SearchFragment");
-            bottomSheetHelper.setVisibility(false);
-        } else {
-            Log.d("ddd", "TAG : else case");
-            bottomSheetHelper.setVisibility(true);
-            if(fragmentManager.getBackStackEntryCount() == 0) {
-                mapHelper.onMyLocationButtonClick();
-                bottomSheetHelper.addBottomSheetContent(0);
-            }
-        }
-
-        for(int i=fragmentManager.getBackStackEntryCount() - 1; i>=0 ; i--) {
-            Log.d("ddd", i + "번째 스택 : " + fragmentManager.getBackStackEntryAt(i).getName());
-        }
-        Log.d("ddd", "====================================================");
+    public void setFbInfo(sAccess info) {
+        fbId = info.getFbId();
+        fbInfo = info;
     }
 }

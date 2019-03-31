@@ -6,7 +6,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 
-import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.R;
 
 public class Util {
@@ -19,7 +18,7 @@ public class Util {
         this.mContext = context;
         this.mActivity = activity;
         inputMethodManager = (InputMethodManager)this.mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-        container1 = (FrameLayout)this.mActivity.findViewById(R.id.fragment_container1);
+//        container1 = (FrameLayout)this.mActivity.findViewById(R.id.fragment_container1);
     }
 
     public static String changeMeterToKilometer(double meter){
@@ -33,7 +32,7 @@ public class Util {
     }
 
     public void hideKyeboard(){
-        EditText editText = container1.findViewById(R.id.toolbar_search);
+        EditText editText = mActivity.findViewById(R.id.toolbar_search);
         inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
 }

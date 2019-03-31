@@ -7,14 +7,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-;
-import com.example.serviceapp.MainActivity;
+
 import com.example.serviceapp.R;
+import com.example.serviceapp.View.MainView.PoiActivity;
 import com.kt.place.sdk.model.Poi;
 import com.kt.place.sdk.model.Suggest;
 
 import java.util.ArrayList;
 import java.util.List;
+
+;
 
 public class RecyclerAdapter extends RecyclerView.Adapter
 {
@@ -57,7 +59,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter
             itemViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((MainActivity) mActivity).onFragmentResult(itemViewHolder.mItem);
+                    ((PoiActivity) mActivity).onFragmentResult(itemViewHolder.mItem);
                 }
             });
         } else if (holder instanceof HeaderViewHolder) {
@@ -162,13 +164,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.suggest1:
-                    ((MainActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[0]);
+                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[0]);
                     break;
                 case R.id.suggest2:
-                    ((MainActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[1]);
+                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[1]);
                     break;
                 case R.id.suggest3:
-                    ((MainActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[2]);
+                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[2]);
                     break;
             }
         }

@@ -30,16 +30,16 @@
             <android.support.design.widget.CoordinatorLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
+                <!--구글 지도-->
                 <FrameLayout
                     android:id="@+id/fragment_container2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    >
-                </FrameLayout>
+                    android:layout_weight="1"/>
 
                 <!--bottom Sheet-->
-                <include layout="@layout/fragment_bottom_sheet" />
+                <include
+                    layout="@layout/fragment_bottom_sheet" />
 
             </android.support.design.widget.CoordinatorLayout>
         </LinearLayout>

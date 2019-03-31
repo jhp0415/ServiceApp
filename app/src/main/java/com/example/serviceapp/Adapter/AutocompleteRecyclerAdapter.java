@@ -7,8 +7,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.R;
+import com.example.serviceapp.View.MainView.PoiActivity;
 import com.kt.place.sdk.model.Poi;
 
 import java.util.ArrayList;
@@ -59,7 +59,7 @@ public class AutocompleteRecyclerAdapter extends RecyclerView.Adapter<Autocomple
             @Override
             public void onClick(View v) {
                 // 인텐트 호출
-                ((MainActivity) mActivity).onFragmentResult(holder.mItem);
+                ((PoiActivity) mActivity).onFragmentResult(holder.mItem);
             }
         });
     }
