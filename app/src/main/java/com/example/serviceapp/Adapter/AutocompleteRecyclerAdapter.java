@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.serviceapp.R;
+import com.example.serviceapp.Util.Util;
 import com.example.serviceapp.View.MainView.PoiActivity;
 import com.kt.place.sdk.model.Poi;
 
@@ -49,7 +50,10 @@ public class AutocompleteRecyclerAdapter extends RecyclerView.Adapter<Autocomple
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = items.get(position);
         holder.mTitleText.setText(items.get(position).getName() + " " + items.get(position).getBranch());
-        holder.mDistanceText.setText(String.valueOf((int) Math.round(items.get(position).getDistance())) + "km");
+        if (items.get(position).getDistance() != null) {
+            Util util = new Util(mActivity.getApplicationContext(), mActivity);
+            holder.mDistanceText.setText(util.changeMeterToKilometer((int) Math.round(items.get(position).getDistance())));
+        }
         holder.mCategoryText.setText(items.get(position).getCategory().getMasterName());
         holder.mAddressText.setText(items.get(position).getAddress().getFullAddressParcel());
         if (items.get(position).getPhones().getRepresentation() != null)
