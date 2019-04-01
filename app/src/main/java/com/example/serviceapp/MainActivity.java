@@ -31,6 +31,8 @@ import com.example.serviceapp.BottomSheet.MainBottomSheet;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.Helper.MapHelper;
 import com.example.serviceapp.MyServer.POJO.sAccess;
+import com.example.serviceapp.MyServer.POJO.sPlaceOverview;
+import com.example.serviceapp.MyServer.POJO.sPlaceWithComment;
 import com.example.serviceapp.MyServer.contract.MyServerContract;
 import com.example.serviceapp.MyServer.presenter.MyServerPresenter;
 import com.example.serviceapp.View.MainView.SearchActivity;
@@ -260,6 +262,20 @@ public class MainActivity extends AppCompatActivity
             gpsHelper.receivedPermission(getApplicationContext());
         }
     }
+
+
+    /**
+     * 페이스북 로그인 실행 결과 받기
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
+
     /**
      * 페이스북 아이디 가져오기
      * @return
@@ -271,6 +287,7 @@ public class MainActivity extends AppCompatActivity
      * 페이스북 로그인하기
      */
     public void facebookLoginOnClick(){
+        Log.d("ddd", "facebookLoginOnClick: ");
         LoginManager.getInstance().logInWithReadPermissions(MainActivity.this,
                 Arrays.asList("public_profile", "email"));
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {

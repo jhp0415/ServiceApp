@@ -24,6 +24,7 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:layout_weight="0.1">
            <ImageView
                android:src="@drawable/ic_place_grey_500_48dp"
