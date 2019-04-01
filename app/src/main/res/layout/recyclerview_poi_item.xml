@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:layout_weight="0.1">
+            android:layout_weight="0.2">
            <ImageView
                android:src="@drawable/ic_place_grey_500_48dp"
                android:layout_gravity="center"
@@ -36,14 +36,14 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:layout_weight="0.7">
+            android:layout_weight="0.6">
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:gravity="center_vertical"
-                android:textStyle="bold"
+                android:textColor="@color/basicText"
                 android:textSize="15sp"
                 android:text="title"/>
 

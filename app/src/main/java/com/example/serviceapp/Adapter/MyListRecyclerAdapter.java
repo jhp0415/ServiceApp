@@ -33,6 +33,7 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
     private List<sPlace> items = new ArrayList<>();
     private Activity mActivity;
     private MyListPresenter presenter;
+    private String fbId;
 
     public MyListRecyclerAdapter(Activity activity, MyListPresenter presenter) {
         this.mActivity = activity;
@@ -61,6 +62,10 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
         }
     }
 
+    public void setFbid(String id) {
+        fbId = id;
+    }
+
     @Override
     public void onBindViewHolder(final MyListRecyclerAdapter.ViewHolder holder, final int position) {
         holder.mItem = items.get(position);
@@ -73,8 +78,8 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
 
         Glide.with(mActivity.getApplicationContext())
                 .applyDefaultRequestOptions(new RequestOptions()
-                        .placeholder(R.drawable.ic_broken_image_black_24dp)
-                        .error(R.drawable.ic_broken_image_black_24dp)
+                        .placeholder(R.drawable.icon_no_image)
+                        .error(R.drawable.icon_no_image)
                 ).load(thumbnail)
                 .apply(RequestOptions.circleCropTransform().override(300,300))
                 .into(holder.mImageView);
@@ -99,7 +104,7 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
 //                presenter.getMyListPoi(items.get(position).getpoiId());
                 Intent intent = new Intent(mActivity, PoiInfoActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("fb_id", ((MainActivity)mActivity).getFbId());
+                intent.putExtra("fb_id", ((MainActivity) mActivity).getFbId());
                 intent.putExtra("poi_id", items.get(position).getpoiId());
                 mActivity.startActivity(intent);
             }

@@ -61,6 +61,8 @@ public class SearchFragment extends Fragment
         recyclerView.setLayoutManager(new LinearLayoutManager(activity));
         recyclerView.setHasFixedSize(true);
         mAdapter = new RecyclerAdapter(activity);
+        Log.d("ddd", "SearchFragment onCreateView: fbId : " + activity.fbId);
+        mAdapter.setFbId(activity.fbId);
         recyclerView.setAdapter(mAdapter);
 
         // SwipeRefreshLayout 초기화

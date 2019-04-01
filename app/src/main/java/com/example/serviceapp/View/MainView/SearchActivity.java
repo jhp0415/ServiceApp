@@ -69,10 +69,7 @@ public class SearchActivity extends AppCompatActivity
     public void getIntentData() {
         Intent intent = getIntent();
         fbId = intent.getStringExtra("fb_id");
-    }
-
-    public String getFbId() {
-        return fbId;
+        Log.d("ddd", "SearchActivity onCreate: fbId : " + fbId);
     }
 
     @Override

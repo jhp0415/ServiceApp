@@ -1,6 +1,7 @@
 package com.example.serviceapp.MyServer.model;
 
 import com.example.serviceapp.MyServer.POJO.sAccess;
+import com.example.serviceapp.MyServer.POJO.sComment;
 import com.example.serviceapp.MyServer.POJO.sPlace;
 import com.example.serviceapp.MyServer.POJO.sPlaceOverview;
 import com.example.serviceapp.MyServer.POJO.sPlaceWithComment;
@@ -43,13 +44,13 @@ public interface RetrofitInterface {
 
     public class updateReviewBody {
         private String fbId;
-        private String reviewId;
+        private String _id;
         private String captionTitle;
         private String captionBody;
 
         public updateReviewBody(String fbId, String reviewId, String captionTitle, String captionBody) {
             this.fbId = fbId;
-            this.reviewId = reviewId;
+            this._id = reviewId;
             this.captionTitle = captionTitle;
             this.captionBody = captionBody;
         }
@@ -77,7 +78,7 @@ public interface RetrofitInterface {
     Call<sPlaceWithComment> addReview(@Body addReviewBody body);
 
     @POST("comments/updateCommentOfPoi")
-    Call<HashMap<String, Object>> updateReview(@Body updateReviewBody body);
+    Call<sComment> updateReview(@Body updateReviewBody body);
 
     @DELETE("comments/deleteCommentOfPoi")
     Call<HashMap<String, Object>> deleteReview(@Query("_id") String _id,

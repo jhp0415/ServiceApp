@@ -33,4 +33,8 @@ public class sUser implements Serializable {
     public String getName() {
         return this.name;
     }
+
+    public String getFbId() {
+        return this.fbId;
+    }
 }

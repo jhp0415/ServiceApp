@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.example.serviceapp.BottomSheet.PoiInfoBottomSheet;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.Helper.MapHelper;
+import com.example.serviceapp.MyServer.POJO.sComment;
 import com.example.serviceapp.MyServer.POJO.sPlaceOverview;
 import com.example.serviceapp.MyServer.POJO.sPlaceWithComment;
 import com.example.serviceapp.R;
@@ -47,13 +48,15 @@ public class PoiActivity extends AppCompatActivity
 
     // 페이스북 로그인
     private CallbackManager callbackManager; // Facebook manager
-    private String fbId;
+
     public static final int REQUEST_ADD_PHOTO = 1;
     public static final int REQUEST_ADD_REVIEW = 2;
+    public static final int REQUEST_EDIT_REVIEW = 3;
+    public static final int REQUEST_DELETE_REVIEW = 4;
 
     // 툴바
     EditText editText;
-
+    private String fbId;
     String poiId;
     String mode;
 
@@ -62,7 +65,6 @@ public class PoiActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_poi);
 
-        Log.d("ddd", "PoiActivity 재실행");
         // intent 데이터 받기 -> fbId
         getIntentData();
 
@@ -72,7 +74,6 @@ public class PoiActivity extends AppCompatActivity
 
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-//        fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment,"visible");
         fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment,"visible");
         fragmentTransaction.commit();
 
@@ -104,6 +105,7 @@ public class PoiActivity extends AppCompatActivity
         fbId = intent.getStringExtra("fb_id");
         poiId = intent.getStringExtra("poi_id");
         mode = intent.getStringExtra("mode");
+        Log.d("ddd", "PoiActivity getIntentData: fbId " + fbId);
     }
 
     public void setResult(String mode) {
@@ -128,17 +130,27 @@ public class PoiActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-//        callbackManager.onActivityResult(requestCode, resultCode, data);
-
+        // 사진
         if (requestCode == REQUEST_ADD_PHOTO && resultCode == RESULT_OK) {
             Log.d("ddd", "ActivityResult : Request_add_photo");
             sPlaceOverview review = (sPlaceOverview) data.getSerializableExtra("place_overview");
             bottomSheet.setOverviewImage(review.getPlacePicUrl());
         }
+        // 리뷰
         if (requestCode == REQUEST_ADD_REVIEW && resultCode == RESULT_OK) {
-            Log.d("ddd", "ActivityResult : Request_add_review");
             sPlaceWithComment review = (sPlaceWithComment) data.getSerializableExtra("place_review");
             bottomSheet.setReviewList(review.getComments());
+        }
+        if (requestCode == REQUEST_EDIT_REVIEW && resultCode == RESULT_OK) {
+            Log.d("ddd", "ActivityResult : Request_add_review");
+            sComment comment = (sComment) data.getSerializableExtra("update_review");
+            int position = data.getExtras().getInt("position");
+            bottomSheet.setReviewList(position, comment);
+        }
+        if (requestCode == REQUEST_DELETE_REVIEW && resultCode == RESULT_OK) {
+            Log.d("ddd", "ActivityResult : Request_add_review");
+            int position = data.getExtras().getInt("position");
+            bottomSheet.setReviewList(position);
         }
     }
 

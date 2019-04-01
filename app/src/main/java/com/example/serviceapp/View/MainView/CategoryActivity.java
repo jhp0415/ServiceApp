@@ -15,6 +15,9 @@ import com.example.serviceapp.BottomSheet.CategoryBottomSheet;
 import com.example.serviceapp.Fragment.CategoryToolbar;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.Helper.MapHelper;
+import com.example.serviceapp.MyServer.POJO.sComment;
+import com.example.serviceapp.MyServer.POJO.sPlaceOverview;
+import com.example.serviceapp.MyServer.POJO.sPlaceWithComment;
 import com.example.serviceapp.R;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,6 +37,11 @@ public class CategoryActivity extends AppCompatActivity {
     private SupportMapFragment googleMapFragment;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
+
+    public static final int REQUEST_ADD_PHOTO = 1;
+    public static final int REQUEST_ADD_REVIEW = 2;
+    public static final int REQUEST_EDIT_REVIEW = 3;
+    public static final int REQUEST_DELETE_REVIEW = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +75,33 @@ public class CategoryActivity extends AppCompatActivity {
         Log.d("ddd", "map id : " + googleMapFragment.getTag() + googleMapFragment.getId());
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // 사진
+        if (requestCode == REQUEST_ADD_PHOTO && resultCode == RESULT_OK) {
+            Log.d("ddd", "ActivityResult : Request_add_photo");
+            sPlaceOverview review = (sPlaceOverview) data.getSerializableExtra("place_overview");
+            bottomSheet.setOverviewImage(review.getPlacePicUrl());
+        }
+        // 리뷰
+        if (requestCode == REQUEST_ADD_REVIEW && resultCode == RESULT_OK) {
+            Log.d("ddd", "ActivityResult : Request_add_review");
+            sPlaceWithComment review = (sPlaceWithComment) data.getSerializableExtra("place_review");
+            bottomSheet.setReviewList(review.getComments());
+        }
+        if (requestCode == REQUEST_EDIT_REVIEW && resultCode == RESULT_OK) {
+            Log.d("ddd", "ActivityResult : Request_add_review");
+            sComment comment = (sComment) data.getSerializableExtra("update_review");
+            int position = data.getExtras().getInt("position");
+            bottomSheet.setReviewList(position, comment);
+        }
+        if (requestCode == REQUEST_DELETE_REVIEW && resultCode == RESULT_OK) {
+            Log.d("ddd", "ActivityResult : Request_add_review");
+            int position = data.getExtras().getInt("position");
+            bottomSheet.setReviewList(position);
+        }
+    }
 
     public String getSeletedCategory() {
         return seletedCategory;

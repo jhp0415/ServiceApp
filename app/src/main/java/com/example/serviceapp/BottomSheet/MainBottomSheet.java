@@ -220,6 +220,7 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
         recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
         MyListRecyclerAdapter mAdapter = new MyListRecyclerAdapter(mActivity, mylistPresenter);
         recyclerView.setAdapter(mAdapter);
+        mAdapter.setFbid(((MainActivity) mActivity).getFbId());
         mAdapter.setFilter(response);
 
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
@@ -262,7 +263,7 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
         dynamicContent.removeAllViews();
 
         // TODO : bottom sheet 높이 조절
-        setBottomSheetHeight(150.f);
+        setBottomSheetHeight(130.f);
         setBottomSheetState("COLLAPSED");
 
         Log.d("ddd", "ReviewRecyclerView 초기화");
@@ -308,6 +309,16 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
     @Override
     public void setReviewList(List<sComment> comments) {
         poiReviewRecyclerViewAdapter.setFilter(comments);
+    }
+
+    @Override
+    public void setReviewList(int position, sComment comment) {
+        poiReviewRecyclerViewAdapter.setUpdate(position, comment);
+    }
+
+    @Override
+    public void setReviewList(int position) {
+        poiReviewRecyclerViewAdapter.setDelete(position);
     }
 
     @Override

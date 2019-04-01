@@ -36,4 +36,12 @@ public class sComment implements Serializable {
     public String getCaptionBody() {
         return captionBody;
     }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getPoiId() {
+        return poiId;
+    }
 }

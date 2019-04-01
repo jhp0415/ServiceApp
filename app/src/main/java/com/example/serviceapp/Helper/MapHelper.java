@@ -3,8 +3,12 @@ package com.example.serviceapp.Helper;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.example.serviceapp.View.MainView.CategoryActivity;
 import com.example.serviceapp.View.MainView.PoiActivity;
@@ -24,11 +28,12 @@ public class MapHelper
         implements GoogleMap.OnMarkerClickListener,
         GoogleMap.OnMapClickListener,
         OnMapReadyCallback,
-        GoogleMap.OnMyLocationButtonClickListener {
+        GoogleMap.OnMyLocationButtonClickListener,
+        GoogleMap.OnInfoWindowClickListener {
 
     public static MapHelper instance;
     public static GoogleMap mGoogleMap;
-    private Context mContext;
+    private static Context mContext;
     private Activity mActivity;
     public static SupportMapFragment googleMapFragment;
 
@@ -79,6 +84,23 @@ public class MapHelper
             MapHelper.mGoogleMap.getUiSettings().setZoomGesturesEnabled(true);
             MapHelper. mGoogleMap.getUiSettings().setCompassEnabled(true);               //나침반이 나타나도록 설정
             MapHelper.mGoogleMap.animateCamera(CameraUpdateFactory.zoomTo(MapHelper.ZOOM_LEVEL));     // 매끄럽게 이동함
+
+            // Find ZoomControl view
+            View zoomControls = googleMapFragment.getView().findViewById(0x1);
+
+            if (zoomControls != null && zoomControls.getLayoutParams() instanceof RelativeLayout.LayoutParams) {
+                // ZoomControl is inside of RelativeLayout
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) zoomControls.getLayoutParams();
+
+                // Align it to - parent top|left
+                params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+
+                // Update margins, set to 10dp
+                final int margin = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 150, mContext.getResources().getDisplayMetrics());
+                params.setMargins(margin, margin, margin, margin);
+            }
+
         } else {
             Log.d("ddd", "현재위치를 받아올 수 없습니다.");
             MapHelper.mGoogleMap.setMyLocationEnabled(false);
@@ -102,6 +124,7 @@ public class MapHelper
     public void onMapClick(LatLng latLng) {
 
     }
+
 
     @Override
     public boolean onMarkerClick(Marker marker) {
@@ -144,5 +167,10 @@ public class MapHelper
                 new LatLng(GpsHelper.getInstance().getCurrentLocation().latitude,
                         GpsHelper.getInstance().getCurrentLocation().longitude), ZOOM_LEVEL));
         return false;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
     }
 }

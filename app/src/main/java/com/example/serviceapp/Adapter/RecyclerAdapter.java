@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,6 +33,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter
     private final int TYPE_ITEM = 1;
 
     private HeaderViewHolder headerViewHolder;
+
+    private String fbId;
 
     public RecyclerAdapter(Activity activity) {
         this.mActivity = activity;
@@ -67,7 +70,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter
 //                    ((PoiActivity) mActivity).onFragmentResult(itemViewHolder.mItem);
                     Intent intent = new Intent(mActivity, PoiActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("fb_id", ((SearchActivity)mActivity).fbId);
+                    Log.d("ddd", "RecyclerView onCreateView: fbId : " + fbId);
+                    intent.putExtra("fb_id", fbId);
                     intent.putExtra("mode", "poi");
                     intent.putExtra("poi_id", items.get(position).getId());
                     mActivity.startActivity(intent);
@@ -89,6 +93,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter
                 }
             }
         }
+    }
+
+    public void setFbId(String id) {
+        fbId = id;
     }
 
     @Override
@@ -180,14 +188,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter
                 case R.id.suggest1:
 //                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[0]);
                     intent.putExtra("poi_id", headerViewHolder.mItem[0].getPoiId());
+                    intent.putExtra("fb_id", fbId);
                     break;
                 case R.id.suggest2:
 //                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[1]);
                     intent.putExtra("poi_id", headerViewHolder.mItem[0].getPoiId());
+                    intent.putExtra("fb_id", fbId);
                     break;
                 case R.id.suggest3:
 //                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[2]);
                     intent.putExtra("poi_id", headerViewHolder.mItem[0].getPoiId());
+                    intent.putExtra("fb_id", fbId);
                     break;
             }
             mActivity.startActivity(intent);

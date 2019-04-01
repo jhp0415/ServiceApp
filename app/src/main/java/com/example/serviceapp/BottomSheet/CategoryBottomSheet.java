@@ -132,7 +132,7 @@ public class CategoryBottomSheet
                 .inflate(R.layout.bottom_sheet_content_poi_info, dynamicContent, false);
 
         // TODO : bottom sheet 높이 조절
-        setBottomSheetHeight(150.f);
+        setBottomSheetHeight(130.f);
         setBottomSheetState("COLLAPSED");
 
         Log.d("ddd", "ReviewRecyclerView 초기화");
@@ -277,6 +277,16 @@ public class CategoryBottomSheet
     @Override
     public void setReviewList(List<sComment> comments) {
         poiReviewRecyclerViewAdapter.setFilter(comments);
+    }
+
+    @Override
+    public void setReviewList(int position, sComment comment) {
+        poiReviewRecyclerViewAdapter.setUpdate(position, comment);
+    }
+
+    @Override
+    public void setReviewList(int position) {
+        poiReviewRecyclerViewAdapter.setDelete(position);
     }
 
     @Override

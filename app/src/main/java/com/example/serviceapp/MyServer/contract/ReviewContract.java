@@ -15,6 +15,8 @@ public interface ReviewContract {
     interface View {
 
         public void setReviewList(List<sComment> comments);
+        public void setReviewList(int position, sComment comment);
+        public void setReviewList(int position);
         public void clearReviewList();
     }
 }

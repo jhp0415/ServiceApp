@@ -13,8 +13,8 @@
             android:id="@+id/default_info"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:textStyle="bold"
+            android:textSize="20dp"
+            android:textColor="@color/basicText"
             android:gravity="left"
             android:text="Address"/>
     </LinearLayout>

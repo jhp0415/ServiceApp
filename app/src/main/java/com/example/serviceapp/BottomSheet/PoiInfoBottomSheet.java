@@ -97,10 +97,11 @@ public class PoiInfoBottomSheet
         dynamicContent.removeAllViews();
 
         // TODO : bottom sheet 높이 조절
-        setBottomSheetHeight(150.f);
+        setBottomSheetHeight(130.f);
         setBottomSheetState("COLLAPSED");
 
         Log.d("ddd", "ReviewRecyclerView 초기화");
+        Log.d("ddd", "fbId : " + fbId);
         poiReviewRecyclerView = (RecyclerView) poiView.findViewById(R.id.review_recyclerview);
         poiReviewRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         poiReviewRecyclerView.setHasFixedSize(true);
@@ -164,6 +165,16 @@ public class PoiInfoBottomSheet
     @Override
     public void setReviewList(List<sComment> comments) {
         poiReviewRecyclerViewAdapter.setFilter(comments);
+    }
+
+    @Override
+    public void setReviewList(int position, sComment comment) {
+        poiReviewRecyclerViewAdapter.setUpdate(position, comment);
+    }
+
+    @Override
+    public void setReviewList(int position) {
+        poiReviewRecyclerViewAdapter.setDelete(position);
     }
 
     @Override

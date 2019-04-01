@@ -2,6 +2,7 @@ package com.example.serviceapp.Adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,17 +12,21 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.serviceapp.BottomSheet.CategoryBottomSheet;
 import com.example.serviceapp.BottomSheet.PoiInfoBottomSheet;
+import com.example.serviceapp.Helper.CustomSnackbar;
 import com.example.serviceapp.MyServer.POJO.sComment;
+import com.example.serviceapp.MyServer.POJO.sUser;
 import com.example.serviceapp.R;
 import com.example.serviceapp.Util.Util;
 import com.example.serviceapp.View.MainView.CategoryActivity;
 import com.example.serviceapp.View.SubView.AddPhotoActivity;
 import com.example.serviceapp.View.SubView.AddReviewActivity;
+import com.example.serviceapp.View.SubView.EditReviewActivity;
 import com.glide.slider.library.SliderLayout;
 import com.glide.slider.library.SliderTypes.TextSliderView;
 import com.kt.place.sdk.model.Poi;
@@ -33,6 +38,7 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
 
     private List<sComment> items = new ArrayList<>();
     private Activity mActivity;
+    View rootView;
 
     private final int TYPE_HEADER = 0;
     private final int TYPE_ITEM = 1;
@@ -49,6 +55,7 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        rootView = parent;
         RecyclerView.ViewHolder holder;
         if(viewType == 0) {
             View view =  LayoutInflater.from(parent.getContext()).inflate(R.layout.recyclerview_review_header, parent, false);
@@ -75,6 +82,18 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();     // 데이터 업데이트
     }
 
+    public void setUpdate(int position, sComment comment) {
+        Log.d("ddd", "setUpdate: 데이터 업데이트");
+        items.set(position, comment);
+        notifyDataSetChanged();     // 데이터 업데이트
+    }
+
+    public void setDelete(int position) {
+        Log.d("ddd", "setDelete: 데이터 삭제");
+        items.remove(position);
+        notifyDataSetChanged();
+    }
+
     public void setPoiInfo(Poi poi) {
         this.poi = poi;
         notifyDataSetChanged();
@@ -83,7 +102,7 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
     public void setImageResource(List<String> poiImages) {
         this.poiImages.clear();
         this.poiImages.addAll(poiImages);
-        notifyItemChanged(0);
+        notifyDataSetChanged();
     }
 
     public void clear() {
@@ -116,30 +135,37 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
             final ViewHolder reviewHolder = (ViewHolder) holder;
             reviewHolder.mItem = items.get(position - 1);
 
-            if(items.get(position - 1).getUser().getUserProfileUrl() != null) {
-                Glide.with(mActivity.getApplicationContext())
-                        .applyDefaultRequestOptions(
-                                new RequestOptions().error(R.drawable.ic_broken_image_black_24dp))
-                        .load(items.get(position - 1).getUser().getUserProfileUrl())
-                        .apply(RequestOptions.circleCropTransform().override(300, 300))
-                        .into(reviewHolder.mUserImage);
+            sUser reviewer = items.get(position - 1).getUser();
+            String reviewerImg = "";
+            String reviewerName = "탈퇴한 회원";
+            if(reviewer != null) {
+                reviewerImg = reviewer.getUserProfileUrl();
+                reviewerName = reviewer.getName();
             }
+
+            Glide.with(mActivity.getApplicationContext())
+                    .applyDefaultRequestOptions(
+                            new RequestOptions().error(R.drawable.ic_broken_image_black_24dp))
+                    .load(reviewerImg)
+                    .apply(RequestOptions.circleCropTransform().override(300,300))
+                    .into(reviewHolder.mUserImage);
+
             reviewHolder.mTitleText.setText(items.get(position - 1).getCaptionTitle());
             reviewHolder.mBodyText.setText(items.get(position - 1).getCaptionBody());
-            reviewHolder.mNameText.setText(items.get(position - 1).getUser().getName());
+            reviewHolder.mNameText.setText(reviewerName);
 
-            // 리뷰 수정 기능
+            // 리뷰 수정 기능(길게 눌렀을때)
             reviewHolder.mView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-//                    // 내 리뷰일때만
-//                    if(reviewHolder.mItem.getUser().getName() == fbInfo.getName()) {
-//                        // 수정 창 열기
-//                        Intent intent = new Intent(mActivity, EditReviewActivity.class);
-//                        intent.putExtra("title", reviewHolder.mTitleText.getText());
-//                        intent.putExtra("body", reviewHolder.mBodyText.getText());
-//                        mActivity.startActivityForResult(intent, REQUST_EDIT_REVIEW);
-//                    }
+                     // 내 리뷰일때만
+                    if (fbId.equals(reviewHolder.mItem.getUser().getFbId())) {
+
+                        CustomSnackbar customSnackbar = new CustomSnackbar(position - 1, mActivity.getApplicationContext(), mActivity, rootView,
+                                fbId, reviewHolder.mItem.getId(), reviewHolder.mItem.getPoiId(),
+                                reviewHolder.mTitleText.getText().toString(), reviewHolder.mBodyText.getText().toString());
+                        customSnackbar.show();
+                    }
                     return false;
                 }
             });

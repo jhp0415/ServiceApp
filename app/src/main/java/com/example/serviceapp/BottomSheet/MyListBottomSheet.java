@@ -47,6 +47,8 @@ public class MyListBottomSheet
     private RecyclerView poiReviewRecyclerView;
     private ReviewRecyclerAdapter poiReviewRecyclerViewAdapter;
 
+    private String fbId;
+
     public static PoiInfoBottomSheet poiInfoBottomSheet;
 
     public MyListBottomSheet(Context context, Activity activity, View view) {
@@ -68,6 +70,10 @@ public class MyListBottomSheet
         mylistView = LayoutInflater.from(mContext)
                 .inflate(R.layout.content_main_wishlist, mainContent, false);
         mainContent.addView(mylistView);
+    }
+
+    public void setFbId(String id) {
+        fbId = id;
     }
 
     public View getView() {
@@ -113,7 +119,7 @@ public class MyListBottomSheet
 
         // 로그인하면 텍스트 대체하기
         TextView pleaseLoginText = (TextView) mylistView.findViewById(R.id.please_login);
-        pleaseLoginText.setText("");
+        pleaseLoginText.setText("My List");
 
         // 리사이클러뷰 초기화
         RecyclerView recyclerView = (RecyclerView) mylistView.findViewById(R.id.mylist_recyclerview);
@@ -122,6 +128,7 @@ public class MyListBottomSheet
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.addItemDecoration(new DividerItemDecoration(mContext, DividerItemDecoration.VERTICAL));
         MyListRecyclerAdapter mAdapter = new MyListRecyclerAdapter(mActivity, mylistPresenter);
+        mAdapter.setFbid(((MainActivity) mActivity).getFbId());
         recyclerView.setAdapter(mAdapter);
         mAdapter.setFilter(response);
 

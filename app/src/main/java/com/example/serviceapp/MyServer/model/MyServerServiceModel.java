@@ -3,6 +3,7 @@ package com.example.serviceapp.MyServer.model;
 import android.util.Log;
 
 import com.example.serviceapp.MyServer.POJO.sAccess;
+import com.example.serviceapp.MyServer.POJO.sComment;
 import com.example.serviceapp.MyServer.POJO.sPlace;
 import com.example.serviceapp.MyServer.POJO.sPlaceOverview;
 import com.example.serviceapp.MyServer.POJO.sPlaceWithComment;
@@ -184,25 +185,25 @@ public class MyServerServiceModel {
     }
 
     public interface updatePlaceReviewListener {
-        public void onUpdatePlaceReviewFinished(HashMap<String, Object> response);
+        public void onUpdatePlaceReviewFinished(sComment response);
         public void onUpdatePlaceReviewFailure(Throwable t);
     }
 
     public void updatePlaceReview(String fbId, String reviewId, String commentTitle, String commentBody, final updatePlaceReviewListener onFinishedListener) {
-        Call<HashMap<String, Object>> call = retrofit.create(RetrofitInterface.class).updateReview(
+        Call<sComment> call = retrofit.create(RetrofitInterface.class).updateReview(
                 new RetrofitInterface.updateReviewBody(fbId, reviewId, commentTitle, commentBody));
 
         Log.d("updatePlaceReview", call.request().toString());
 
-        call.enqueue(new Callback<HashMap<String, Object>>() {
+        call.enqueue(new Callback<sComment>() {
             @Override
-            public void onResponse(Call<HashMap<String, Object>> call, Response<HashMap<String, Object>> response) {
+            public void onResponse(Call<sComment> call, Response<sComment> response) {
                 onFinishedListener.onUpdatePlaceReviewFinished(response.body());
                 Log.d("updatePlaceReview", "success");
             }
 
             @Override
-            public void onFailure(Call<HashMap<String, Object>> call, Throwable t) {
+            public void onFailure(Call<sComment> call, Throwable t) {
                 //TODO: onUpdatePlaceReviewFailure
                 Log.d("updatePlaceReview", "fail");
                 t.printStackTrace();

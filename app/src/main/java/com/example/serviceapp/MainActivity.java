@@ -106,6 +106,7 @@ public class MainActivity extends AppCompatActivity
                 new MainBottomSheet(getApplicationContext(), this);
         mainBottomSheet.addBottomSheetContent(0);
 
+
         // 메인 툴바 및 네비게이션 드로워
         FrameLayout linearLayout = (FrameLayout) findViewById(R.id.fragment_container1);
         LayoutInflater layoutInflater =
