@@ -183,6 +183,33 @@ public class MyServerServiceModel {
         });
     }
 
+    public interface deletePlaceReviewListener {
+        public void onDeletePlaceReviewFinished(HashMap<String, Object> response);
+        public void onDeletePlaceReviewFailure(Throwable t);
+    }
+
+    public void deletePlaceReview(String _id, String fbId, String poiId, final deletePlaceReviewListener onFinishedListener) {
+        Call<HashMap<String, Object>> call = retrofit.create(RetrofitInterface.class).deleteReview(_id, fbId, poiId);
+
+        Log.d("deletePlaceReview", call.request().toString());
+
+        call.enqueue(new Callback<HashMap<String, Object>>() {
+            @Override
+            public void onResponse(Call<HashMap<String, Object>> call, Response<HashMap<String, Object>> response) {
+                onFinishedListener.onDeletePlaceReviewFinished(response.body());
+                Log.d("deletePlaceReview", "success");
+            }
+
+            @Override
+            public void onFailure(Call<HashMap<String, Object>> call, Throwable t) {
+                //TODO: deletePlaceReview
+                Log.d("deletePlaceReview", "fail");
+                t.printStackTrace();
+                Log.d("deletePlaceReview", t.getMessage().toString());
+            }
+        });
+    }
+
     public interface addMyListListener {
         public void onAddMyListFinished(HashMap<String, Object> response);
         public void onAddMyListFailure(Throwable t);

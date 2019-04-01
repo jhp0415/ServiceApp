@@ -62,6 +62,11 @@ public interface RetrofitInterface {
     @POST("comments/addCommentToPoi")
     Call<sPlaceWithComment> addReview(@Body addReviewBody body);
 
+    @DELETE("comments/deleteCommentOfPoi")
+    Call<HashMap<String, Object>> deleteReview(@Query("_id") String _id,
+                                               @Query("fbId") String fbId,
+                                               @Query("poiId") String poiId);
+
     @POST("places/addToUsersList")
     Call<HashMap<String, Object>> addMyList(@Body addMyListBody body);
 
