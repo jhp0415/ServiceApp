@@ -115,11 +115,11 @@ public class PoiInfoBottomSheet
 
         // Image, Review 불러오기
         presenter = new OverviewPresenter(this);
-        presenter.getOverviewInfo(poi.getId());
+        presenter.getOverviewInfo(poi.id);
 
         // 리뷰 리스트 셋팅
         reviewPresenter = new ReviewPresenter(this);
-        reviewPresenter.getReviewList(poi.getId());
+        reviewPresenter.getReviewList(poi.id);
     }
 
     public void updateAutocompleteList(List<Poi> list) {

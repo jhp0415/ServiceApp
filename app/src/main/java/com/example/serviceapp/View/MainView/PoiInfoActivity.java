@@ -21,11 +21,12 @@ import com.example.serviceapp.R;
 import com.example.serviceapp.Util.Util;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.kt.place.sdk.listener.OnSuccessListener;
+import com.kt.place.sdk.listener.OnResponseListener;
 import com.kt.place.sdk.model.Poi;
 import com.kt.place.sdk.net.PoiResponse;
 import com.kt.place.sdk.net.RetrievePoiRequest;
-import com.kt.place.sdk.util.Client;
+import com.kt.place.sdk.util.PlaceClient;
+import com.kt.place.sdk.util.PlaceManager;
 
 public class PoiInfoActivity extends AppCompatActivity {
 
@@ -33,7 +34,7 @@ public class PoiInfoActivity extends AppCompatActivity {
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private MapHelper mapHelper;
-    private Client placesClient;
+    private PlaceClient placesClient;
     private SupportMapFragment googleMapFragment;
     private PoiInfoBottomSheet bottomSheet;
     private Util util;
@@ -64,7 +65,7 @@ public class PoiInfoActivity extends AppCompatActivity {
         fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment,"visible");
         fragmentTransaction.commit();
 
-        placesClient = new Client();
+        placesClient = PlaceManager.createClient();
 
         // bottom Sheet 설정
         View bottomSheetView = (LinearLayout) findViewById(R.id.bottom_sheet);
@@ -114,8 +115,8 @@ public class PoiInfoActivity extends AppCompatActivity {
     public void onFragmentResult(Poi data) {
 
         mapHelper.mGoogleMap.clear();
-        mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
-                data.getPoint().getLng()), data.getName(), data.getBranch(), data.getAddress().getFullAddressParcel());
+        mapHelper.setLocationMarker(new LatLng(data.point.lng,
+                data.point.lat), data.name, data.branch, data.address.getFullAddressRoad());
 
         Log.d("ddd", "map id : " + googleMapFragment.getTag() + googleMapFragment.getId());
 
@@ -125,14 +126,14 @@ public class PoiInfoActivity extends AppCompatActivity {
     }
 
     public void requestRetrievePoi(String id) {
-        RetrievePoiRequest request = new RetrievePoiRequest.RetrievePoiRequestBuilder().setId(id).build();
+        RetrievePoiRequest request = new RetrievePoiRequest.RetrievePoiRequestBuilder(id).build();
 
-        placesClient.getRetrievePoi(request, new OnSuccessListener<PoiResponse>() {
+        placesClient.getRetrievePoi(request, new OnResponseListener<PoiResponse>() {
             @Override
             public void onSuccess(@NonNull PoiResponse poiResponse) {
                 poi = poiResponse.getPois().get(0);
                 onFragmentResult(poi);
-                PoiToolbar.getInstance().setTitle(poi.getName());
+                PoiToolbar.getInstance().setTitle(poi.name);
             }
 
             @Override

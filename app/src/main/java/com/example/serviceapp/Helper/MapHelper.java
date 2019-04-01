@@ -3,7 +3,6 @@ package com.example.serviceapp.Helper;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.TypedValue;
@@ -19,10 +18,11 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.kt.place.sdk.listener.OnSuccessListener;
+import com.kt.place.sdk.listener.OnResponseListener;
 import com.kt.place.sdk.net.PoiRequest;
 import com.kt.place.sdk.net.PoiResponse;
-import com.kt.place.sdk.util.Client;
+import com.kt.place.sdk.util.PlaceClient;
+import com.kt.place.sdk.util.PlaceManager;
 
 public class MapHelper
         implements GoogleMap.OnMarkerClickListener,
@@ -136,8 +136,8 @@ public class MapHelper
                 .setNumberOfResults(1)
                 .build();
 
-        Client placesClient = new Client();
-        placesClient.getPoiSearch(request, new OnSuccessListener<PoiResponse>() {
+        PlaceClient placesClient = PlaceManager.createClient();
+        placesClient.getPoiSearch(request, new OnResponseListener<PoiResponse>() {
             @Override
             public void onSuccess(@NonNull PoiResponse poiResponse) {
                 if(poiResponse.getPois().size() > 0) {

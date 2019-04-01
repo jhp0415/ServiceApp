@@ -27,11 +27,12 @@ import com.example.serviceapp.MyServer.presenter.ReviewPresenter;
 import com.example.serviceapp.R;
 import com.example.serviceapp.View.MainView.CategoryActivity;
 import com.google.android.gms.maps.model.LatLng;
-import com.kt.place.sdk.listener.OnSuccessListener;
+import com.kt.place.sdk.listener.OnResponseListener;
 import com.kt.place.sdk.model.Poi;
 import com.kt.place.sdk.net.GeocodeRequest;
 import com.kt.place.sdk.net.GeocodeResponse;
-import com.kt.place.sdk.util.Client;
+import com.kt.place.sdk.util.PlaceClient;
+import com.kt.place.sdk.util.PlaceManager;
 
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class CategoryBottomSheet
     private Context mContext;
     private Activity mActivity;
     private View view;
-    private Client placesClient;
+    private PlaceClient placesClient;
     public static BottomSheetBehavior bottomSheetBehavior;
     public View bottomSheetView;
     private LinearLayout dynamicContent;
@@ -84,7 +85,7 @@ public class CategoryBottomSheet
 
         dynamicContent = (LinearLayout) view.findViewById(R.id.dynamic_content);
 
-        placesClient = new Client();
+        placesClient = PlaceManager.createClient();
 
         GpsHelper.getInstance().setOnCurrentAddressListener(listener);
     }
@@ -149,11 +150,11 @@ public class CategoryBottomSheet
 
         // Image, Review 불러오기
         presenter = new OverviewPresenter(this);
-        presenter.getOverviewInfo(poi.getId());
+        presenter.getOverviewInfo(poi.id);
 
         // 리뷰 리스트 셋팅
         reviewPresenter = new ReviewPresenter(this);
-        reviewPresenter.getReviewList(poi.getId());
+        reviewPresenter.getReviewList(poi.id);
     }
 
     public View getView() {
@@ -233,17 +234,15 @@ public class CategoryBottomSheet
 
     public void requestGeocodeResult(Location location){
         LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
-        final GeocodeRequest request = new GeocodeRequest.GeocodeRequestBuilder()
-                .setLat(point.latitude)
-                .setLng(point.longitude)
-                .build();
+        final GeocodeRequest request = new GeocodeRequest.GeocodeRequestBuilder(point.latitude, point.longitude).build();
 
-        placesClient.getGeocode(request, new OnSuccessListener<GeocodeResponse>() {
+        placesClient.getGeocode(request, new OnResponseListener<GeocodeResponse>() {
             @Override
             public void onSuccess(@NonNull GeocodeResponse geocodeResponse) {
-                String fullAddress = geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiDo() + " "
-                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiGunGu() + " "
-                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getEupMyeonDong() + " ";
+//                String fullAddress = geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiDo() + " "
+//                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiGunGu() + " "
+//                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getEupMyeonDong() + " ";
+                String fullAddress = geocodeResponse.getGeocodeList().get(0).getRoadAddressList().get(0).getFullStreetAddress();
                 textView.setText(fullAddress);
             }
 

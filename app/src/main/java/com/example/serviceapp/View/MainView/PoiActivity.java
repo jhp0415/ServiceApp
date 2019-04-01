@@ -14,7 +14,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.example.serviceapp.BottomSheet.PoiInfoBottomSheet;
 import com.example.serviceapp.Helper.GpsHelper;
@@ -27,18 +26,19 @@ import com.example.serviceapp.Util.Util;
 import com.facebook.CallbackManager;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.kt.place.sdk.listener.OnSuccessListener;
+import com.kt.place.sdk.listener.OnResponseListener;
 import com.kt.place.sdk.model.Poi;
 import com.kt.place.sdk.net.PoiRequest;
 import com.kt.place.sdk.net.PoiResponse;
 import com.kt.place.sdk.net.RetrievePoiRequest;
-import com.kt.place.sdk.util.Client;
+import com.kt.place.sdk.util.PlaceClient;
+import com.kt.place.sdk.util.PlaceManager;
 
 public class PoiActivity extends AppCompatActivity
         implements View.OnClickListener{
 
     private MapHelper mapHelper;
-    private Client placesClient;
+    private PlaceClient placesClient;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private Util util;
@@ -78,7 +78,7 @@ public class PoiActivity extends AppCompatActivity
         fragmentTransaction.commit();
 
         util = new Util(getApplicationContext(), this);
-        placesClient = new Client();
+        placesClient = PlaceManager.createClient();
 
         // bottom Sheet 설정
         View bottomSheetView = (LinearLayout) findViewById(R.id.bottom_sheet);
@@ -176,9 +176,9 @@ public class PoiActivity extends AppCompatActivity
     }
 
     public void modePoi(String id) {
-        RetrievePoiRequest request = new RetrievePoiRequest.RetrievePoiRequestBuilder().setId(id).build();
+        RetrievePoiRequest request = new RetrievePoiRequest.RetrievePoiRequestBuilder(id).build();
 
-        placesClient.getRetrievePoi(request, new OnSuccessListener<PoiResponse>() {
+        placesClient.getRetrievePoi(request, new OnResponseListener<PoiResponse>() {
             @Override
             public void onSuccess(@NonNull PoiResponse poiResponse) {
                 onFragmentResult(poiResponse.getPois().get(0));
@@ -192,9 +192,9 @@ public class PoiActivity extends AppCompatActivity
     }
 
     public void modeAutocomplete(String id) {
-        RetrievePoiRequest request = new RetrievePoiRequest.RetrievePoiRequestBuilder().setId(id).build();
+        RetrievePoiRequest request = new RetrievePoiRequest.RetrievePoiRequestBuilder(id).build();
 
-        placesClient.getRetrievePoi(request, new OnSuccessListener<PoiResponse>() {
+        placesClient.getRetrievePoi(request, new OnResponseListener<PoiResponse>() {
             @Override
             public void onSuccess(@NonNull PoiResponse poiResponse) {
                 onFragmentResultAutocomplete(poiResponse.getPois().get(0));
@@ -216,7 +216,7 @@ public class PoiActivity extends AppCompatActivity
                 .setNumberOfResults(10)
                 .build();
 
-        placesClient.getPoiSearch(request, new OnSuccessListener<PoiResponse>() {
+        placesClient.getPoiSearch(request, new OnResponseListener<PoiResponse>() {
             @Override
             public void onSuccess(@NonNull PoiResponse poiResponse) {
                 if(poiResponse.getPois().size() > 0) {
@@ -239,8 +239,8 @@ public class PoiActivity extends AppCompatActivity
         util.hideKyeboard();
 
         mapHelper.mGoogleMap.clear();
-        mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
-                data.getPoint().getLng()), data.getName(), data.getBranch(), data.getAddress().getFullAddressParcel());
+        mapHelper.setLocationMarker(new LatLng(data.point.lat,
+                data.point.lng), data.name, data.branch, data.address.getFullAddressRoad());
 
 
         Log.d("ddd", "map id : " + googleMapFragment.getTag() + googleMapFragment.getId());
@@ -259,19 +259,13 @@ public class PoiActivity extends AppCompatActivity
 
 
         // TODO : 바텀 시트 업데이트
-        requestPoiSearch(data.getName(), 0);
+        requestPoiSearch(data.name, 0);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.toolbar_search:
-//                Fragment currentFragment = fragmentManager.findFragmentByTag("visible");
-//                if (!(currentFragment instanceof SearchFragment)) {
-//                    Intent intent = new Intent(this, PoiActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                    startActivity(intent);
-//                }
                 finish();
                 break;
         }

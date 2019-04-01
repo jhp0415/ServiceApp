@@ -21,17 +21,18 @@ import com.example.serviceapp.MyServer.POJO.sPlaceWithComment;
 import com.example.serviceapp.R;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.kt.place.sdk.listener.OnSuccessListener;
+import com.kt.place.sdk.listener.OnResponseListener;
 import com.kt.place.sdk.model.Poi;
 import com.kt.place.sdk.net.NearbyPoiRequest;
 import com.kt.place.sdk.net.PoiResponse;
-import com.kt.place.sdk.util.Client;
+import com.kt.place.sdk.util.PlaceClient;
+import com.kt.place.sdk.util.PlaceManager;
 
 public class CategoryActivity extends AppCompatActivity {
 
     public String seletedCategory;
     public String fbId;
-    public Client placesClient;
+    public PlaceClient placesClient;
     public MapHelper mapHelper;
     public CategoryBottomSheet bottomSheet;
     private SupportMapFragment googleMapFragment;
@@ -48,7 +49,7 @@ public class CategoryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
 
-        placesClient = new Client();
+        placesClient = PlaceManager.createClient();
         mapHelper = new MapHelper(getApplicationContext(), this);
         googleMapFragment = mapHelper.googleMapFragment;
         getIntentData();
@@ -122,12 +123,12 @@ public class CategoryActivity extends AppCompatActivity {
                 .setLng(point.longitude)
                 .build();
 
-        placesClient.getNearbyPoiSearch(request, new OnSuccessListener<PoiResponse>() {
+        placesClient.getNearbyPoiSearch(request, new OnResponseListener<PoiResponse>() {
             @Override
             public void onSuccess(@NonNull final PoiResponse poiResponse) {
                 for (final Poi poi : poiResponse.getPois()) {
-                    LatLng result = new LatLng(poi.getPoint().getLat(), poi.getPoint().getLng());
-                    mapHelper.setLocationMarker(result, poi.getName(), poi.getBranch(), poi.getAddress().getFullAddressRoad());
+                    LatLng result = new LatLng(poi.point.lat, poi.point.lng);
+                    mapHelper.setLocationMarker(result, poi.name, poi.branch, poi.address.getFullAddressRoad());
                 }
             }
 

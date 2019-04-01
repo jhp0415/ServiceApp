@@ -24,7 +24,6 @@ import com.example.serviceapp.MyServer.contract.MyListContract;
 import com.example.serviceapp.MyServer.presenter.MyListPresenter;
 import com.example.serviceapp.R;
 import com.kt.place.sdk.model.Poi;
-import com.kt.place.sdk.util.Client;
 
 import java.util.ArrayList;
 
@@ -33,7 +32,6 @@ public class MyListBottomSheet
     private Context mContext;
     private Activity mActivity;
     private View view;
-    private Client placesClient;
     public static BottomSheetBehavior bottomSheetBehavior;
     private LinearLayout dynamicContent;
     private View wizardView;

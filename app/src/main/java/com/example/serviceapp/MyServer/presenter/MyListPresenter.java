@@ -51,7 +51,7 @@ public class MyListPresenter implements MyListContract.Presenter {
             @Override
             public void onPoiRetrieveFinished(PoiResponse response) {
                 Poi poi = response.getPois().get(0);
-                String poiName = poi.getName() + " " + poi.getBranch();
+                String poiName = poi.name + " " + poi.branch;
 //                poiContent.put(place, poiName);
                 myListView.setMyList(position, poiName);
             }

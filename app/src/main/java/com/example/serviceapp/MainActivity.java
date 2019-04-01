@@ -31,8 +31,6 @@ import com.example.serviceapp.BottomSheet.MainBottomSheet;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.Helper.MapHelper;
 import com.example.serviceapp.MyServer.POJO.sAccess;
-import com.example.serviceapp.MyServer.POJO.sPlaceOverview;
-import com.example.serviceapp.MyServer.POJO.sPlaceWithComment;
 import com.example.serviceapp.MyServer.contract.MyServerContract;
 import com.example.serviceapp.MyServer.presenter.MyServerPresenter;
 import com.example.serviceapp.View.MainView.SearchActivity;
@@ -47,8 +45,8 @@ import com.facebook.login.LoginResult;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.kt.place.sdk.model.Poi;
-import com.kt.place.sdk.util.Client;
-import com.kt.place.sdk.util.Manager;
+import com.kt.place.sdk.util.PlaceClient;
+import com.kt.place.sdk.util.PlaceManager;
 
 import org.json.JSONObject;
 
@@ -59,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         implements  NavigationView.OnNavigationItemSelectedListener,
         MyServerContract.View {
 
-    private Client placesClient;
+    private PlaceClient placesClient;
     private GpsHelper gpsHelper;
     private MapHelper mapHelper;
     private SupportMapFragment googleMapFragment;
@@ -88,8 +86,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         // SDK 인증
-        Manager.initialize(getApplicationContext(), "Bearer eb142d9027f84d51a4a20df8490e44bcf6fc7ef4dea64cae96a7fca282ebd8cc02764651");
-        placesClient = new Client();
+        PlaceManager.initialize("Bearer eb142d9027f84d51a4a20df8490e44bcf6fc7ef4dea64cae96a7fca282ebd8cc02764651");
+        placesClient = PlaceManager.createClient();
 
         // 구글 지도
         gpsHelper = new GpsHelper();
@@ -388,8 +386,8 @@ public class MainActivity extends AppCompatActivity
     public void onFragmentResult(Poi data) {
 //        util.hideKyeboard();
         mapHelper.mGoogleMap.clear();
-        mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
-                data.getPoint().getLng()), data.getName(), data.getBranch(), data.getAddress().getFullAddressParcel());
+        mapHelper.setLocationMarker(new LatLng(data.point.lat,
+                data.point.lng), data.name, data.branch, data.address.getFullAddressRoad());
 
         // TODO : 바텀 시트 업데이트
         mainBottomSheet.updatePoiInfo(data);

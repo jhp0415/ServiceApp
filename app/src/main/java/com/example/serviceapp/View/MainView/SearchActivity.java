@@ -19,21 +19,22 @@ import com.example.serviceapp.Fragment.SearchFragment;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.R;
 import com.google.android.gms.maps.model.LatLng;
-import com.kt.place.sdk.listener.OnSuccessListener;
+import com.kt.place.sdk.listener.OnResponseListener;
+import com.kt.place.sdk.model.Autocomplete;
 import com.kt.place.sdk.model.Poi;
-import com.kt.place.sdk.model.Suggest;
 import com.kt.place.sdk.net.AutocompleteRequest;
 import com.kt.place.sdk.net.AutocompleteResponse;
 import com.kt.place.sdk.net.PoiRequest;
 import com.kt.place.sdk.net.PoiResponse;
-import com.kt.place.sdk.util.Client;
+import com.kt.place.sdk.util.PlaceClient;
+import com.kt.place.sdk.util.PlaceManager;
 
 import java.util.List;
 
 public class SearchActivity extends AppCompatActivity
         implements TextWatcher, View.OnClickListener {
 
-    private Client placesClient;
+    private PlaceClient placesClient;
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     public String fbId;
@@ -47,7 +48,7 @@ public class SearchActivity extends AppCompatActivity
         setContentView(R.layout.activity_search);
 
         getIntentData();
-        placesClient = new Client();
+        placesClient = PlaceManager.createClient();
 
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
@@ -129,7 +130,7 @@ public class SearchActivity extends AppCompatActivity
                 .setNumberOfResults(10)
                 .build();
 
-        placesClient.getPoiSearch(request, new OnSuccessListener<PoiResponse>() {
+        placesClient.getPoiSearch(request, new OnResponseListener<PoiResponse>() {
             @Override
             public void onSuccess(@NonNull PoiResponse poiResponse) {
                 if(poiResponse.getPois().size() > 0) {
@@ -151,11 +152,11 @@ public class SearchActivity extends AppCompatActivity
                 .setLng(point.longitude)
                 .build();
 
-        placesClient.getAutocomplete(request, new OnSuccessListener<AutocompleteResponse>() {
+        placesClient.getAutocomplete(request, new OnResponseListener<AutocompleteResponse>() {
             @Override
             public void onSuccess(@NonNull AutocompleteResponse autocompleteResponse) {
-                if(autocompleteResponse.getSuggestList().size() > 0) {
-                    setAutocompleteView(autocompleteResponse.getSuggestList());
+                if(autocompleteResponse.getAutocompleteList().size() > 0) {
+                    setAutocompleteView(autocompleteResponse.getAutocompleteList());
                 }
             }
 
@@ -182,7 +183,7 @@ public class SearchActivity extends AppCompatActivity
         }
     }
 
-    public void setAutocompleteView(List<Suggest> suggests){
+    public void setAutocompleteView(List<Autocomplete> suggests){
         if(suggests.size() > 0) {
             SearchFragment.getInstance().setAutocompleteView(suggests);
         }

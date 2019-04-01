@@ -20,7 +20,6 @@ import android.widget.TextView;
 import com.example.serviceapp.Adapter.MyListRecyclerAdapter;
 import com.example.serviceapp.Adapter.RecyclerItemTouchHelper;
 import com.example.serviceapp.Adapter.ReviewRecyclerAdapter;
-import com.example.serviceapp.Helper.BottomSheetHelper;
 import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.MyServer.POJO.sComment;
 import com.example.serviceapp.MyServer.POJO.sPlace;
@@ -32,7 +31,8 @@ import com.example.serviceapp.MyServer.presenter.OverviewPresenter;
 import com.example.serviceapp.MyServer.presenter.ReviewPresenter;
 import com.example.serviceapp.R;
 import com.kt.place.sdk.model.Poi;
-import com.kt.place.sdk.util.Client;
+import com.kt.place.sdk.util.PlaceClient;
+import com.kt.place.sdk.util.PlaceManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +52,7 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
     public static BottomSheetBehavior bottomSheetBehavior;
     private LinearLayout dynamicContent;
     private LinearLayout mainContent;
-    private Client placesClient;
+    private PlaceClient placesClient;
 
     // Main Bottom Sheet content
     private MainCategoryBottomSheet categoryBottomSheet;
@@ -75,14 +75,6 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
     public OverviewPresenter presenter;
     private ReviewPresenter reviewPresenter;
 
-    private static BottomSheetHelper instance;
-    public static BottomSheetHelper getInstance(Context context, Activity activity) {
-        if(instance == null) {
-            instance = new BottomSheetHelper(context, activity);
-        }
-        return instance;
-    }
-
     public MainBottomSheet(Context context, Activity activity) {
         this.mContext = context;
         this.mActivity = activity;
@@ -91,7 +83,7 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
         bottomSheetBehavior = BottomSheetBehavior.from(rootView);
         bottomSheetBehavior.setBottomSheetCallback(this);
         dynamicContent = (LinearLayout) rootView.findViewById(R.id.dynamic_content);
-        placesClient = new Client();
+        placesClient = PlaceManager.createClient();
 
         // 메인 바텀시트 셋팅
         dynamicContent.removeAllViews();
@@ -280,11 +272,11 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
 
         // Image, Review 불러오기
         presenter = new OverviewPresenter(this);
-        presenter.getOverviewInfo(poi.getId());
+        presenter.getOverviewInfo(poi.id);
 
         // 리뷰 리스트 셋팅
         reviewPresenter = new ReviewPresenter(this);
-        reviewPresenter.getReviewList(poi.getId());
+        reviewPresenter.getReviewList(poi.id);
     }
 
     /**

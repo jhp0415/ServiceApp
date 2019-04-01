@@ -2,7 +2,6 @@ package com.example.serviceapp.Adapter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -26,7 +24,6 @@ import com.example.serviceapp.Util.Util;
 import com.example.serviceapp.View.MainView.CategoryActivity;
 import com.example.serviceapp.View.SubView.AddPhotoActivity;
 import com.example.serviceapp.View.SubView.AddReviewActivity;
-import com.example.serviceapp.View.SubView.EditReviewActivity;
 import com.glide.slider.library.SliderLayout;
 import com.glide.slider.library.SliderTypes.TextSliderView;
 import com.kt.place.sdk.model.Poi;
@@ -174,17 +171,17 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             // 헤더에 poi 정보 출력하기
             if(poi != null) {
-                headerViewHolder.textView1.setText(poi.getName() + poi.getBranch());
-                if (poi.getDistance() != null) {
+                headerViewHolder.textView1.setText(poi.name + poi.branch);
+                if (poi.distance != null) {
 //                    headerViewHolder.textView2.setText(String.valueOf((int) Math.round(poi.getDistance())) + "km");
                     Util util = new Util(mActivity.getApplicationContext(), mActivity);
-                    headerViewHolder.textView2.setText(util.changeMeterToKilometer((int) Math.round(poi.getDistance())));
+                    headerViewHolder.textView2.setText(util.changeMeterToKilometer((int) Math.round(poi.distance)));
                 }
-                headerViewHolder.textView3.setText(poi.getCategory().getMasterName());
-                headerViewHolder.textView4.setText(poi.getAddress().getFullAddressParcel());
-                if (poi.getPhones().getRepresentation() != null)
-                    if (poi.getPhones().getRepresentation().size() > 0)
-                        headerViewHolder.textView5.setText(poi.getPhones().getRepresentation().get(0));
+                headerViewHolder.textView3.setText(poi.category.masterName);
+                headerViewHolder.textView4.setText(poi.address.getFullAddressRoad());
+                if (poi.phones.representation != null)
+                    if (poi.phones.representation.size() > 0)
+                        headerViewHolder.textView5.setText(poi.phones.representation.get(0));
             }
             // 슬라이드 이미지뷰
             if(poiImages != null) {
@@ -264,7 +261,7 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
             switch (v.getId()) {
                 case R.id.add_photo:
                     Intent intent = new Intent(mActivity, AddPhotoActivity.class);
-                    intent.putExtra("poi_id", poi.getId());
+                    intent.putExtra("poi_id", poi.id);
                     intent.putExtra("fb_id", fbId);
                     mActivity.startActivityForResult(intent, REQUEST_ADD_PHOTO);
                     break;
@@ -273,15 +270,15 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
                     ImageView star = (ImageView) addListBtn.findViewById(R.id.addMyList);
                     star.setImageResource(R.drawable.icon_star);
                     if (mActivity instanceof CategoryActivity) {
-                        ((CategoryBottomSheet.instance).presenter).addMyList(fbId, poi.getId());
+                        ((CategoryBottomSheet.instance).presenter).addMyList(fbId, poi.id);
                     } else {
-                        ((PoiInfoBottomSheet.instance).presenter).addMyList(fbId, poi.getId());
+                        ((PoiInfoBottomSheet.instance).presenter).addMyList(fbId, poi.id);
                     }
                     break;
                 case R.id.add_review:
                     //데이터 담아서 팝업(액티비티) 호출
                     Intent intent2 = new Intent(mActivity, AddReviewActivity.class);
-                    intent2.putExtra("poi_id", poi.getId());
+                    intent2.putExtra("poi_id", poi.id);
                     intent2.putExtra("fb_id", fbId);
                     mActivity.startActivityForResult(intent2, REQUEST_ADD_REVIEW);
                     break;

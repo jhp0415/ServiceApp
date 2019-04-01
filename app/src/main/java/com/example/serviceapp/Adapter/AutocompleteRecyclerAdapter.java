@@ -49,16 +49,16 @@ public class AutocompleteRecyclerAdapter extends RecyclerView.Adapter<Autocomple
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.mItem = items.get(position);
-        holder.mTitleText.setText(items.get(position).getName() + " " + items.get(position).getBranch());
-        if (items.get(position).getDistance() != null) {
+        holder.mTitleText.setText(items.get(position).name + " " + items.get(position).branch);
+        if (items.get(position).distance != null) {
             Util util = new Util(mActivity.getApplicationContext(), mActivity);
-            holder.mDistanceText.setText(util.changeMeterToKilometer((int) Math.round(items.get(position).getDistance())));
+            holder.mDistanceText.setText(util.changeMeterToKilometer((int) Math.round(items.get(position).distance)));
         }
-        holder.mCategoryText.setText(items.get(position).getCategory().getMasterName());
-        holder.mAddressText.setText(items.get(position).getAddress().getFullAddressParcel());
-        if (items.get(position).getPhones().getRepresentation() != null)
-            if (items.get(position).getPhones().getRepresentation().size() > 0)
-                holder.mPhoneText.setText(items.get(position).getPhones().getRepresentation().get(0));
+        holder.mCategoryText.setText(items.get(position).category.masterName);
+        holder.mAddressText.setText(items.get(position).address.getFullAddressParcel());
+        if (items.get(position).phones.representation != null)
+            if (items.get(position).phones.representation.size() > 0)
+                holder.mPhoneText.setText(items.get(position).phones.representation.get(0));
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

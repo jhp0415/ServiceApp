@@ -16,12 +16,13 @@ import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.R;
 import com.example.serviceapp.View.MainView.SearchActivity;
 import com.google.android.gms.maps.model.LatLng;
-import com.kt.place.sdk.listener.OnSuccessListener;
+import com.kt.place.sdk.listener.OnResponseListener;
+import com.kt.place.sdk.model.Autocomplete;
 import com.kt.place.sdk.model.Poi;
-import com.kt.place.sdk.model.Suggest;
 import com.kt.place.sdk.net.PoiRequest;
 import com.kt.place.sdk.net.PoiResponse;
-import com.kt.place.sdk.util.Client;
+import com.kt.place.sdk.util.PlaceClient;
+import com.kt.place.sdk.util.PlaceManager;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class SearchFragment extends Fragment
         implements SwipeRefreshLayout.OnRefreshListener {
 
     private static SearchFragment instance;
-    private Client placesClient;
+    private PlaceClient placesClient;
     private SearchActivity activity;
     private RecyclerAdapter mAdapter;
     private RecyclerView recyclerView;
@@ -54,7 +55,7 @@ public class SearchFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_searchlist, parentViewGroup, false);
 
         activity = (SearchActivity)getActivity();
-        placesClient = new Client();
+        placesClient = PlaceManager.createClient();
 
         // RecyclerView 초기화
         recyclerView = (RecyclerView) view.findViewById(R.id.poi_search_recycler2);
@@ -117,7 +118,7 @@ public class SearchFragment extends Fragment
         mAdapter.setFilterPlus(pois);
     }
 
-    public void setAutocompleteView(List<Suggest> suggests){
+    public void setAutocompleteView(List<Autocomplete> suggests){
         mAdapter.setHeaderFilter(suggests);
     }
 
@@ -130,7 +131,7 @@ public class SearchFragment extends Fragment
                 .setNumberOfResults(10)
                 .build();
 
-        placesClient.getPoiSearch(request, new OnSuccessListener<PoiResponse>() {
+        placesClient.getPoiSearch(request, new OnResponseListener<PoiResponse>() {
             @Override
             public void onSuccess(@NonNull PoiResponse poiResponse) {
                 if(poiResponse.getPois().size() > 0) {

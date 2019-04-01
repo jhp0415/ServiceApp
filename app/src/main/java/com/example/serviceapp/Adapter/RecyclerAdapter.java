@@ -13,9 +13,8 @@ import android.widget.TextView;
 import com.example.serviceapp.R;
 import com.example.serviceapp.Util.Util;
 import com.example.serviceapp.View.MainView.PoiActivity;
-import com.example.serviceapp.View.MainView.SearchActivity;
+import com.kt.place.sdk.model.Autocomplete;
 import com.kt.place.sdk.model.Poi;
-import com.kt.place.sdk.model.Suggest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +25,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter
 {
 
     private List<Poi> items = new ArrayList<>();
-    private List<Suggest> itemsHearder = new ArrayList<>();
+    private List<Autocomplete> itemsHearder = new ArrayList<>();
     private Activity mActivity;
 
     private final int TYPE_HEADER = 0;
@@ -59,21 +58,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter
         if (holder instanceof ViewHolder) {
             final ViewHolder itemViewHolder = (ViewHolder) holder;
             itemViewHolder.mItem = items.get(position);
-            itemViewHolder.mTitleText.setText(items.get(position).getName() + " " + items.get(position).getBranch());
-            itemViewHolder.mDescriptionText.setText(items.get(position).getAddress().getFullAddressParcel());
-//            itemViewHolder.mDistance.setText(String.valueOf((int) Math.round(items.get(position).getDistance())));
+            itemViewHolder.mTitleText.setText(items.get(position).name + " " + items.get(position).branch);
+            itemViewHolder.mDescriptionText.setText(items.get(position).address.getFullAddressRoad());
             Util util = new Util(mActivity.getApplicationContext(), mActivity);
-            itemViewHolder.mDistance.setText(util.changeMeterToKilometer((int) Math.round(items.get(position).getDistance())));
+            itemViewHolder.mDistance.setText(util.changeMeterToKilometer((int) Math.round(items.get(position).distance)));
             itemViewHolder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    ((PoiActivity) mActivity).onFragmentResult(itemViewHolder.mItem);
                     Intent intent = new Intent(mActivity, PoiActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     Log.d("ddd", "RecyclerView onCreateView: fbId : " + fbId);
                     intent.putExtra("fb_id", fbId);
                     intent.putExtra("mode", "poi");
-                    intent.putExtra("poi_id", items.get(position).getId());
+                    intent.putExtra("poi_id", items.get(position).id);
                     mActivity.startActivity(intent);
                 }
             });
@@ -83,12 +80,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter
                 if(itemsHearder.size() < 3) {
                     for(int i = 0; i<itemsHearder.size();i++) {
                         headerViewHolder.mItem[i] = itemsHearder.get(0);
-                        headerViewHolder.mTitleText[i].setText(itemsHearder.get(i).getTerms());
+                        headerViewHolder.mTitleText[i].setText(itemsHearder.get(i).terms);
                     }
                 } else {
                     for(int i = 0; i<3;i++) {
                         headerViewHolder.mItem[i] = itemsHearder.get(0);
-                        headerViewHolder.mTitleText[i].setText(itemsHearder.get(i).getTerms());
+                        headerViewHolder.mTitleText[i].setText(itemsHearder.get(i).terms);
                     }
                 }
             }
@@ -117,7 +114,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter
         notifyDataSetChanged();     // 데이터 업데이트
     }
 
-    public void setHeaderFilter(List<Suggest> items) {
+    public void setHeaderFilter(List<Autocomplete> items) {
         this.itemsHearder.clear();
         if(items.size() > 0) {
             if(items.size() < 3) {
@@ -161,7 +158,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter
 
     public class HeaderViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener  {
-        public Suggest[] mItem = new Suggest[3];
+        public Autocomplete[] mItem = new Autocomplete[3];
         public final View mView;
         public final TextView[] mTitleText = new TextView[3];
         public final int[] id = {
@@ -187,17 +184,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter
             switch (v.getId()) {
                 case R.id.suggest1:
 //                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[0]);
-                    intent.putExtra("poi_id", headerViewHolder.mItem[0].getPoiId());
+                    intent.putExtra("poi_id", headerViewHolder.mItem[0].poiId);
                     intent.putExtra("fb_id", fbId);
                     break;
                 case R.id.suggest2:
 //                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[1]);
-                    intent.putExtra("poi_id", headerViewHolder.mItem[0].getPoiId());
+                    intent.putExtra("poi_id", headerViewHolder.mItem[0].poiId);
                     intent.putExtra("fb_id", fbId);
                     break;
                 case R.id.suggest3:
 //                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[2]);
-                    intent.putExtra("poi_id", headerViewHolder.mItem[0].getPoiId());
+                    intent.putExtra("poi_id", headerViewHolder.mItem[0].poiId);
                     intent.putExtra("fb_id", fbId);
                     break;
             }

@@ -19,10 +19,11 @@ import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.R;
 import com.example.serviceapp.View.MainView.CategoryActivity;
 import com.google.android.gms.maps.model.LatLng;
-import com.kt.place.sdk.listener.OnSuccessListener;
+import com.kt.place.sdk.listener.OnResponseListener;
 import com.kt.place.sdk.net.GeocodeRequest;
 import com.kt.place.sdk.net.GeocodeResponse;
-import com.kt.place.sdk.util.Client;
+import com.kt.place.sdk.util.PlaceClient;
+import com.kt.place.sdk.util.PlaceManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,7 +32,7 @@ public class MainCategoryBottomSheet implements View.OnClickListener {
     private Context mContext;
     private Activity mActivity;
     private View view;
-    private Client placesClient;
+    private PlaceClient placesClient;
     public static BottomSheetBehavior bottomSheetBehavior;
     public View bottomSheetView;
     private LinearLayout dynamicContent;
@@ -53,7 +54,7 @@ public class MainCategoryBottomSheet implements View.OnClickListener {
         this.view = view;
         ButterKnife.bind(this, this.view);
 
-        placesClient = new Client();
+        placesClient = PlaceManager.createClient();
         imageView1.setOnClickListener(this);
         imageView2.setOnClickListener(this);
         imageView3.setOnClickListener(this);
@@ -180,18 +181,16 @@ public class MainCategoryBottomSheet implements View.OnClickListener {
 
     public void requestGeocodeResult(Location location){
         LatLng point = new LatLng(location.getLatitude(), location.getLongitude());
-        final GeocodeRequest request = new GeocodeRequest.GeocodeRequestBuilder()
-                .setLat(point.latitude)
-                .setLng(point.longitude)
-                .build();
+        final GeocodeRequest request = new GeocodeRequest.GeocodeRequestBuilder(point.latitude, point.longitude).build();
 
-        placesClient.getGeocode(request, new OnSuccessListener<GeocodeResponse>() {
+        placesClient.getGeocode(request, new OnResponseListener<GeocodeResponse>() {
             @Override
             public void onSuccess(@NonNull GeocodeResponse geocodeResponse) {
-                String fullAddress = geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiDo() + " "
-                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiGunGu() + " "
-                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getEupMyeonDong() + " ";
-                textView.setText(fullAddress);
+//                String fullAddress = geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiDo() + " "
+//                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiGunGu() + " "
+//                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getEupMyeonDong() + " ";
+                textView.setText(geocodeResponse.getGeocodeList().get(0).getRoadAddressList().get(0).getFullStreetAddress());
+
             }
 
             @Override
