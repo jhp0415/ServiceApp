@@ -87,8 +87,6 @@ public class EditReviewActivity extends Activity implements EditReviewContract.V
     @Override
     public void submitEditFinished(sComment comment) {
         // 리스트 업데이트하고 끝낸다
-        Util util = new Util(getApplicationContext(), this);
-        util.hideKyeboard();
 
         Intent intent = getIntent();
         intent.putExtra("position", position);

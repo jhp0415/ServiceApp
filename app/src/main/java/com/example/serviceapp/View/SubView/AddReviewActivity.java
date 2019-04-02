@@ -70,11 +70,10 @@ public class AddReviewActivity extends Activity
 
     @Override
     public void submitFinished(sPlaceWithComment placeReview) {
-        Util util = new Util(getApplicationContext(), this);
-        util.hideKyeboard();
 
         Intent intent = getIntent();
         intent.putExtra("place_review", placeReview);
+
         setResult(RESULT_OK, intent);
         finish();
     }
