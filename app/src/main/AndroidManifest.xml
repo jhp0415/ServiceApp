@@ -18,13 +18,15 @@
 
         <activity android:name=".View.SubView.DeleteReviewActivity"></activity>
         <activity
-            android:name=".View.SubView.EditReviewActivity"/>
+            android:name=".View.SubView.EditReviewActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"/>
         <activity android:name=".View.MainView.SearchActivity" />
         <activity android:name=".View.MainView.PoiInfoActivity" />
         <activity android:name=".View.MainView.PoiActivity" />
         <activity android:name=".View.MainView.CategoryActivity" />
         <activity
-            android:name=".View.SubView.AddReviewActivity" />
+            android:name=".View.SubView.AddReviewActivity"
+            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"/>
         <!--android:theme="@android:style/Theme.DeviceDefault.Light.Dialog"-->
         <activity android:name=".View.SubView.AddPhotoActivity" />
 
