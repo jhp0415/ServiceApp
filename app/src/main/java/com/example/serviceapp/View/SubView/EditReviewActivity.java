@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import com.example.serviceapp.MyServer.POJO.sPlaceWithComment;
 import com.example.serviceapp.MyServer.contract.EditReviewContract;
 import com.example.serviceapp.MyServer.presenter.EditReviewPresenter;
 import com.example.serviceapp.R;
+import com.example.serviceapp.Util.Util;
 
 public class EditReviewActivity extends Activity implements EditReviewContract.View {
 
@@ -85,11 +87,23 @@ public class EditReviewActivity extends Activity implements EditReviewContract.V
     @Override
     public void submitEditFinished(sComment comment) {
         // 리스트 업데이트하고 끝낸다
+        Util util = new Util(getApplicationContext(), this);
+        util.hideKyeboard();
+
         Intent intent = getIntent();
         intent.putExtra("position", position);
         intent.putExtra("update_review", comment);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        //바깥레이어 클릭시 안닫히게
+        if(event.getAction()==MotionEvent.ACTION_OUTSIDE){
+            return false;
+        }
+        return true;
     }
 
     @Override

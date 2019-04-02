@@ -116,8 +116,8 @@ public class MyListBottomSheet
         Log.d("ddd", "즐겨찾기 목록 가져와서 저장 완료");
 
         // 로그인하면 텍스트 대체하기
-        TextView pleaseLoginText = (TextView) mylistView.findViewById(R.id.please_login);
-        pleaseLoginText.setText("My List");
+        LinearLayout pleaseLoginText = (LinearLayout) mylistView.findViewById(R.id.please_login);
+        pleaseLoginText.setVisibility(View.GONE);
 
         // 리사이클러뷰 초기화
         RecyclerView recyclerView = (RecyclerView) mylistView.findViewById(R.id.mylist_recyclerview);

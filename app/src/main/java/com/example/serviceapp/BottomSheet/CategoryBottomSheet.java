@@ -133,7 +133,7 @@ public class CategoryBottomSheet
                 .inflate(R.layout.bottom_sheet_content_poi_info, dynamicContent, false);
 
         // TODO : bottom sheet 높이 조절
-        setBottomSheetHeight(130.f);
+        setBottomSheetHeight(120.f);
         setBottomSheetState("COLLAPSED");
 
         Log.d("ddd", "ReviewRecyclerView 초기화");

@@ -201,8 +201,8 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
         Log.d("ddd", "즐겨찾기 목록 가져와서 저장 완료");
 
         // 로그인하면 텍스트 대체하기
-        TextView pleaseLoginText = (TextView) mylistView.findViewById(R.id.please_login);
-        pleaseLoginText.setText("");
+        LinearLayout pleaseLoginText = (LinearLayout) mylistView.findViewById(R.id.please_login);
+        pleaseLoginText.setVisibility(View.GONE);
 
         // 리사이클러뷰 초기화
         RecyclerView recyclerView = (RecyclerView) mylistView.findViewById(R.id.mylist_recyclerview);
@@ -255,7 +255,7 @@ public class MainBottomSheet extends BottomSheetBehavior.BottomSheetCallback
         dynamicContent.removeAllViews();
 
         // TODO : bottom sheet 높이 조절
-        setBottomSheetHeight(130.f);
+        setBottomSheetHeight(120.f);
         setBottomSheetState("COLLAPSED");
 
         Log.d("ddd", "ReviewRecyclerView 초기화");

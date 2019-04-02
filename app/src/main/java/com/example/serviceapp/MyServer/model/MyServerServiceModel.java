@@ -32,6 +32,7 @@ public class MyServerServiceModel {
     }
 
     public void callSignCheck(String accessToken, final callSignCheckListener onFinishedListener) {
+        Log.d("ddd", "accessToken : " +accessToken);
         Call<sAccess> call = retrofit.create(RetrofitInterface.class).getSignCheck(new RetrofitInterface.signCheckRequest(accessToken));
 
         call.enqueue(new Callback<sAccess>() {

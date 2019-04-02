@@ -97,7 +97,7 @@ public class PoiInfoBottomSheet
         dynamicContent.removeAllViews();
 
         // TODO : bottom sheet 높이 조절
-        setBottomSheetHeight(130.f);
+        setBottomSheetHeight(120.f);
         setBottomSheetState("COLLAPSED");
 
         Log.d("ddd", "ReviewRecyclerView 초기화");

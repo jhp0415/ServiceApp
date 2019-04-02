@@ -54,7 +54,6 @@ public class PoiInfoActivity extends AppCompatActivity {
         // intent 데이터 받기 -> fbId
         getIntentData();
 
-
         // fragment 설정
         mapHelper = new MapHelper(getApplicationContext(), this);
         googleMapFragment = mapHelper.googleMapFragment;
@@ -113,12 +112,9 @@ public class PoiInfoActivity extends AppCompatActivity {
     }
 
     public void onFragmentResult(Poi data) {
-
         mapHelper.mGoogleMap.clear();
-        mapHelper.setLocationMarker(new LatLng(data.point.lng,
-                data.point.lat), data.name, data.branch, data.address.getFullAddressRoad());
-
-        Log.d("ddd", "map id : " + googleMapFragment.getTag() + googleMapFragment.getId());
+        mapHelper.setLocationMarker(new LatLng(data.point.lat,
+                data.point.lng), data.name, data.branch, data.address.getFullAddressRoad());
 
         // TODO : 바텀 시트 업데이트
         bottomSheet.setVisibility(true);
@@ -133,7 +129,7 @@ public class PoiInfoActivity extends AppCompatActivity {
             public void onSuccess(@NonNull PoiResponse poiResponse) {
                 poi = poiResponse.getPois().get(0);
                 onFragmentResult(poi);
-                PoiToolbar.getInstance().setTitle(poi.name);
+                PoiToolbar.getInstance().setTitle(poi.name + " " + poi.branch);
             }
 
             @Override

@@ -5,15 +5,25 @@
     android:layout_height="match_parent"
     android:layout_margin="10dp"
     android:orientation="vertical">
-
     <TextView
-        android:id="@+id/please_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/basicText"
         android:textSize="20sp"
         android:layout_margin="10dp"
-        android:text="로그인이 필요합니다"/>
+        android:text="My List"/>
+    <LinearLayout
+        android:id="@+id/please_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/basicText"
+            android:textSize="20sp"
+            android:layout_margin="10dp"
+            android:text="로그인이 필요합니다"/>
+    </LinearLayout>
 
     <!--마이 즐겨찾기 리스트-->
     <LinearLayout

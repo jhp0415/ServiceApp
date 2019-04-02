@@ -118,6 +118,7 @@ public class MapHelper
         mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(title).draggable(true));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mGoogleMap.setOnMarkerClickListener(this);
+
     }
 
     @Override

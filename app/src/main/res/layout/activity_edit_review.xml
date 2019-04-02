@@ -1,79 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<android.support.v7.widget.CardView
-    android:id="@+id/cardview"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="1dp"
-    card_view:cardCornerRadius="10dp"
-    card_view:contentPadding="1dp"
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto">
+    android:fitsSystemWindows="true"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:fitsSystemWindows="true"
-        android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
-
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <!-- 타이틀바 -->
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-            <!-- 타이틀바 -->
-            <LinearLayout
-                android:orientation="horizontal"
+            <TextView
+                android:text="Review"
+                android:textSize="20sp"
+                android:textColor="#fff"
+                android:gravity="center"
+                android:background="@color/colorAccent"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:text="Review"
-                    android:textSize="20sp"
-                    android:textColor="#fff"
-                    android:gravity="center"
-                    android:background="@color/colorAccent"
-                    android:layout_width="match_parent"
-                    android:layout_height="53dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:orientation="vertical">
-                <EditText
-                    android:id="@+id/commentTitle"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Title"/>
-
-                <EditText
-                    android:id="@+id/commentBody"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Reivew Body"/>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:weightSum="2"
-                android:orientation="horizontal">
-                <Button
-                    android:id="@+id/submit_review_btn"
-                    android:text="Submit"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <Button
-                    android:id="@+id/cancle_review_btn"
-                    android:text="Cancle"
-                    android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-            </LinearLayout>
+                android:layout_height="50dp" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/commentTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Title"/>
+
+            <EditText
+                android:id="@+id/commentBody"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Reivew Body"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:weightSum="2"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/submit_review_btn"
+                android:text="Submit"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:textColor="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+            <Button
+                android:id="@+id/cancle_review_btn"
+                android:text="Cancle"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:textColor="@color/colorAccent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
     </LinearLayout>
-</android.support.v7.widget.CardView>
+
+</LinearLayout>

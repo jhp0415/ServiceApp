@@ -14,6 +14,7 @@ import com.example.serviceapp.MyServer.POJO.sPlaceWithComment;
 import com.example.serviceapp.MyServer.contract.AddReviewContract;
 import com.example.serviceapp.MyServer.presenter.AddReviewPresenter;
 import com.example.serviceapp.R;
+import com.example.serviceapp.Util.Util;
 
 public class AddReviewActivity extends Activity
         implements AddReviewContract.View{
@@ -69,6 +70,9 @@ public class AddReviewActivity extends Activity
 
     @Override
     public void submitFinished(sPlaceWithComment placeReview) {
+        Util util = new Util(getApplicationContext(), this);
+        util.hideKyeboard();
+
         Intent intent = getIntent();
         intent.putExtra("place_review", placeReview);
         setResult(RESULT_OK, intent);

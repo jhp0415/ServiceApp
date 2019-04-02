@@ -2,6 +2,7 @@ package com.example.serviceapp.Adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -142,7 +143,7 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
 
             Glide.with(mActivity.getApplicationContext())
                     .applyDefaultRequestOptions(
-                            new RequestOptions().error(R.drawable.ic_broken_image_black_24dp))
+                            new RequestOptions().error(R.drawable.ic_account_circle_grey_500_48dp))
                     .load(reviewerImg)
                     .apply(RequestOptions.circleCropTransform().override(300,300))
                     .into(reviewHolder.mUserImage);
@@ -180,8 +181,16 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
                 headerViewHolder.textView3.setText(poi.category.masterName);
                 headerViewHolder.textView4.setText(poi.address.getFullAddressRoad());
                 if (poi.phones.representation != null)
-                    if (poi.phones.representation.size() > 0)
+                    if (poi.phones.representation.size() > 0) {
                         headerViewHolder.textView5.setText(poi.phones.representation.get(0));
+                        headerViewHolder.textView5.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Intent tt = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + poi.phones.representation.get(0)));
+                                mActivity.startActivity(tt);
+                            }
+                        });
+                    }
             }
             // 슬라이드 이미지뷰
             if(poiImages != null) {

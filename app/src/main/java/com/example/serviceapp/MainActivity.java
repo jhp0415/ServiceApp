@@ -304,11 +304,6 @@ public class MainActivity extends AppCompatActivity
                             MyServerPresenter presenter = new MyServerPresenter(myServerView);
                             presenter.getSignCheck(fbToken);
                             Log.d("ddd", "MainActivity : facebook login success : " + fbId);
-
-                            // 로그인 아이디 출력
-                            View nav_header_view = navigationView.getHeaderView(0);
-                            TextView loginInfo = (TextView) nav_header_view.findViewById(R.id.login_info);
-                            loginInfo.setText(fbId);
                         }
                     }
                 });
