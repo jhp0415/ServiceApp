@@ -15,6 +15,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -109,16 +111,10 @@ public class MapHelper
     }
 
     public void setLocationMarker(LatLng latLng, String title, String branch, String snippet) {
-        mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(title+branch).snippet(snippet).draggable(true));
+        BitmapDescriptor bitmap = BitmapDescriptorFactory.fromAsset("marker.png");
+        mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(title+branch).snippet(snippet).icon(bitmap).draggable(true));
         mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
         mGoogleMap.setOnMarkerClickListener(this);
-    }
-
-    public void setLocationMarker(LatLng latLng, String title) {
-        mGoogleMap.addMarker(new MarkerOptions().position(latLng).title(title).draggable(true));
-        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-        mGoogleMap.setOnMarkerClickListener(this);
-
     }
 
     @Override
