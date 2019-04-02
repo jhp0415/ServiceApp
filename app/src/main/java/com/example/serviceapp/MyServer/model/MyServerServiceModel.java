@@ -25,7 +25,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MyServerServiceModel {
     private Retrofit.Builder retrofitBuilder = new Retrofit.Builder();
     private Retrofit retrofit = retrofitBuilder.baseUrl("http://52.79.72.47:3000/").addConverterFactory(GsonConverterFactory.create()).build();
-
+    private String TAG = MyServerServiceModel.class.getName();
     public interface callSignCheckListener {
         public void onSignCheckFinished(sAccess response);
         public void onSignCheckFailure(Throwable t);
@@ -38,7 +38,7 @@ public class MyServerServiceModel {
         call.enqueue(new Callback<sAccess>() {
             @Override
             public void onResponse(Call<sAccess> call, Response<sAccess> response) {
-                try {
+                    try {
                     onFinishedListener.onSignCheckFinished(response.body());
                 } catch (Exception e) {
                     Log.d("callSignCheck", "There is an error");
@@ -48,7 +48,9 @@ public class MyServerServiceModel {
 
             @Override
             public void onFailure(Call<sAccess> call, Throwable t) {
+                Log.d(TAG, "onFailure() called with: call = [" + call + "], t = [" + t + "]");
                 Log.d("callSignCheck", "fail");
+                t.printStackTrace();
                 //TODO: onSignCheckFailure
             }
         });
