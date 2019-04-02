@@ -35,4 +35,8 @@ public class Util {
         EditText editText = mActivity.findViewById(R.id.toolbar_search);
         inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
     }
+
+    public void showKyeboard(EditText editText) {
+        inputMethodManager.showSoftInput(editText, 0);
+    }
 }

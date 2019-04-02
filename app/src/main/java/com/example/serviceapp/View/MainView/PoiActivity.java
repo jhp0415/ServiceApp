@@ -266,6 +266,7 @@ public class PoiActivity extends AppCompatActivity
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.toolbar_search:
+                Log.d("ddd", "onClick: PoiActivity 종료");
                 finish();
                 break;
         }

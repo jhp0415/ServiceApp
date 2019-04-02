@@ -1,5 +1,6 @@
 package com.example.serviceapp.View.MainView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -13,11 +14,13 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.example.serviceapp.Fragment.SearchFragment;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.R;
+import com.example.serviceapp.Util.Util;
 import com.google.android.gms.maps.model.LatLng;
 import com.kt.place.sdk.listener.OnResponseListener;
 import com.kt.place.sdk.model.Autocomplete;
@@ -65,8 +68,15 @@ public class SearchActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_action_back);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-    }
 
+        // 키보드
+        editText.setFocusableInTouchMode(true);
+        editText.requestFocus();
+        Util util = new Util(getApplicationContext(), this);
+        util.showKyeboard(editText);
+//        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+    }
     public void getIntentData() {
         Intent intent = getIntent();
         fbId = intent.getStringExtra("fb_id");
@@ -199,6 +209,7 @@ public class SearchActivity extends AppCompatActivity
 //                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 //                    startActivity(intent);
 //                }
+
                 break;
         }
     }
