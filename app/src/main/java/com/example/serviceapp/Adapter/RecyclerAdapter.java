@@ -78,12 +78,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter
             if(itemsHearder.size() > 0) {
                 if(itemsHearder.size() < 3) {
                     for(int i = 0; i<itemsHearder.size();i++) {
-                        headerViewHolder.mItem[i] = itemsHearder.get(0);
+                        headerViewHolder.mItem[i] = itemsHearder.get(i);
                         headerViewHolder.mTitleText[i].setText(itemsHearder.get(i).terms);
                     }
                 } else {
                     for(int i = 0; i<3;i++) {
-                        headerViewHolder.mItem[i] = itemsHearder.get(0);
+                        headerViewHolder.mItem[i] = itemsHearder.get(i);
                         headerViewHolder.mTitleText[i].setText(itemsHearder.get(i).terms);
                     }
                 }
@@ -182,14 +182,17 @@ public class RecyclerAdapter extends RecyclerView.Adapter
             intent.putExtra("mode", "autocomplete");
             switch (v.getId()) {
                 case R.id.suggest1:
+                    Log.d("ddd", "autocomplete item clicked : " + headerViewHolder.mItem[0].terms + " " + headerViewHolder.mItem[0].poiId);
                     intent.putExtra("poi_id", headerViewHolder.mItem[0].poiId);
                     intent.putExtra("fb_id", fbId);
                     break;
                 case R.id.suggest2:
+                    Log.d("ddd", "autocomplete item clicked : " + headerViewHolder.mItem[1].terms + " " + headerViewHolder.mItem[0].poiId);
                     intent.putExtra("poi_id", headerViewHolder.mItem[1].poiId);
                     intent.putExtra("fb_id", fbId);
                     break;
                 case R.id.suggest3:
+                    Log.d("ddd", "autocomplete item clicked : " + headerViewHolder.mItem[2].terms + " " + headerViewHolder.mItem[0].poiId);
                     intent.putExtra("poi_id", headerViewHolder.mItem[2].poiId);
                     intent.putExtra("fb_id", fbId);
                     break;

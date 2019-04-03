@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.serviceapp.Adapter.AutocompleteRecyclerAdapter;
+import com.example.serviceapp.Adapter.ParentRecyclerAdapter;
 import com.example.serviceapp.Adapter.ReviewRecyclerAdapter;
 import com.example.serviceapp.MyServer.POJO.sComment;
 import com.example.serviceapp.MyServer.contract.OverviewContract;
@@ -130,14 +131,23 @@ public class PoiInfoBottomSheet
         setBottomSheetHeight(400.f);
         setBottomSheetState("COLLAPSED");
 
-        // 리사이클러뷰 초기화
+//        // 기존의 리사이클러뷰 초기화
+//        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.autocomplete_search_recycler);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
+//        recyclerView.setHasFixedSize(true);
+//        AutocompleteRecyclerAdapter mAdapter = new AutocompleteRecyclerAdapter(mActivity);
+//        recyclerView.setAdapter(mAdapter);
+//        mAdapter.setFilter(list);
+
+        // 새로운 Parent-Child RecyclerView
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.autocomplete_search_recycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         recyclerView.setHasFixedSize(true);
-        AutocompleteRecyclerAdapter mAdapter = new AutocompleteRecyclerAdapter(mActivity);
-        recyclerView.setAdapter(mAdapter);
-        mAdapter.setFilter(list);
+        final ParentRecyclerAdapter adapter = new ParentRecyclerAdapter(mActivity, -1);
+        recyclerView.setAdapter(adapter);
+        adapter.setFilter(list);
 
+        // 지우면 안됌
         dynamicContent.addView(view);
     }
 

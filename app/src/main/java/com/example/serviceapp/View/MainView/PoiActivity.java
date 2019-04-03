@@ -2,14 +2,18 @@ package com.example.serviceapp.View.MainView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.icu.text.LocaleDisplayNames;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,6 +21,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.example.serviceapp.Adapter.ParentRecyclerAdapter;
+import com.example.serviceapp.Adapter.ReviewRecyclerAdapter;
 import com.example.serviceapp.BottomSheet.PoiInfoBottomSheet;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.Helper.MapHelper;
@@ -26,6 +32,7 @@ import com.example.serviceapp.MyServer.POJO.sPlaceWithComment;
 import com.example.serviceapp.R;
 import com.example.serviceapp.Util.Util;
 import com.facebook.CallbackManager;
+import com.facebook.appevents.codeless.CodelessLoggingEventListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.kt.place.sdk.listener.OnResponseListener;
@@ -47,6 +54,7 @@ public class PoiActivity extends AppCompatActivity
     private Util util;
 
     private SupportMapFragment googleMapFragment;
+    View bottomSheetView;
     private PoiInfoBottomSheet bottomSheet;
 
     // 페이스북 로그인
@@ -86,7 +94,7 @@ public class PoiActivity extends AppCompatActivity
         placesClient = PlaceManager.createClient();
 
         // bottom Sheet 설정
-        View bottomSheetView = (LinearLayout) findViewById(R.id.bottom_sheet);
+        bottomSheetView = (LinearLayout) findViewById(R.id.bottom_sheet);
         bottomSheet = new PoiInfoBottomSheet(getApplicationContext(), this, bottomSheetView);
         bottomSheet.bottomSheetBehavior = BottomSheetBehavior.from(bottomSheetView);
         bottomSheet.setFbId(fbId);
@@ -118,6 +126,7 @@ public class PoiActivity extends AppCompatActivity
         switch (mode) {
             case "poi":
                 onFragmentResult(poi);
+
                 break;
             case "autocomplete":
                 modeAutocomplete(poiId);
@@ -198,6 +207,7 @@ public class PoiActivity extends AppCompatActivity
     }
 
     public void requestPoiSearchForAutocomplete(final String terms, int start) {
+        Log.d("ddd", "autocomplete clicked item and Poi Search : " + terms);
         LatLng point = GpsHelper.getInstance().getCurrentLocation();
         PoiRequest request = new PoiRequest.PoiRequestBuilder(terms)
                 .setLat(point.latitude)
@@ -210,6 +220,7 @@ public class PoiActivity extends AppCompatActivity
             @Override
             public void onSuccess(@NonNull PoiResponse poiResponse) {
                 if(poiResponse.getPois().size() > 0) {
+                    Log.d("ddd", "Poi Search Result : " + poiResponse.getPois().get(0).name + " " + poiResponse.getPois().get(0).branch);
                     bottomSheet.updateAutocompleteList(poiResponse.getPois());
                 }
             }
@@ -246,12 +257,10 @@ public class PoiActivity extends AppCompatActivity
         InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
-//        mapHelper.mGoogleMap.clear();
-//        mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
-//                data.getPoint().getLng()), data.getTerms(), "", "");
-
+//        // TODO : 바텀 시트 업데이트
+//        requestPoiSearchForAutocomplete(data.name, 0);
         // TODO : 바텀 시트 업데이트
-        requestPoiSearchForAutocomplete(data.name, 0);
+        requestPoiSearchForAutocomplete(data.name + " " + data.branch, 0);
     }
 
     @Override

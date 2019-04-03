@@ -1,5 +1,6 @@
 package com.example.serviceapp.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
@@ -12,26 +13,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.serviceapp.R;
+import com.example.serviceapp.View.MainView.PoiActivity;
 import com.kt.place.sdk.model.Poi;
 
 import java.util.List;
 
-public class ChildRecyclerViewAdapter extends RecyclerView.Adapter<ChildRecyclerViewAdapter.MyViewHolder> {
+public class ChildRecyclerAdapter extends RecyclerView.Adapter<ChildRecyclerAdapter.MyViewHolder> {
 
     SubSelectionInterface subSelectionInterface;
-    private List<Poi> categoryList;
-    private Context context;
+    private List<Poi> childList;
+    private Activity mActivity;
     private int clickedPosition = -1;
 
-    public ChildRecyclerViewAdapter(Context context, List<Poi> categoryList, int clickedPosition, SubSelectionInterface subSelectionInterface) {
-        this.categoryList = categoryList;
-        this.context = context;
+    public ChildRecyclerAdapter(Activity activity, List<Poi> childList, int clickedPosition, SubSelectionInterface subSelectionInterface) {
+        this.childList = childList;
+        this.mActivity = activity;
         this.clickedPosition = clickedPosition;
         this.subSelectionInterface = subSelectionInterface;
     }
 
     @Override
-    public ChildRecyclerViewAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ChildRecyclerAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recyclerview_poi_child_item, parent, false);
 
@@ -39,30 +41,24 @@ public class ChildRecyclerViewAdapter extends RecyclerView.Adapter<ChildRecycler
     }
 
     @Override
-    public void onBindViewHolder(ChildRecyclerViewAdapter.MyViewHolder holder, final int position) {
-
-        holder.mName.setText(categoryList.get(position).name);
-        holder.mAddress.setText(String.valueOf(categoryList.get(position).address.getFullAddressRoad()));
-
-        if (position == clickedPosition) {
-            holder.mName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            holder.mName.setTypeface(null, Typeface.BOLD);
-            holder.mAddress.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-            holder.mAddress.setTypeface(null, Typeface.BOLD);
+    public void onBindViewHolder(final ChildRecyclerAdapter.MyViewHolder holder, final int position) {
+        holder.mItem = childList.get(position);
+        if(childList.get(position).subName != null){
+            holder.mName.setText(childList.get(position).name + " " + childList.get(position).branch + " " + childList.get(position).subName);
         } else {
-            holder.mName.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-            holder.mName.setTypeface(null, Typeface.NORMAL);
-            holder.mAddress.setTextSize(TypedValue.COMPLEX_UNIT_SP, 14);
-            holder.mAddress.setTypeface(null, Typeface.NORMAL);
+            holder.mName.setText(childList.get(position).name + " " + childList.get(position).branch);
         }
 
-        holder.row.setOnClickListener(new View.OnClickListener() {
+        holder.mAddress.setText(String.valueOf(childList.get(position).address.getFullAddressRoad()));
+
+        holder.childItemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (clickedPosition != position) {
                     clickedPosition = position;
                     subSelectionInterface.onsubselection(position);
                     notifyDataSetChanged();
+                    ((PoiActivity) mActivity).onFragmentResult(holder.mItem);
                 }
             }
         });
@@ -71,18 +67,19 @@ public class ChildRecyclerViewAdapter extends RecyclerView.Adapter<ChildRecycler
 
     @Override
     public int getItemCount() {
-        return categoryList.size();
+        return childList.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
+        public Poi mItem;
         public TextView mAddress, mName;
-        public RelativeLayout row;
+        public RelativeLayout childItemView;
 
         public MyViewHolder(View view) {
             super(view);
             mAddress = (TextView) view.findViewById(R.id.poi_child_address);
             mName = (TextView) view.findViewById(R.id.poi_child_name);
-            row = (RelativeLayout) view.findViewById(R.id.poi_child_layout);
+            childItemView = (RelativeLayout) view.findViewById(R.id.poi_child_layout);
         }
     }
 
