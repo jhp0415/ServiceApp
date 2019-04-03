@@ -86,7 +86,8 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         // SDK 인증
-        PlaceManager.initialize("Bearer eb142d9027f84d51a4a20df8490e44bcf6fc7ef4dea64cae96a7fca282ebd8cc02764651");
+        if(!PlaceManager.isInitialized())
+            PlaceManager.initialize("Bearer eb142d9027f84d51a4a20df8490e44bcf6fc7ef4dea64cae96a7fca282ebd8cc02764651");
         placesClient = PlaceManager.createClient();
 
         // 구글 지도
@@ -236,6 +237,7 @@ public class MainActivity extends AppCompatActivity
         long intervalTime = tempTime - backPressedTime;
         if (0 <= intervalTime && FINISH_INTERVAL_TIME >= intervalTime) {
             super.onBackPressed();
+
         } else {
             backPressedTime = tempTime;
             Toast.makeText(getApplicationContext(), "한번 더 누르면 앱이 종료 됩니다.", Toast.LENGTH_SHORT).show();
