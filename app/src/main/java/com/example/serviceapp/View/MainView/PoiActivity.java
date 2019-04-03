@@ -125,8 +125,8 @@ public class PoiActivity extends AppCompatActivity
     public void setResult(String mode) {
         switch (mode) {
             case "poi":
-                onFragmentResult(poi);
-
+//                onFragmentResult(poi);
+                modePoi(poiId);
                 break;
             case "autocomplete":
                 modeAutocomplete(poiId);
@@ -188,6 +188,23 @@ public class PoiActivity extends AppCompatActivity
                 finish();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void modePoi(String id) {
+        RetrievePoiRequest request = new RetrievePoiRequest.RetrievePoiRequestBuilder(id).build();
+
+        placesClient.getRetrievePoi(request, new OnResponseListener<PoiResponse>() {
+            @Override
+            public void onSuccess(@NonNull PoiResponse poiResponse) {
+//                onFragmentResult(poiResponse.getPois().get(0));
+                onFragmentResult(poi);
+            }
+
+            @Override
+            public void onError(@NonNull Throwable throwable) {
+                Log.d("ddd", "onError: " + throwable.getMessage());
+            }
+        });
     }
 
     public void modeAutocomplete(String id) {
