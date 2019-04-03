@@ -189,7 +189,7 @@ public class MainCategoryBottomSheet implements View.OnClickListener {
 //                String fullAddress = geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiDo() + " "
 //                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiGunGu() + " "
 //                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getEupMyeonDong() + " ";
-                textView.setText(geocodeResponse.getGeocodeList().get(0).getRoadAddressList().get(0).getFullStreetAddress());
+                textView.setText(geocodeResponse.getGeocodeList().get(0).roadAddressList.get(0).getFullStreetAddress());
 
             }
 

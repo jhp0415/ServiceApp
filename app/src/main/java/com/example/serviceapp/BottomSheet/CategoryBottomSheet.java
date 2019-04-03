@@ -242,7 +242,7 @@ public class CategoryBottomSheet
 //                String fullAddress = geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiDo() + " "
 //                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiGunGu() + " "
 //                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getEupMyeonDong() + " ";
-                String fullAddress = geocodeResponse.getGeocodeList().get(0).getRoadAddressList().get(0).getFullStreetAddress();
+                String fullAddress = geocodeResponse.getGeocodeList().get(0).roadAddressList.get(0).getFullStreetAddress();
                 textView.setText(fullAddress);
             }
 

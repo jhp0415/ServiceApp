@@ -67,10 +67,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter
                 public void onClick(View v) {
                     Intent intent = new Intent(mActivity, PoiActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    Log.d("ddd", "RecyclerView onCreateView: fbId : " + fbId);
                     intent.putExtra("fb_id", fbId);
                     intent.putExtra("mode", "poi");
-                    intent.putExtra("poi_id", items.get(position).id);
+                    intent.putExtra("poi", items.get(position));
                     mActivity.startActivity(intent);
                 }
             });
@@ -183,18 +182,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter
             intent.putExtra("mode", "autocomplete");
             switch (v.getId()) {
                 case R.id.suggest1:
-//                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[0]);
                     intent.putExtra("poi_id", headerViewHolder.mItem[0].poiId);
                     intent.putExtra("fb_id", fbId);
                     break;
                 case R.id.suggest2:
-//                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[1]);
-                    intent.putExtra("poi_id", headerViewHolder.mItem[0].poiId);
+                    intent.putExtra("poi_id", headerViewHolder.mItem[1].poiId);
                     intent.putExtra("fb_id", fbId);
                     break;
                 case R.id.suggest3:
-//                    ((PoiActivity) mActivity).onFragmentResultAutocomplete(headerViewHolder.mItem[2]);
-                    intent.putExtra("poi_id", headerViewHolder.mItem[0].poiId);
+                    intent.putExtra("poi_id", headerViewHolder.mItem[2].poiId);
                     intent.putExtra("fb_id", fbId);
                     break;
             }

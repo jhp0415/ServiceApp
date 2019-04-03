@@ -75,6 +75,7 @@ public class PoiInfoActivity extends AppCompatActivity {
 
 
         requestRetrievePoi(poiId);
+
     }
 
     public void getIntentData() {

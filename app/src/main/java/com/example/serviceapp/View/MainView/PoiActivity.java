@@ -1,5 +1,6 @@
 package com.example.serviceapp.View.MainView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
@@ -27,6 +29,7 @@ import com.facebook.CallbackManager;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.kt.place.sdk.listener.OnResponseListener;
+import com.kt.place.sdk.model.Autocomplete;
 import com.kt.place.sdk.model.Poi;
 import com.kt.place.sdk.net.PoiRequest;
 import com.kt.place.sdk.net.PoiResponse;
@@ -59,6 +62,8 @@ public class PoiActivity extends AppCompatActivity
     private String fbId;
     String poiId;
     String mode;
+    Poi poi;
+    Autocomplete autocomplete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +82,7 @@ public class PoiActivity extends AppCompatActivity
         fragmentTransaction.replace(R.id.fragment_container2, googleMapFragment,"visible");
         fragmentTransaction.commit();
 
-        util = new Util(getApplicationContext(), this);
+
         placesClient = PlaceManager.createClient();
 
         // bottom Sheet 설정
@@ -104,6 +109,7 @@ public class PoiActivity extends AppCompatActivity
         Intent intent = getIntent();
         fbId = intent.getStringExtra("fb_id");
         poiId = intent.getStringExtra("poi_id");
+        poi = (Poi) intent.getExtras().getSerializable("poi");
         mode = intent.getStringExtra("mode");
         Log.d("ddd", "PoiActivity getIntentData: fbId " + fbId);
     }
@@ -111,10 +117,11 @@ public class PoiActivity extends AppCompatActivity
     public void setResult(String mode) {
         switch (mode) {
             case "poi":
-                modePoi(poiId);
+                onFragmentResult(poi);
                 break;
             case "autocomplete":
                 modeAutocomplete(poiId);
+//                onFragmentResultAutocomplete(poi);
                 break;
         }
     }
@@ -167,28 +174,11 @@ public class PoiActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-//        hideKyeboard();
         switch (item.getItemId()){
             case android.R.id.home:
                 finish();
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    public void modePoi(String id) {
-        RetrievePoiRequest request = new RetrievePoiRequest.RetrievePoiRequestBuilder(id).build();
-
-        placesClient.getRetrievePoi(request, new OnResponseListener<PoiResponse>() {
-            @Override
-            public void onSuccess(@NonNull PoiResponse poiResponse) {
-                onFragmentResult(poiResponse.getPois().get(0));
-            }
-
-            @Override
-            public void onError(@NonNull Throwable throwable) {
-
-            }
-        });
     }
 
     public void modeAutocomplete(String id) {
@@ -207,7 +197,7 @@ public class PoiActivity extends AppCompatActivity
         });
     }
 
-    public void requestPoiSearch(final String terms, int start) {
+    public void requestPoiSearchForAutocomplete(final String terms, int start) {
         LatLng point = GpsHelper.getInstance().getCurrentLocation();
         PoiRequest request = new PoiRequest.PoiRequestBuilder(terms)
                 .setLat(point.latitude)
@@ -236,14 +226,15 @@ public class PoiActivity extends AppCompatActivity
      * @param data
      */
     public void onFragmentResult(Poi data) {
-        util.hideKyeboard();
+//        util.hideKyeboard();
+        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+
+        editText.setText(data.name + " " + data.branch);
 
         mapHelper.mGoogleMap.clear();
         mapHelper.setLocationMarker(new LatLng(data.point.lat,
                 data.point.lng), data.name, data.branch, data.address.getFullAddressRoad());
-
-
-        Log.d("ddd", "map id : " + googleMapFragment.getTag() + googleMapFragment.getId());
 
         // TODO : 바텀 시트 업데이트
         bottomSheet.setVisibility(true);
@@ -251,15 +242,16 @@ public class PoiActivity extends AppCompatActivity
     }
 
     public void onFragmentResultAutocomplete(Poi data) {
-        util.hideKyeboard();
+//        util.hideKyeboard();
+        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
 
 //        mapHelper.mGoogleMap.clear();
 //        mapHelper.setLocationMarker(new LatLng(data.getPoint().getLat(),
 //                data.getPoint().getLng()), data.getTerms(), "", "");
 
-
         // TODO : 바텀 시트 업데이트
-        requestPoiSearch(data.name, 0);
+        requestPoiSearchForAutocomplete(data.name, 0);
     }
 
     @Override

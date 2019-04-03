@@ -100,8 +100,6 @@ public class PoiInfoBottomSheet
         setBottomSheetHeight(120.f);
         setBottomSheetState("COLLAPSED");
 
-        Log.d("ddd", "ReviewRecyclerView 초기화");
-        Log.d("ddd", "fbId : " + fbId);
         poiReviewRecyclerView = (RecyclerView) poiView.findViewById(R.id.review_recyclerview);
         poiReviewRecyclerView.setLayoutManager(new LinearLayoutManager(mActivity));
         poiReviewRecyclerView.setHasFixedSize(true);

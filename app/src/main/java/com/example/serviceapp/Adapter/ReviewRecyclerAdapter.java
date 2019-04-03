@@ -172,11 +172,11 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
             // 헤더에 poi 정보 출력하기
             if(poi != null) {
-                headerViewHolder.textView1.setText(poi.name + poi.branch);
+                headerViewHolder.textView1.setText(poi.name + " " + poi.branch);
                 if (poi.distance != null) {
 //                    headerViewHolder.textView2.setText(String.valueOf((int) Math.round(poi.getDistance())) + "km");
                     Util util = new Util(mActivity.getApplicationContext(), mActivity);
-                    headerViewHolder.textView2.setText(util.changeMeterToKilometer((int) Math.round(poi.distance)));
+                    headerViewHolder.textView2.setText(util.changeMeterToKilometer((int) Math.round(poi.distance)) + " ");
                 }
                 headerViewHolder.textView3.setText(poi.category.masterName);
                 headerViewHolder.textView4.setText(poi.address.getFullAddressRoad());
