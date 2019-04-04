@@ -13,7 +13,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.example.serviceapp.Adapter.MyListRecyclerAdapter;
 import com.example.serviceapp.Adapter.RecyclerItemTouchHelper;
@@ -112,7 +111,6 @@ public class MyListBottomSheet
     @Override
     public void setMyList(ArrayList<sPlace> response) {
         // 즐겨찾기 리스트 저장
-        myList = response;
         Log.d("ddd", "즐겨찾기 목록 가져와서 저장 완료");
 
         // 로그인하면 텍스트 대체하기

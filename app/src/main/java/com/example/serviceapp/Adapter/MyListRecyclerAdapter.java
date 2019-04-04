@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+import com.example.serviceapp.Helper.SaveData;
 import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.MyServer.POJO.sPlace;
 import com.example.serviceapp.MyServer.model.MyServerModel;
@@ -127,10 +128,14 @@ public class MyListRecyclerAdapter extends RecyclerView.Adapter<MyListRecyclerAd
     public void removeItem(int position) {
         Log.d("ddd", "서버 즐겨찾기 목록에서 제거하기");
         // TODO:즐겨찾기에서 제거하기
+        SaveData.getInstance().mylist.remove(items.get(position).getpoiId());
+
         presenter.deleteMyList(((MainActivity) mActivity).getFbId(), items.get(position).getpoiId());
 
         items.remove(position);
         notifyItemRemoved(position);
+
+
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

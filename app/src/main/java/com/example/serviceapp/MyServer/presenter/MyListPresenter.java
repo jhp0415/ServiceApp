@@ -2,6 +2,7 @@ package com.example.serviceapp.MyServer.presenter;
 
 import android.util.Log;
 
+import com.example.serviceapp.Helper.SaveData;
 import com.example.serviceapp.MyServer.POJO.sPlace;
 import com.example.serviceapp.MyServer.contract.MyListContract;
 import com.example.serviceapp.MyServer.model.MyServerModel;
@@ -31,10 +32,12 @@ public class MyListPresenter implements MyListContract.Presenter {
         myserverServiceModel.callMyPlaceList(fbId, new MyServerServiceModel.callMyPlaceListListener() {
             @Override
             public void onGetMyPlaceListFinished(ArrayList<sPlace> sPlaceList) {
-                Log.d("ddd", "onGetMyPlaceListFinished: ");
+                Log.d("ddd", "onGetMyPlaceListFinished: " + sPlaceList.size());
                 myListView.setMyList(sPlaceList);
+
+                SaveData.getInstance().mylist.clear();
                 for(int i = 0; i < sPlaceList.size(); i++) {
-//                    getPoiNameByRetrieve(i, sPlaceList.get(i));
+                    SaveData.getInstance().mylist.add(sPlaceList.get(i).getpoiId());
                 }
             }
 

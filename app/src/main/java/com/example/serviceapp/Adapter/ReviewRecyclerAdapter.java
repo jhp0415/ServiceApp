@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.serviceapp.BottomSheet.CategoryBottomSheet;
 import com.example.serviceapp.BottomSheet.PoiInfoBottomSheet;
 import com.example.serviceapp.Helper.CustomSnackbar;
+import com.example.serviceapp.Helper.SaveData;
 import com.example.serviceapp.MyServer.POJO.sComment;
 import com.example.serviceapp.MyServer.POJO.sUser;
 import com.example.serviceapp.R;
@@ -170,6 +171,11 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
 
         } else if (position == TYPE_HEADER && holder instanceof HeaderViewHolder) {
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
+            // 즐겨 찾기 표시
+            if(SaveData.getInstance().mylist.contains(poi.id)) {
+                ImageView star = (ImageView) headerViewHolder.addListBtn.findViewById(R.id.addMyList);
+                star.setImageResource(R.drawable.icon_star);
+            }
             // 헤더에 poi 정보 출력하기
             if(poi != null) {
                 if ( poi.subName != null) {
@@ -286,6 +292,10 @@ public class ReviewRecyclerAdapter extends RecyclerView.Adapter {
                         ((CategoryBottomSheet.instance).presenter).addMyList(fbId, poi.id);
                     } else {
                         ((PoiInfoBottomSheet.instance).presenter).addMyList(fbId, poi.id);
+                    }
+                    if(!SaveData.getInstance().mylist.contains(poi.id)) {
+                        Log.d("ddd", "SaveData mylist에 즐겨찾기 목록 추가 : " + poi.name);
+                        SaveData.getInstance().mylist.add(poi.id);
                     }
                     break;
                 case R.id.add_review:

@@ -127,6 +127,7 @@
                     <!--android:layout_weight="1"/>-->
                 <TextView
                     android:text="사진 추가"
+                    android:textColor="@color/basicText"
                     android:layout_width="0dp"
                     android:gravity="center"
                     android:layout_height="wrap_content"
