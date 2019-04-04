@@ -30,6 +30,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.serviceapp.BottomSheet.MainBottomSheet;
 import com.example.serviceapp.Helper.GpsHelper;
 import com.example.serviceapp.Helper.MapHelper;
+import com.example.serviceapp.Helper.SaveData;
 import com.example.serviceapp.MyServer.POJO.sAccess;
 import com.example.serviceapp.MyServer.contract.MyServerContract;
 import com.example.serviceapp.MyServer.presenter.MyServerPresenter;
@@ -84,6 +85,8 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SaveData saveData = new SaveData();
 
         // SDK 인증
         if(!PlaceManager.isInitialized())

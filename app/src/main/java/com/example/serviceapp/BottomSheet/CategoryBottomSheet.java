@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.serviceapp.Adapter.ReviewRecyclerAdapter;
 import com.example.serviceapp.Helper.GpsHelper;
+import com.example.serviceapp.Helper.SaveData;
 import com.example.serviceapp.MainActivity;
 import com.example.serviceapp.MyServer.POJO.sComment;
 import com.example.serviceapp.MyServer.contract.OverviewContract;
@@ -107,6 +108,8 @@ public class CategoryBottomSheet
                 dynamicContent.addView(mainContent);
                 ButterKnife.bind(this, mainContent);
 
+                Log.d("ddd", "CategoryBottomSheet 저장된 현재 주소 : " + SaveData.getInstance().getCurrentAddress());
+                textView.setText(SaveData.getInstance().getCurrentAddress());
                 imageView1.setOnClickListener(this);
                 imageView2.setOnClickListener(this);
                 imageView3.setOnClickListener(this);
@@ -191,6 +194,7 @@ public class CategoryBottomSheet
 
     public void setCurrentAddress(Location location) {
         // 현재 위치 주소
+
         requestGeocodeResult(location);
     }
 
@@ -239,16 +243,21 @@ public class CategoryBottomSheet
         placesClient.getGeocode(request, new OnResponseListener<GeocodeResponse>() {
             @Override
             public void onSuccess(@NonNull GeocodeResponse geocodeResponse) {
-//                String fullAddress = geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiDo() + " "
-//                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getSiGunGu() + " "
-//                        + geocodeResponse.getGeocodeList().get(0).getParcelAddressList().get(0).getEupMyeonDong() + " ";
                 String fullAddress = geocodeResponse.getGeocodeList().get(0).roadAddressList.get(0).getFullStreetAddress();
-                textView.setText(fullAddress);
+
+                Log.d("ddd", "MainCategoryBottomSheet setCurrentAddress 현재 주소 업데이트 : " + fullAddress);
+                if(fullAddress.length() > 0) {
+                    if (SaveData.getInstance().getCurrentAddress() != fullAddress) {
+                        SaveData.getInstance().setCurrentAddress(fullAddress);
+                        textView.setText(fullAddress);
+                        Log.d("ddd", "MainCatetoryBottomSheet 현재 주소 업데이트 onSuccess: " + fullAddress);
+                    }
+                }
             }
 
             @Override
             public void onError(@NonNull Throwable throwable) {
-
+                Log.d("ddd", "현재 주소 업데이트 onError: " + throwable.getMessage() + "현재주소는 여전히 " + SaveData.getInstance().getCurrentAddress());
             }
         });
     }
