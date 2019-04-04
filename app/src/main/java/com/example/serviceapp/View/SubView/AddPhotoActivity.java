@@ -9,6 +9,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -24,7 +25,8 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoContr
     AddPhotoPresenter presenter;
     public static final int PICK_IMAGE = 1;
     public static final int REQUEST_WRITE_PERMISSION = 1;
-    private ImageView selectPhotoButton;
+    private ImageView selectPhotoImage;
+    private Button submitPhotoBtn;
     private Uri selectedImage;
     private String poiId;
 
@@ -36,7 +38,8 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoContr
         Intent intent = getIntent();
         poiId = intent.getStringExtra("poi_id");
 
-        selectPhotoButton = (ImageView) findViewById(R.id.selectPhoto);
+        selectPhotoImage = (ImageView) findViewById(R.id.selectPhoto);
+        submitPhotoBtn = (Button) findViewById(R.id.submitPhoto);
 
         presenter = new AddPhotoPresenter(this);
     }
@@ -62,9 +65,10 @@ public class AddPhotoActivity extends AppCompatActivity implements AddPhotoContr
             return;
         }
         if (requestCode == PICK_IMAGE) {
+            submitPhotoBtn.setVisibility(View.VISIBLE);
             selectedImage = data.getData();
             // TODO: Image URI check
-            selectPhotoButton.setImageURI(selectedImage);
+            selectPhotoImage.setImageURI(selectedImage);
         }
     }
 
